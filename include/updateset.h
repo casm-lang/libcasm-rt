@@ -17,6 +17,16 @@ extern "C"
 {
 #endif
 
+struct casmrt_updateset;
+
+casmrt_updateset* casmrt_updateset_new( stdll_mem* mem, uint32_t size );
+
+uint8_t casmrt_updateset_insert( casmrt_updateset* uset, uint64_t location, uint64_t value );
+
+uint8_t casmrt_updateset_fork( casmrt_updateset* uset );
+
+uint8_t casmrt_updateset_merge( casmrt_updateset* uset );
+
 
 
 #ifdef __cplusplus   

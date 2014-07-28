@@ -7,6 +7,7 @@
 # file in the project root directory.
 # 
 
+STDLL_DIR   = ../stdll
 
 GTEST_DIR   = ../gtest
 GTEST_OBJ   = uts/obj
@@ -38,7 +39,12 @@ test: $(GTEST_OBJ) $(GTEST_OBJ)/gtest
 	@echo "===--- UNIT TEST SUITE ---==="
 	./$(GTEST_OBJ)/gtest
 
-GTEST_FLAGS = -Wall -Wextra -I ${GTEST_DIR} -I $(GTEST_DIR)/include -I include
+GTEST_FLAGS  = -Wall 
+GTEST_FLAGS += -Wextra 
+GTEST_FLAGS += -I ${GTEST_DIR} 
+GTEST_FLAGS += -I $(GTEST_DIR)/include 
+GTEST_FLAGS += -I include 
+GTEST_FLAGS += -I $(STDLL_DIR)/include
 
 GTEST_CPP  = $(wildcard uts/utc/*.cpp)
 GTEST_CPP += $(GTEST_DIR)/src/gtest-all.cc
@@ -48,11 +54,14 @@ GTEST_OBJS = $(addprefix $(GTEST_OBJ)/,$(notdir \
 		$(patsubst %.cc,%.ll,\
 		$(patsubst %.cpp,%.ll,$(GTEST_CPP)))))
 
+GTEST_LL  = llvm/*.ll
+GTEST_LL += $(STDLL_DIR)/llvm/*.ll
+
 $(GTEST_OBJ):
 	@mkdir -p uts/obj
 
-$(GTEST_OBJ)/gtest: $(GTEST_OBJS)
-	llvm-link $(GTEST_OBJS) llvm/*.ll > $@.ll
+$(GTEST_OBJ)/gtest: $(GTEST_OBJS) $(GTEST_LL)
+	llvm-link $(GTEST_OBJS) $(GTEST_LL) > $@.ll
 	llc -O3 $@.ll -o $@.s
 	clang -lstdc++ -pthread $@.s -o $@ 
 
