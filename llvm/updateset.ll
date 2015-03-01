@@ -11,19 +11,16 @@
 %struct.casmrt_updateset  = type %casm-rt.updateset
 
 @casmrt_updateset_new     = alias %casm-rt.updateset*( %stdll.mem*, i32 )* @casm-rt.updateset.new
+@casmrt_updateset_del     = alias i8( %casm-rt.updateset* )*               @casm-rt.updateset.del
 @casmrt_updateset_insert  = alias i8*( %casm-rt.updateset*, i64, i64 )*    @casm-rt.updateset.insert
 @casmrt_updateset_fork    = alias i8( %casm-rt.updateset* )*               @casm-rt.updateset.fork
 @casmrt_updateset_merge   = alias i8( %casm-rt.updateset* )*               @casm-rt.updateset.merge
+@casmrt_updateset_dump    = alias i8( %casm-rt.updateset* )*               @casm-rt.updateset.dump
 
 
 ; import memory component
 %stdll.mem = type opaque
 declare i8* @stdll.malloc( %stdll.mem* %mem, i64 %size )
-; declare i8*  @stdll.mem.alloc( %stdll.mem*, i64 )
-; declare void @stdll.mem.free( %stdll.mem*, i8* )
-; declare void @stdll.mem.clr( i8*, i64 )
-; declare noalias i8* @malloc(i64) nounwind
-; declare void @free(i8*)
 
 
 ; import dict component
@@ -31,14 +28,19 @@ declare i8* @stdll.malloc( %stdll.mem* %mem, i64 %size )
 declare %stdll.dict* @stdll.dict.new( %stdll.mem*, i32 )
 declare i8* @stdll.dict.set( %stdll.dict*, i64, i8* )
 declare i8 @stdll.dict.pop( %stdll.dict*, i64*, i8** )
+declare i8 @stdll.dict.stash( %stdll.dict* %dict, i64 %key, i8* %val )
+declare i8 @stdll.dict.resolve( %stdll.dict* %dict )
+declare void @stdll.dict.dump( %stdll.dict* )
+declare void @stdll.dict.dump.buckets( %stdll.dict* )
+
 
 ; import verbose component
 declare void @stdll.verbose.i64( i64 )
 declare void @stdll.verbose.i32( i32 )
+declare void @stdll.verbose.i16( i16 )
 declare void @stdll.verbose.i8( i8 )
 declare void @stdll.verbose.i1( i1 )
-declare void @stdll.verbose.p64( i64* )
-declare void @stdll.verbose.p8( i8* )
+declare void @stdll.verbose.p( i8* )
 declare void @stdll.verbose.ln()
 
 
@@ -80,13 +82,12 @@ error_alloc_null:
 }
 
 
-define i8 @casm-rt.updateset.del()
+define i8 @casm-rt.updateset.del( %casm-rt.updateset* %uset )
 {
 begin:
   ret i8 -1
 }
 
-declare void @stdll.dict.dump( %stdll.dict* )
 
 define i8* @casm-rt.updateset.insert( %casm-rt.updateset* %uset, i64 %location, i64 %value )
 {
@@ -160,8 +161,11 @@ begin:
   %dict   = load %stdll.dict** %_dict
   %ps_old = load i16* %_ps
   
-  ; check if merge is valid or pseudostate is already zero!!! 
-  
+  ; check if merge is valid or pseudostate is already zero then return
+  %c_no_merge = icmp eq i16 %ps_old, 0
+  br i1 %c_no_merge, label %return, label %prepare_merge
+
+prepare_merge:
   %ps = sub i16 %ps_old, 1
   store i16 %ps, i16* %_ps
   
@@ -177,33 +181,27 @@ fetch_element:
 process_element:
   %key_old = load i64* %_key
   %val     = load i8** %_val
-  
   %key_low = trunc i64 %key_old to i16
   
   %check_ps = icmp ule i16 %key_low, %ps
   br i1 %check_ps, label %merge_done, label %merge_element
   
 merge_element:
-  %key = sub i64 %key_old, 1
-  
-  ; stash the (key,val) into the dict!
-  
-  
-  %key_ = inttoptr i64 %key_old to i8*
-  
-  call void @stdll.verbose.p8( i8* %key_ )
-  call void @stdll.verbose.p8( i8* %val )
-  call void @stdll.verbose.ln()
-  
-  ;ret i8 0
+  %key = sub i64 %key_old, 1  
+  call i8 @stdll.dict.stash( %stdll.dict* %dict, i64 %key, i8* %val )
+
   br label %fetch_element
 
 handle_result:
-  %check_result = icmp eq i8 %res, 1
-  br i1 %check_result, label %uset_empty, label %error_uset_null
+;  ret i8 -2
+  br label %return
 
 merge_done:
-  ; take over the new stash values
+  call i8 @stdll.dict.stash( %stdll.dict* %dict, i64 %key_old, i8* %val )
+  br label %return
+
+return:
+  call i8 @stdll.dict.resolve( %stdll.dict* %dict )
   ret i8 0
 
 uset_empty:
@@ -213,10 +211,28 @@ error_uset_null:
   ret i8 -1
 }
 
-define void @casm-rt.updateset.apply()
+define i8 @casm-rt.updateset.dump( %casm-rt.updateset* %uset )
 {
+check:
+  %check_uset = icmp ne %casm-rt.updateset* %uset, null
+  br i1 %check_uset, label %begin, label %error_uset_null
+  
 begin:
-  ret void
+  %_dict  = getelementptr %casm-rt.updateset* %uset, i32 0, i32 0
+  %_ps    = getelementptr %casm-rt.updateset* %uset, i32 0, i32 1
+  
+  %dict = load %stdll.dict** %_dict
+  %ps   = load i16* %_ps
+  
+  call void @stdll.verbose.i16( i16 %ps )
+  call void @stdll.verbose.ln()
+  call void @stdll.dict.dump( %stdll.dict* %dict )
+  ;call void @stdll.dict.dump.buckets( %stdll.dict* %dict )
+  
+  ret i8 0
+
+error_uset_null:
+  ret i8 -1
 }
 
 
