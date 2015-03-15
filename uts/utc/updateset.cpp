@@ -1,6 +1,6 @@
 
 /*
-  Copyright (c) 2014 Philipp Paulweber
+  Copyright (c) 2015 Philipp Paulweber
    
   This file is part of the 'libcasm-rt' project which is released under a NCSA
   open source software license. For more information, see the LICENSE.txt 
@@ -8,9 +8,10 @@
 */
 
 #include "gtest/gtest.h"
+#include "stdll/c/stdll.h"
 
-#include "stdll.h"
 #include "updateset.h"
+
 
 static casmrt_updateset* uset = 0;
 
@@ -49,14 +50,14 @@ TEST( updateset, insert2 )
 		ASSERT_EQ( 0, casmrt_updateset_insert( uset, loc, ~loc ) );
 	}
 
-	casmrt_updateset_dump( uset );
+	// casmrt_updateset_dump( uset );
 }
 
 TEST( updateset, merge )
 {
 	ASSERT_EQ( 0, casmrt_updateset_merge( uset ) );
 	
-	casmrt_updateset_dump( uset );
+	// casmrt_updateset_dump( uset );
 }
 
 TEST( updateset, destroy )
@@ -71,8 +72,8 @@ TEST( updateset, scenario_fork_insert_fork_insert_merge_insert_merge )
 	
 	ASSERT_NE( (void*)0, uset = casmrt_updateset_new( &mem, 50 ) );	
 
-	printf( "pre-fork\n" );
-	casmrt_updateset_dump( uset );
+	// printf( "pre-fork\n" );
+	// casmrt_updateset_dump( uset );
 
 	ASSERT_EQ( 0, casmrt_updateset_fork( uset ) );
 
@@ -82,8 +83,8 @@ TEST( updateset, scenario_fork_insert_fork_insert_merge_insert_merge )
 		ASSERT_EQ( 0, casmrt_updateset_insert( uset, loc, ~loc ) );
 	}
 
-	printf( "fork+insert\n" );
-	casmrt_updateset_dump( uset );
+	// printf( "fork+insert\n" );
+	// casmrt_updateset_dump( uset );
 
 	ASSERT_EQ( 0, casmrt_updateset_fork( uset ) );
 
@@ -93,13 +94,13 @@ TEST( updateset, scenario_fork_insert_fork_insert_merge_insert_merge )
 		ASSERT_EQ( 0, casmrt_updateset_insert( uset, loc, ~loc ) );
 	}
 
-	printf( "fork+insert, pre-merge\n" );
-	casmrt_updateset_dump( uset );
+	// printf( "fork+insert, pre-merge\n" );
+	// casmrt_updateset_dump( uset );
 
 	ASSERT_EQ( 0, casmrt_updateset_merge( uset ) );
 
-	printf( "post-merge\n" );
-	casmrt_updateset_dump( uset );
+	// printf( "post-merge\n" );
+	// casmrt_updateset_dump( uset );
 
 	for( c = 0; c < 2; c++ )
 	{
@@ -107,13 +108,13 @@ TEST( updateset, scenario_fork_insert_fork_insert_merge_insert_merge )
 		ASSERT_EQ( 0, casmrt_updateset_insert( uset, loc, ~loc ) );
 	}
 
-	printf( "insert, pre-merge\n" );
-	casmrt_updateset_dump( uset );
+	// printf( "insert, pre-merge\n" );
+	// casmrt_updateset_dump( uset );
 	
 	ASSERT_EQ( 0, casmrt_updateset_merge( uset ) );
 	
-	printf( "post-merge\n" );
-	casmrt_updateset_dump( uset );
+	// printf( "post-merge\n" );
+	// casmrt_updateset_dump( uset );
 
 	ASSERT_EQ( 0, casmrt_updateset_del( uset ) );
 }

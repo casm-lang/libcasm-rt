@@ -1,6 +1,6 @@
 
 # 
-# Copyright (c) 2014 Philipp Paulweber
+# Copyright (c) 2015 Philipp Paulweber
 # 
 # This file is part of the 'libcasm-rt' project which is released under a NCSA
 # open source software license. For more information, see the LICENSE.txt 
@@ -43,8 +43,8 @@ GTEST_FLAGS  = -Wall
 GTEST_FLAGS += -Wextra 
 GTEST_FLAGS += -I ${GTEST_DIR} 
 GTEST_FLAGS += -I $(GTEST_DIR)/include 
-GTEST_FLAGS += -I include 
-GTEST_FLAGS += -I $(STDLL_DIR)/include
+GTEST_FLAGS += -I c
+GTEST_FLAGS += -I ../
 
 GTEST_CPP  = $(wildcard uts/utc/*.cpp)
 GTEST_CPP += $(GTEST_DIR)/src/gtest-all.cc
