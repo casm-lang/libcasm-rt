@@ -238,11 +238,11 @@ error_uset_null:
 
 
 
-define private hidden i32 @.nop() #0
-{
-begin:  
-  ret i32 0
-}
+; define private hidden i32 @.nop() #0
+; {
+; begin:  
+;   ret i32 0
+; }
 
 attributes #0 = { alwaysinline }
 

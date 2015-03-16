@@ -280,6 +280,9 @@ begin:
   ret void
 }
 
+declare void @stdll.verbose.i64( i64 )
+declare void @stdll.verbose.i1( i1 )
+declare void @stdll.verbose.ln()
 
 define fastcc void @libcasm-rt.leq.Bool.Int.Int
 ( %libcasm-rt.Bool* %rt
@@ -300,8 +303,20 @@ begin:
   %au  = load i1* %pau
   %bu  = load i1* %pbu
   
-  %tv  = icmp sle i64 %av, %bv
-  %tu  = and  i1  %au, %bu
+  %ct =  or i1 %au, %bu
+  %c  = xor i1 %ct, true
+  
+  %tvt = icmp sle i64 %av, %bv
+  
+  ; call void @stdll.verbose.i64( i64 %av )
+  ; call void @stdll.verbose.i64( i64 %bv )
+  ; call void @stdll.verbose.i1( i1 %tvt )
+  ; call void @stdll.verbose.ln()
+  
+  %tv  = or i1 %tvt, %c
+  
+  %tut = xor i1 %au, %bu
+  %tu  = xor i1 %tut, true
   
   store i1 %tv, i1* %ptv
   store i1 %tu, i1* %ptu
@@ -358,8 +373,14 @@ begin:
   %au  = load i1* %pau
   %bu  = load i1* %pbu
   
-  %tv  = icmp sge i64 %av, %bv
-  %tu  = and  i1  %au, %bu
+  %ct =  or i1 %au, %bu
+  %c  = xor i1 %ct, true
+  
+  %tvt = icmp sge i64 %av, %bv
+  %tv  = or i1 %tvt, %c
+  
+  %tut = xor i1 %au, %bu
+  %tu  = xor i1 %tut, true
   
   store i1 %tv, i1* %ptv
   store i1 %tu, i1* %ptu
@@ -387,12 +408,20 @@ begin:
   %au  = load i1* %pau
   %bu  = load i1* %pbu
   
-  %tv  = icmp eq i64 %av, %bv
-  %tu  = and  i1  %au, %bu
+  store i1 true, i1* %ptu
   
-  store i1 %tv, i1* %ptv
-  store i1 %tu, i1* %ptu
+  %c = and i1 %au, %bu
+  br i1 %c, label %number_number, label %other
   
+number_number:
+  %tv_n = icmp eq i64 %av, %bv
+  store i1 %tv_n, i1* %ptv
+  ret void
+
+other:
+  %tvt  = xor i1 %au, %bu
+  %tv_o = xor i1 %tvt, true
+  store i1 %tv_o, i1* %ptv
   ret void
 }
 
@@ -416,12 +445,19 @@ begin:
   %au  = load i1* %pau
   %bu  = load i1* %pbu
   
-  %tv  = icmp ne i64 %av, %bv
-  %tu  = and  i1  %au, %bu
+  store i1 true, i1* %ptu
+    
+  %c = and i1 %au, %bu
+  br i1 %c, label %number_number, label %other
   
-  store i1 %tv, i1* %ptv
-  store i1 %tu, i1* %ptu
-  
+number_number:
+  %tv_n = icmp ne i64 %av, %bv
+  store i1 %tv_n, i1* %ptv
+  ret void
+
+other:
+  %tv_o = xor i1 %au, %bu
+  store i1 %tv_o, i1* %ptv
   ret void
 }
 

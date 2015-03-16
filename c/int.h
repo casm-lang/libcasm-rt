@@ -12,16 +12,18 @@
 
 #include "stdll/c/stdll.h"
 
+#include "bool.h"
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-	struct libcasmrt_Bool
-	{
-		u1 value;
-		u1 isdef;
-	};
+	// struct libcasmrt_Bool
+	// {
+	// 	u1 value;
+	// 	u1 isdef;
+	// };
 	
 	struct libcasmrt_Int
 	{
