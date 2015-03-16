@@ -96,6 +96,7 @@ begin:
   ret void
 }
 
+
 define fastcc void @libcasm-rt.not.Bool.Bool
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Bool* %ra
@@ -117,6 +118,7 @@ begin:
   
   ret void
 }
+
 
 define fastcc void @libcasm-rt.and.Bool.Bool.Bool
 ( %libcasm-rt.Bool* %rt
@@ -146,6 +148,7 @@ begin:
   ret void
 }
 
+
 define fastcc void @libcasm-rt.or.Bool.Bool.Bool
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Bool* %ra
@@ -173,6 +176,7 @@ begin:
   
   ret void
 }
+
 
 define fastcc void @libcasm-rt.xor.Bool.Bool.Bool
 ( %libcasm-rt.Bool* %rt
@@ -202,6 +206,7 @@ begin:
   ret void
 }
 
+
 define fastcc void @libcasm-rt.equ.Bool.Bool.Bool
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Bool* %ra
@@ -209,9 +214,35 @@ define fastcc void @libcasm-rt.equ.Bool.Bool.Bool
 ) #0
 {
 begin:
+  %ptv = getelementptr %libcasm-rt.Bool* %rt, i32 0, i32 0
+  %pav = getelementptr %libcasm-rt.Bool*  %ra, i32 0, i32 0
+  %pbv = getelementptr %libcasm-rt.Bool*  %rb, i32 0, i32 0
+  %ptu = getelementptr %libcasm-rt.Bool* %rt, i32 0, i32 1
+  %pau = getelementptr %libcasm-rt.Bool*  %ra, i32 0, i32 1
+  %pbu = getelementptr %libcasm-rt.Bool*  %rb, i32 0, i32 1
   
+  %av  = load i1* %pav
+  %bv  = load i1* %pbv
+  %au  = load i1* %pau
+  %bu  = load i1* %pbu
+  
+  store i1 true, i1* %ptu
+  
+  %c = and i1 %au, %bu
+  br i1 %c, label %number_number, label %other
+  
+number_number:
+  %tv_n = icmp eq i1 %av, %bv
+  store i1 %tv_n, i1* %ptv
+  ret void
+
+other:
+  %tvt  = xor i1 %au, %bu
+  %tv_o = xor i1 %tvt, true
+  store i1 %tv_o, i1* %ptv
   ret void
 }
+
 
 define fastcc void @libcasm-rt.neq.Bool.Bool.Bool
 ( %libcasm-rt.Bool* %rt
@@ -220,7 +251,31 @@ define fastcc void @libcasm-rt.neq.Bool.Bool.Bool
 ) #0
 {
 begin:
+  %ptv = getelementptr %libcasm-rt.Bool* %rt, i32 0, i32 0
+  %pav = getelementptr %libcasm-rt.Bool*  %ra, i32 0, i32 0
+  %pbv = getelementptr %libcasm-rt.Bool*  %rb, i32 0, i32 0
+  %ptu = getelementptr %libcasm-rt.Bool* %rt, i32 0, i32 1
+  %pau = getelementptr %libcasm-rt.Bool*  %ra, i32 0, i32 1
+  %pbu = getelementptr %libcasm-rt.Bool*  %rb, i32 0, i32 1
   
+  %av  = load i1* %pav
+  %bv  = load i1* %pbv
+  %au  = load i1* %pau
+  %bu  = load i1* %pbu
+  
+  store i1 true, i1* %ptu
+    
+  %c = and i1 %au, %bu
+  br i1 %c, label %number_number, label %other
+  
+number_number:
+  %tv_n = icmp ne i1 %av, %bv
+  store i1 %tv_n, i1* %ptv
+  ret void
+
+other:
+  %tv_o = xor i1 %au, %bu
+  store i1 %tv_o, i1* %ptv
   ret void
 }
 

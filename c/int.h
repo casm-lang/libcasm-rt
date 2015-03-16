@@ -18,19 +18,13 @@
 extern "C"
 {
 #endif
-
-	// struct libcasmrt_Bool
-	// {
-	// 	u1 value;
-	// 	u1 isdef;
-	// };
 	
 	struct libcasmrt_Int
 	{
 		i64 value;
-		u1  isdef;
+		i1  isdef;
 	};
-
+	
 	void libcasmrt_clr_Int( libcasmrt_Int* rt );	
 	void libcasmrt_set_Int_i64( libcasmrt_Int* rt, i64 imm );
 	void libcasmrt_mov_Int_Int( libcasmrt_Int* rt, libcasmrt_Int* ra );

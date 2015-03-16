@@ -37,6 +37,28 @@ TEST( Int, set )
 	ASSERT_EQ( t.value, 0xc0de );
 }
 
+TEST( Int, mov )
+{	
+	static libcasmrt_Int t;
+	static libcasmrt_Int a;
+
+	libcasmrt_clr_Int( &t );
+	libcasmrt_clr_Int( &a );
+	
+	ASSERT_NE( t.isdef, true );
+	ASSERT_NE( t.value, 0xc0de );
+	ASSERT_NE( a.isdef, true );
+	ASSERT_NE( a.value, 0xc0de );
+    
+	libcasmrt_set_Int_i64( &a, 0xc0de );
+	libcasmrt_mov_Int_Int( &t, &a );
+	
+	ASSERT_EQ( t.isdef, true );
+	ASSERT_EQ( t.value, 0xc0de );
+	ASSERT_EQ( a.isdef, true );
+	ASSERT_EQ( a.value, 0xc0de );
+}
+
 #define TEST_LIBCASMRT_INT( CASE, RET, OPSTR, TV, TD, LV, LD, RV, RD )	\
 	TEST( Int, OPSTR##_##case##_##CASE )								\
 	{																	\
@@ -93,48 +115,48 @@ TEST_LIBCASMRT_INT_C( Bool, lth, <  )
 TEST_LIBCASMRT_INT_C( Bool, gth, >  )
 
 TEST_LIBCASMRT_INT_D( Bool, leq, <= )
-TEST_LIBCASMRT_INT( f0, Bool, leq, true,  true,   4, false,  7, false )
-TEST_LIBCASMRT_INT( f1, Bool, leq, true,  true,  -4, false,  7, false )
-TEST_LIBCASMRT_INT( f2, Bool, leq, true,  true,   4, false, -7, false )
-TEST_LIBCASMRT_INT( f3, Bool, leq, true,  false,  4, false,  7, true  )
-TEST_LIBCASMRT_INT( f4, Bool, leq, true,  false, -4, false,  7, true  )
-TEST_LIBCASMRT_INT( f5, Bool, leq, false, false,  4, false, -7, true  )
-TEST_LIBCASMRT_INT( f6, Bool, leq, true , false,  4, true,   7, false )
-TEST_LIBCASMRT_INT( f7, Bool, leq, true,  false, -4, true,   7, false )
-TEST_LIBCASMRT_INT( f8, Bool, leq, false, false,  4, true,  -7, false )
+TEST_LIBCASMRT_INT( ff0, Bool, leq, true,  true,   4, false,  7, false )
+TEST_LIBCASMRT_INT( ff1, Bool, leq, true,  true,  -4, false,  7, false )
+TEST_LIBCASMRT_INT( ff2, Bool, leq, true,  true,   4, false, -7, false )
+TEST_LIBCASMRT_INT( ft0, Bool, leq, true,  false,  4, false,  7, true  )
+TEST_LIBCASMRT_INT( ft1, Bool, leq, true,  false, -4, false,  7, true  )
+TEST_LIBCASMRT_INT( ft2, Bool, leq, false, false,  4, false, -7, true  )
+TEST_LIBCASMRT_INT( tf0, Bool, leq, true , false,  4, true,   7, false )
+TEST_LIBCASMRT_INT( tf1, Bool, leq, true,  false, -4, true,   7, false )
+TEST_LIBCASMRT_INT( tf2, Bool, leq, false, false,  4, true,  -7, false )
 
 TEST_LIBCASMRT_INT_D( Bool, geq, >= )
-TEST_LIBCASMRT_INT( f0, Bool, geq, true,  true,   4, false,  7, false )
-TEST_LIBCASMRT_INT( f1, Bool, geq, true,  true,  -4, false,  7, false )
-TEST_LIBCASMRT_INT( f2, Bool, geq, true,  true,   4, false, -7, false )
-TEST_LIBCASMRT_INT( f3, Bool, geq, false, false,  4, false,  7, true  )
-TEST_LIBCASMRT_INT( f4, Bool, geq, false, false, -4, false,  7, true  )
-TEST_LIBCASMRT_INT( f5, Bool, geq, true,  false,  4, false, -7, true  )
-TEST_LIBCASMRT_INT( f6, Bool, geq, false, false,  4, true,   7, false )
-TEST_LIBCASMRT_INT( f7, Bool, geq, false, false, -4, true,   7, false )
-TEST_LIBCASMRT_INT( f8, Bool, geq, true,  false,  4, true,  -7, false )
+TEST_LIBCASMRT_INT( ff0, Bool, geq, true,  true,   4, false,  7, false )
+TEST_LIBCASMRT_INT( ff1, Bool, geq, true,  true,  -4, false,  7, false )
+TEST_LIBCASMRT_INT( ff2, Bool, geq, true,  true,   4, false, -7, false )
+TEST_LIBCASMRT_INT( ft0, Bool, geq, false, false,  4, false,  7, true  )
+TEST_LIBCASMRT_INT( ft1, Bool, geq, false, false, -4, false,  7, true  )
+TEST_LIBCASMRT_INT( ft2, Bool, geq, true,  false,  4, false, -7, true  )
+TEST_LIBCASMRT_INT( tf0, Bool, geq, false, false,  4, true,   7, false )
+TEST_LIBCASMRT_INT( tf1, Bool, geq, false, false, -4, true,   7, false )
+TEST_LIBCASMRT_INT( tf2, Bool, geq, true,  false,  4, true,  -7, false )
 
 TEST_LIBCASMRT_INT_D( Bool, equ, == )
-TEST_LIBCASMRT_INT( f0, Bool, equ, true,  true,   4, false,  7, false )
-TEST_LIBCASMRT_INT( f1, Bool, equ, true,  true,   7, false,  7, false )
-TEST_LIBCASMRT_INT( f2, Bool, equ, true,  true,  -7, false, -7, false )
-TEST_LIBCASMRT_INT( f3, Bool, equ, false, true,   4, false,  7, true  )
-TEST_LIBCASMRT_INT( f4, Bool, equ, false, true,   7, false,  7, true  )
-TEST_LIBCASMRT_INT( f5, Bool, equ, false, true,  -7, false, -7, true  )
-TEST_LIBCASMRT_INT( f6, Bool, equ, false, true,   4, true,   7, false )
-TEST_LIBCASMRT_INT( f7, Bool, equ, false, true,   7, true,   7, false )
-TEST_LIBCASMRT_INT( f8, Bool, equ, false, true,  -7, true,  -7, false )
+TEST_LIBCASMRT_INT( ff0, Bool, equ, true,  true,   4, false,  7, false )
+TEST_LIBCASMRT_INT( ff1, Bool, equ, true,  true,   7, false,  7, false )
+TEST_LIBCASMRT_INT( ff2, Bool, equ, true,  true,  -7, false, -7, false )
+TEST_LIBCASMRT_INT( ft0, Bool, equ, false, true,   4, false,  7, true  )
+TEST_LIBCASMRT_INT( ft1, Bool, equ, false, true,   7, false,  7, true  )
+TEST_LIBCASMRT_INT( ft2, Bool, equ, false, true,  -7, false, -7, true  )
+TEST_LIBCASMRT_INT( tf0, Bool, equ, false, true,   4, true,   7, false )
+TEST_LIBCASMRT_INT( tf1, Bool, equ, false, true,   7, true,   7, false )
+TEST_LIBCASMRT_INT( tf2, Bool, equ, false, true,  -7, true,  -7, false )
 
 TEST_LIBCASMRT_INT_D( Bool, neq, != )
-TEST_LIBCASMRT_INT( f0, Bool, neq, false, true,   4, false,  7, false )
-TEST_LIBCASMRT_INT( f1, Bool, neq, false, true,   7, false,  7, false )
-TEST_LIBCASMRT_INT( f2, Bool, neq, false, true,  -7, false, -7, false )
-TEST_LIBCASMRT_INT( f3, Bool, neq, true,  true,   4, false,  7, true  )
-TEST_LIBCASMRT_INT( f4, Bool, neq, true,  true,   7, false,  7, true  )
-TEST_LIBCASMRT_INT( f5, Bool, neq, true,  true,  -7, false, -7, true  )
-TEST_LIBCASMRT_INT( f6, Bool, neq, true,  true,   4, true,   7, false )
-TEST_LIBCASMRT_INT( f7, Bool, neq, true,  true,   7, true,   7, false )
-TEST_LIBCASMRT_INT( f8, Bool, neq, true,  true,  -7, true,  -7, false )
+TEST_LIBCASMRT_INT( ff0, Bool, neq, false, true,   4, false,  7, false )
+TEST_LIBCASMRT_INT( ff1, Bool, neq, false, true,   7, false,  7, false )
+TEST_LIBCASMRT_INT( ff2, Bool, neq, false, true,  -7, false, -7, false )
+TEST_LIBCASMRT_INT( ft0, Bool, neq, true,  true,   4, false,  7, true  )
+TEST_LIBCASMRT_INT( ft1, Bool, neq, true,  true,   7, false,  7, true  )
+TEST_LIBCASMRT_INT( ft2, Bool, neq, true,  true,  -7, false, -7, true  )
+TEST_LIBCASMRT_INT( tf0, Bool, neq, true,  true,   4, true,   7, false )
+TEST_LIBCASMRT_INT( tf1, Bool, neq, true,  true,   7, true,   7, false )
+TEST_LIBCASMRT_INT( tf2, Bool, neq, true,  true,  -7, true,  -7, false )
 
 
 /*
