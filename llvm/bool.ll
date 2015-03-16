@@ -82,16 +82,16 @@ define fastcc void @libcasm-rt.mov.Bool.Bool
 ) #0
 {
 begin:
-  %pt = bitcast %libcasm-rt.Bool* %rt to i8*
-  %pa = bitcast %libcasm-rt.Bool* %ra to i8*
+  %ptv = getelementptr %libcasm-rt.Bool* %rt, i32 0, i32 0
+  %pav = getelementptr %libcasm-rt.Bool* %ra, i32 0, i32 0
+  %ptu = getelementptr %libcasm-rt.Bool* %rt, i32 0, i32 1
+  %pau = getelementptr %libcasm-rt.Bool* %ra, i32 0, i32 1
   
-  call void @llvm.memcpy.p0i8.p0i8.i64
-  ( i8* %pt
-  , i8* %pa
-  , i64 ptrtoint( %libcasm-rt.Bool* getelementptr ( %libcasm-rt.Bool* null, i32 1 ) to i64 )
-  , i32 1
-  , i1 false
-  )
+  %av  = load i1* %pav
+  %au  = load i1* %pau
+  
+  store i1 %av, i1* %ptv
+  store i1 %au, i1* %ptu
   
   ret void
 }
