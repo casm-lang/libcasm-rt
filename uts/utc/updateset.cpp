@@ -8,9 +8,7 @@
 */
 
 #include "gtest/gtest.h"
-#include "stdll/c/stdll.h"
-
-#include "updateset.h"
+#include "casm-rt.h"
 
 
 static casmrt_updateset* uset = 0;

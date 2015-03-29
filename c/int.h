@@ -10,9 +10,7 @@
 #ifndef _LIB_CASM_RT_INT_H_
 #define _LIB_CASM_RT_INT_H_
 
-#include "stdll/c/stdll.h"
-
-#include "bool.h"
+#include "casm-rt.h"
 
 #ifdef __cplusplus
 extern "C"

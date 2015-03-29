@@ -10,38 +10,35 @@
 #ifndef _LIB_CASM_RT_UPDATESET_H_
 #define _LIB_CASM_RT_UPDATESET_H_
 
-#include "stdll/c/stdll.h"
-#include "stdhl/c/type.h"
+#include "casm-rt.h"
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-struct casmrt_updateset;
+	struct casmrt_updateset;
 
-casmrt_updateset* casmrt_updateset_new( stdll_mem* mem, uint32_t size );
+	casmrt_updateset* casmrt_updateset_new( stdll_mem* mem, uint32_t size );
 
-u8 casmrt_updateset_del( casmrt_updateset* uset );
+	u8 casmrt_updateset_del( casmrt_updateset* uset );
 
-u8 casmrt_updateset_insert( casmrt_updateset* uset, uint64_t location, uint64_t value );
+	u8 casmrt_updateset_insert( casmrt_updateset* uset, uint64_t location, uint64_t value );
 
-u8 casmrt_updateset_fork( casmrt_updateset* uset );
+	u8 casmrt_updateset_fork( casmrt_updateset* uset );
 
-u8 casmrt_updateset_merge( casmrt_updateset* uset );
+	u8 casmrt_updateset_merge( casmrt_updateset* uset );
 
-u8 casmrt_updateset_dump( casmrt_updateset* uset );
-
-
-struct casmrt_updateset_iterator;
-
-casmrt_updateset_iterator* casmrt_updateset_get_iterator( casmrt_updateset* uset );
-
-u8 casmrt_updateset_iterator_next( casmrt_updateset_iterator* iter, uint64_t* location, uint64_t* value );
+	u8 casmrt_updateset_dump( casmrt_updateset* uset );
 
 
+	struct casmrt_updateset_iterator;
+	
+	casmrt_updateset_iterator* casmrt_updateset_get_iterator( casmrt_updateset* uset );
 
+	u8 casmrt_updateset_iterator_next( casmrt_updateset_iterator* iter, uint64_t* location, uint64_t* value );
 
+	
 #ifdef __cplusplus   
 }
 #endif

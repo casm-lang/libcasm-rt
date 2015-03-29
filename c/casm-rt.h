@@ -7,19 +7,29 @@
   file in the project root directory.
 */
 
-#include "gtest/gtest.h"
-#include "casm-rt.h"
+#ifndef _LIB_CASM_RT_H_
+#define _LIB_CASM_RT_H_
 
+#include "stdll/c/stdll.h"
+#include "stdhl/c/type.h"
 
-TEST( basic, true_witness  )
+#include "bool.h"
+#include "int.h"
+
+#include "updateset.h"
+
+#ifdef __cplusplus
+extern "C"
 {
-    ASSERT_EQ( 0, 0 );
-}
+#endif
+	
+	
 
-TEST( basic, false_witness  )
-{
-    ASSERT_NE( 0, 1 );
+#ifdef __cplusplus   
 }
+#endif
+
+#endif /* _LIB_CASM_RT_H_ */
 
 /*
   Local variables:

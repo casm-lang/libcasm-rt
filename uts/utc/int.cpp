@@ -8,9 +8,7 @@
 */
 
 #include "gtest/gtest.h"
-#include "stdll/c/stdll.h"
-
-#include "int.h"
+#include "casm-rt.h"
 
 
 TEST( Int, clr )
