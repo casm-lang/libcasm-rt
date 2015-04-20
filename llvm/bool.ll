@@ -38,16 +38,13 @@
                                 @libcasm-rt.neq.Bool.Bool.Bool
 
 
-declare void @llvm.memcpy.p0i8.p0i8.i64( i8*, i8*, i64, i32, i1 )
-
-
 %libcasm-rt.Bool = type
 <{ i1  ; 0 value
  , i1  ; 1 isdef
  }>
 
 
-define fastcc void @libcasm-rt.clr.Bool
+define void @libcasm-rt.clr.Bool
 ( %libcasm-rt.Bool* %rt
 ) #0
 {
@@ -60,7 +57,7 @@ begin:
 }
 
 
-define fastcc void @libcasm-rt.set.Bool.i1
+define void @libcasm-rt.set.Bool.i1
 ( %libcasm-rt.Bool* %rt
 , i1 %imm
 ) #0
@@ -76,7 +73,7 @@ begin:
 }
 
 
-define fastcc void @libcasm-rt.mov.Bool.Bool
+define void @libcasm-rt.mov.Bool.Bool
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Bool* %ra
 ) #0
@@ -97,7 +94,7 @@ begin:
 }
 
 
-define fastcc void @libcasm-rt.not.Bool.Bool
+define void @libcasm-rt.not.Bool.Bool
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Bool* %ra
 ) #0
@@ -120,7 +117,7 @@ begin:
 }
 
 
-define fastcc void @libcasm-rt.and.Bool.Bool.Bool
+define void @libcasm-rt.and.Bool.Bool.Bool
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Bool* %ra
 , %libcasm-rt.Bool* %rb
@@ -149,7 +146,7 @@ begin:
 }
 
 
-define fastcc void @libcasm-rt.or.Bool.Bool.Bool
+define void @libcasm-rt.or.Bool.Bool.Bool
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Bool* %ra
 , %libcasm-rt.Bool* %rb
@@ -178,7 +175,7 @@ begin:
 }
 
 
-define fastcc void @libcasm-rt.xor.Bool.Bool.Bool
+define void @libcasm-rt.xor.Bool.Bool.Bool
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Bool* %ra
 , %libcasm-rt.Bool* %rb
@@ -207,7 +204,7 @@ begin:
 }
 
 
-define fastcc void @libcasm-rt.equ.Bool.Bool.Bool
+define void @libcasm-rt.equ.Bool.Bool.Bool
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Bool* %ra
 , %libcasm-rt.Bool* %rb
@@ -244,7 +241,7 @@ other:
 }
 
 
-define fastcc void @libcasm-rt.neq.Bool.Bool.Bool
+define void @libcasm-rt.neq.Bool.Bool.Bool
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Bool* %ra
 , %libcasm-rt.Bool* %rb

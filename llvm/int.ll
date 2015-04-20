@@ -41,10 +41,7 @@
                               @libcasm-rt.neq.Bool.Int.Int
 
 
-declare void @llvm.memcpy.p0i8.p0i8.i64( i8*, i8*, i64, i32, i1 )
-
-
-; import Bool component
+; ; import Bool component
 %libcasm-rt.Bool = type ; opaque
 <{ i1  ; 0 value
  , i1  ; 1 isdef
@@ -57,7 +54,7 @@ declare void @llvm.memcpy.p0i8.p0i8.i64( i8*, i8*, i64, i32, i1 )
  }>
 
 
-define fastcc void @libcasm-rt.clr.Int
+define void @libcasm-rt.clr.Int
 ( %libcasm-rt.Int* %rt
 ) #0
 {
@@ -70,7 +67,7 @@ begin:
 }
 
 
-define fastcc void @libcasm-rt.set.Int.i64
+define void @libcasm-rt.set.Int.i64
 ( %libcasm-rt.Int* %rt
 , i64 %imm
 ) #0
@@ -86,7 +83,7 @@ begin:
 }
 
 
-define fastcc void @libcasm-rt.mov.Int.Int
+define void @libcasm-rt.mov.Int.Int
 ( %libcasm-rt.Int* %rt
 , %libcasm-rt.Int* %ra
 ) #0
@@ -104,24 +101,10 @@ begin:
   store i1  %au, i1*  %ptu
   
   ret void
-
-; begin:
-;   %pt = bitcast %libcasm-rt.Int* %rt to i8*
-;   %pa = bitcast %libcasm-rt.Int* %ra to i8*
-  
-;   call void @llvm.memcpy.p0i8.p0i8.i64
-;   ( i8* %pt
-;   , i8* %pa
-;   , i64 ptrtoint( %libcasm-rt.Int* getelementptr ( %libcasm-rt.Int* null, i32 1 ) to i64 )
-;   , i32 1
-;   , i1 false
-;   )
-  
-;   ret void
 }
 
 
-define fastcc void @libcasm-rt.add.Int.Int.Int
+define void @libcasm-rt.add.Int.Int.Int
 ( %libcasm-rt.Int* %rt
 , %libcasm-rt.Int* %ra
 , %libcasm-rt.Int* %rb
@@ -150,7 +133,7 @@ begin:
 }
 
 
-define fastcc void @libcasm-rt.sub.Int.Int.Int
+define void @libcasm-rt.sub.Int.Int.Int
 ( %libcasm-rt.Int* %rt
 , %libcasm-rt.Int* %ra
 , %libcasm-rt.Int* %rb
@@ -179,7 +162,7 @@ begin:
 }
 
 
-define fastcc void @libcasm-rt.mul.Int.Int.Int
+define void @libcasm-rt.mul.Int.Int.Int
 ( %libcasm-rt.Int* %rt
 , %libcasm-rt.Int* %ra
 , %libcasm-rt.Int* %rb
@@ -208,7 +191,7 @@ begin:
 }
 
 
-define fastcc void @libcasm-rt.div.Int.Int.Int
+define void @libcasm-rt.div.Int.Int.Int
 ( %libcasm-rt.Int* %rt
 , %libcasm-rt.Int* %ra
 , %libcasm-rt.Int* %rb
@@ -237,7 +220,7 @@ begin:
 }
 
 
-define fastcc void @libcasm-rt.rem.Int.Int.Int
+define void @libcasm-rt.rem.Int.Int.Int
 ( %libcasm-rt.Int* %rt
 , %libcasm-rt.Int* %ra
 , %libcasm-rt.Int* %rb
@@ -266,7 +249,7 @@ begin:
 }
 
 
-define fastcc void @libcasm-rt.lth.Bool.Int.Int
+define void @libcasm-rt.lth.Bool.Int.Int
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Int* %ra
 , %libcasm-rt.Int* %rb
@@ -294,11 +277,11 @@ begin:
   ret void
 }
 
-declare void @stdll.verbose.i64( i64 )
-declare void @stdll.verbose.i1( i1 )
-declare void @stdll.verbose.ln()
+; declare void @stdll.verbose.i64( i64 )
+; declare void @stdll.verbose.i1( i1 )
+; declare void @stdll.verbose.ln()
 
-define fastcc void @libcasm-rt.leq.Bool.Int.Int
+define void @libcasm-rt.leq.Bool.Int.Int
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Int* %ra
 , %libcasm-rt.Int* %rb
@@ -339,7 +322,7 @@ begin:
 }
 
 
-define fastcc void @libcasm-rt.gth.Bool.Int.Int
+define void @libcasm-rt.gth.Bool.Int.Int
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Int* %ra
 , %libcasm-rt.Int* %rb
@@ -368,7 +351,7 @@ begin:
 }
 
 
-define fastcc void @libcasm-rt.geq.Bool.Int.Int
+define void @libcasm-rt.geq.Bool.Int.Int
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Int* %ra
 , %libcasm-rt.Int* %rb
@@ -403,7 +386,7 @@ begin:
 }
 
 
-define fastcc void @libcasm-rt.equ.Bool.Int.Int
+define void @libcasm-rt.equ.Bool.Int.Int
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Int* %ra
 , %libcasm-rt.Int* %rb
@@ -440,7 +423,7 @@ other:
 }
 
 
-define fastcc void @libcasm-rt.neq.Bool.Int.Int
+define void @libcasm-rt.neq.Bool.Int.Int
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Int* %ra
 , %libcasm-rt.Int* %rb
