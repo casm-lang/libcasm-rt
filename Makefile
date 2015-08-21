@@ -59,8 +59,12 @@ llvm: casm-rt.bc
 casm-rt.bc:
 	llvm-link llvm/*.ll > $@
 
+stdll: $(STDLL_DIR)/stdll.bc
 
-test: $(GTEST_OBJ) $(GTEST_OBJ)/gtest
+$(STDLL_DIR)/stdll.bc:
+	$(MAKE) llvm -C $(STDLL_DIR)
+
+test: stdll llvm $(GTEST_OBJ) $(GTEST_OBJ)/gtest
 	@echo "===--- UNIT TEST SUITE ---==="
 	./$(GTEST_OBJ)/gtest
 
@@ -79,7 +83,8 @@ GTEST_OBJS = $(addprefix $(GTEST_OBJ)/,$(notdir \
 		$(patsubst %.cc,%.ll,\
 		$(patsubst %.cpp,%.ll,$(GTEST_CPP)))))
 
-GTEST_LL  = llvm/*.ll
+GTEST_LL  = casm-rt.bc
+#llvm/*.ll
 GTEST_LL += $(STDLL_DIR)/llvm/*.ll
 
 $(GTEST_OBJ):
