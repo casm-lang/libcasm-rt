@@ -133,7 +133,7 @@ TEST_LIBCASMRT_INT_C( Int,  add, + )
 TEST_LIBCASMRT_INT_C( Int,  sub, - )
 TEST_LIBCASMRT_INT_C( Int,  mul, * )
 TEST_LIBCASMRT_INT_C( Int,  div, / )
-TEST_LIBCASMRT_INT_C( Int,  rem, % )
+TEST_LIBCASMRT_INT_C( Int,  mod, % )
 TEST_LIBCASMRT_INT_C( Bool, lth, <  )
 TEST_LIBCASMRT_INT_C( Bool, gth, >  )
 

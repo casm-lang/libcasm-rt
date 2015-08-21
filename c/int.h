@@ -56,14 +56,15 @@ extern "C"
 	void libcasmrt_sub_Int_Int_Int( libcasmrt_Int* rt, libcasmrt_Int* ra, libcasmrt_Int* rb );
 	void libcasmrt_mul_Int_Int_Int( libcasmrt_Int* rt, libcasmrt_Int* ra, libcasmrt_Int* rb );
 	void libcasmrt_div_Int_Int_Int( libcasmrt_Int* rt, libcasmrt_Int* ra, libcasmrt_Int* rb );
-	void libcasmrt_rem_Int_Int_Int( libcasmrt_Int* rt, libcasmrt_Int* ra, libcasmrt_Int* rb );
+	void libcasmrt_mod_Int_Int_Int( libcasmrt_Int* rt, libcasmrt_Int* ra, libcasmrt_Int* rb );
+	
+	void libcasmrt_equ_Bool_Int_Int( libcasmrt_Bool* rt, libcasmrt_Int* ra, libcasmrt_Int* rb );
+	void libcasmrt_neq_Bool_Int_Int( libcasmrt_Bool* rt, libcasmrt_Int* ra, libcasmrt_Int* rb );
 
 	void libcasmrt_lth_Bool_Int_Int( libcasmrt_Bool* rt, libcasmrt_Int* ra, libcasmrt_Int* rb );
 	void libcasmrt_leq_Bool_Int_Int( libcasmrt_Bool* rt, libcasmrt_Int* ra, libcasmrt_Int* rb );
 	void libcasmrt_gth_Bool_Int_Int( libcasmrt_Bool* rt, libcasmrt_Int* ra, libcasmrt_Int* rb );
 	void libcasmrt_geq_Bool_Int_Int( libcasmrt_Bool* rt, libcasmrt_Int* ra, libcasmrt_Int* rb );
-	void libcasmrt_equ_Bool_Int_Int( libcasmrt_Bool* rt, libcasmrt_Int* ra, libcasmrt_Int* rb );
-	void libcasmrt_neq_Bool_Int_Int( libcasmrt_Bool* rt, libcasmrt_Int* ra, libcasmrt_Int* rb );
 	
 
 #ifdef __cplusplus   

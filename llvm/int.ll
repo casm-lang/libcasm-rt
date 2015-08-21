@@ -50,8 +50,8 @@
                               @libcasm-rt.mul.Int.Int.Int
 @libcasmrt_div_Int_Int_Int  = alias void( %libcasm-rt.Int*, %libcasm-rt.Int*, %libcasm-rt.Int* )*
                               @libcasm-rt.div.Int.Int.Int
-@libcasmrt_rem_Int_Int_Int  = alias void( %libcasm-rt.Int*, %libcasm-rt.Int*, %libcasm-rt.Int* )*
-                              @libcasm-rt.rem.Int.Int.Int
+@libcasmrt_mod_Int_Int_Int  = alias void( %libcasm-rt.Int*, %libcasm-rt.Int*, %libcasm-rt.Int* )*
+                              @libcasm-rt.mod.Int.Int.Int
 @libcasmrt_lth_Bool_Int_Int = alias void( %libcasm-rt.Bool*, %libcasm-rt.Int*, %libcasm-rt.Int* )*
                               @libcasm-rt.lth.Bool.Int.Int
 @libcasmrt_leq_Bool_Int_Int = alias void( %libcasm-rt.Bool*, %libcasm-rt.Int*, %libcasm-rt.Int* )*
@@ -245,7 +245,7 @@ begin:
 }
 
 
-define void @libcasm-rt.rem.Int.Int.Int
+define void @libcasm-rt.mod.Int.Int.Int
 ( %libcasm-rt.Int* %rt
 , %libcasm-rt.Int* %ra
 , %libcasm-rt.Int* %rb
