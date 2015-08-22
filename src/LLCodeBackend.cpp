@@ -88,38 +88,33 @@ const char* getType( Value* value )
 	}
 }
 
-// void LLCodeBackend::emit_constant( FILE* f, Value* ir )
-// {
-// 	// const char* ta = getType( ir );
-// 	// const char* ra = getRegister( ir->getLHS() );
-	
-// 	// const char* tb = "Int";
-//     // const char* rb = getRegister( ir->getRHS() );
-	
-// 	// const char* tt = "Int";
-// 	// const char* rt = getRegister( ir );
-	
-	
-// 	// fprintf
-// 	// ( f
-// 	// , "call void @libcasm-rt%s.%s.%s.%s"
-// 	//   "( %%libcasm-rt.%s* %s, %%libcasm-rt.%s* %s, %%libcasm-rt.%s* %s )\n"
-// 	// , ir->getName()
-// 	// , tt, ta, tb, tt, rt, ta, ra, tb, rb
-// 	// );
-
-// 	// assert(0);
-// }
-
-static void getIndent( std::stringstream& indent, Instruction* ir )
+static void getIndent( std::stringstream& indent, ExecutionSemanticsBlock* ir )
 {
-	assert( Value::isa< Instruction >( ir ) );
+	assert( Value::isa< ExecutionSemanticsBlock >( ir ) );
+	
 	indent << " ";
-	for( u32 i = 0; i < ir->getStatement()->getScope()->getPseudoState(); i++ )
+	for( u32 i = 0; i < ir->getPseudoState(); i++ )
 	{
 		indent << " ";
 	}
 }
+
+static void getIndent( std::stringstream& indent, Statement* ir )
+{
+	assert( Value::isa< Statement >( ir ) );
+	
+	indent << " ";
+	getIndent( indent, ((ExecutionSemanticsBlock*)ir->getScope()) );
+}
+
+static void getIndent( std::stringstream& indent, Instruction* ir )
+{
+	assert( Value::isa< Instruction >( ir ) );
+	
+	indent << " ";
+	getIndent( indent, ((Statement*)ir->getStatement()) );
+}
+
 
 void LLCodeBackend::emit_instruction( FILE* f, Instruction* ir, const char* alias = 0 )
 {
@@ -175,56 +170,97 @@ void LLCodeBackend::emit_instruction( FILE* f, Instruction* ir, const char* alia
 }
 
 
-void LLCodeBackend::emit( FILE* f, BooleanConstant* ir )
+void LLCodeBackend::emit_scope( FILE* f, ExecutionSemanticsBlock* ir )
+{
+	std::stringstream indent;
+	getIndent( indent, ir );
+	
+	const char* kind = ir->isParallel() ? "par" : "seq";
+	u64 ps = ir->getPseudoState();
+	
+	fprintf( f, "%s; %s @ %lu\n", indent.str().c_str(), kind, ps );
+	
+	Backend::emit( f, ir );
+	
+	fprintf( f, "%s; end%s @ %lu\n", indent.str().c_str(), kind, ps );	
+}
+
+void LLCodeBackend::emit_statement( FILE* f, Statement* ir )
+{
+	std::stringstream indent;
+	getIndent( indent, ir );
+	
+	fprintf( f, "%s; stmt\n", indent.str().c_str() );	
+	Backend::emit( f, ir );	
+	fprintf( f, "%s; endstmt\n", indent.str().c_str() );
+}
+
+void LLCodeBackend::emit_constant( FILE* f, Value* ir, const char* ty, const char* val, u1 def )
 {
     fprintf
 	( f 
-	, "; %s = private unnamed_addr constant %%libcasm-rt.Bool <{ i1 %u, i1 true }>\n"
+	, "; %s = private unnamed_addr constant %%libcasm-rt.%s <{ %s %s, i1 %u }>\n"
 	, getRegister( ir )
-	, ir->getValue()
+	, getType( ir )
+	, ty
+	, val
+	, def
 	);
+}
+
+void LLCodeBackend::emit( FILE* f, BooleanConstant* ir )
+{
+	emit_constant( f, ir, "i1", to_string( ir->getValue() ).c_str(), ir->isDefined() );
+	
+    // fprintf
+	// ( f 
+	// , "; %s = private unnamed_addr constant %%libcasm-rt.Bool <{ i1 %u, i1 %u }>\n"
+	// , getRegister( ir )
+	// , ir->getValue()
+	// , ir->isDefined()
+	// );
 }
 
 void LLCodeBackend::emit( FILE* f, IntegerConstant* ir )
 {
-    fprintf
-	( f 
-	, "; %s = private unnamed_addr constant %%libcasm-rt.Int <{ i64 %li, i1 true }>\n"
-	, getRegister( ir )
-	, ir->getValue()
-	);
+	emit_constant( f, ir, "i64", to_string( ir->getValue() ).c_str(), ir->isDefined() );
+    // fprintf
+	// ( f 
+	// , "; %s = private unnamed_addr constant %%libcasm-rt.Int <{ i64 %li, i1 %u }>\n"
+	// , getRegister( ir )
+	// , ir->getValue()
+	// , ir->isDefined()
+	// );
 }
 
 void LLCodeBackend::emit( FILE* f, Function* ir ) { fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ ); }
 void LLCodeBackend::emit( FILE* f, Derived* ir ) { fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ ); }
 void LLCodeBackend::emit( FILE* f, Rule* ir )
 {
-	fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ );
+	fprintf( f, "define void @.%s()\n", ir->getName() );
+	fprintf( f, "{\n" );
 	
 	register_count = 0;	
 	emit( f, ir->getContext() );
+	
+	fprintf( f, "}\n" );
+	fprintf( f, "\n" );
 }
+
 
 void LLCodeBackend::emit( FILE* f, ParallelBlock* ir )
 {
-    fprintf( f, "; par\n");
-    Backend::emit( f, ((ExecutionSemanticsBlock*)ir) );
-	fprintf( f, "; endpar\n");
+    emit_scope( f, ((ExecutionSemanticsBlock*)ir) );
 }
 
 void LLCodeBackend::emit( FILE* f, SequentialBlock* ir )
-{
-    fprintf( f, "; seq\n");
-	Backend::emit( f, ((ExecutionSemanticsBlock*)ir) );	
-	fprintf( f, "; endseq\n");
+{ 
+    emit_scope( f, ((ExecutionSemanticsBlock*)ir) );
 }
 
 void LLCodeBackend::emit( FILE* f, TrivialStatement* ir )
 {
-	assert( Value::isa< TrivialStatement >( ir ) );	
-	fprintf( f, "; statement\n" );	
-	Backend::emit( f, ((Statement*)ir) );
-	fprintf( f, "; endstatement\n");	
+	emit_statement( f, ((Statement*)ir) );
 }
 		
 void LLCodeBackend::emit( FILE* f, LocationInstruction* ir )
