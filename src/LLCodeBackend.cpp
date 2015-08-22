@@ -62,7 +62,7 @@ const char* LLCodeBackend::getRegister( Value* value )
 	}
 	else
 	{
-		register_cache[ value ] = std::string( "%r" + cnt );
+		register_cache[ value ] = std::string( "%.r" + cnt );
 	}
 	
 	register_count++;	
@@ -292,6 +292,30 @@ void LLCodeBackend::emit( FILE* f, Function* ir )
 	    
 		fprintf( f, "%sret %%libcasm-rt.%s* undef\n", INDENT, getType( ir ) );
 		fprintf( f, "}\n");
+
+		// update
+		fprintf
+		( f
+		, "define linkonce_odr void %s.update( "
+		  "%%libcasm-rt.updateset* %%uset, i64 %%loc, %%libcasm-rt.%s* %%val ) alwaysinline\n"
+		, getRegister( ir )
+		, getType( ir )
+		);
+		fprintf( f, "{\n");
+	    
+		// // fprintf
+		// // ( f
+		// // , "%s; %s = call i8* @libcasm-rt.updateset.insert( "
+		// //   "%%libcasm-rt.updateset* %%.uset, i64 0, i64 0"
+		// //   ")\n"
+		// // , indent.str().c_str()
+		// // , getRegister( ir )
+		// // //, ir->getName()
+		// // );
+		
+		fprintf( f, "%sret void\n", INDENT );
+		fprintf( f, "}\n");
+
 	}
 	else
 	{
@@ -396,16 +420,30 @@ void LLCodeBackend::emit( FILE* f, UpdateInstruction* ir )
 {
 	std::stringstream indent;
 	getIndent( indent, ir );
+
+	Value*  loc = ir->getLHS();
+	Value* func = ((LocationInstruction*)loc)->getValue( 0 );
+	Type* tfunc = func->getType();
+
 	
-	fprintf
-	( f
-	, "%s; %s = call i8* @libcasm-rt.updateset.insert( "
-	  "%%libcasm-rt.updateset* %%.uset, i64 0, i64 0"
-	  ")\n"
-	, indent.str().c_str()
-	, getRegister( ir )
-	  //, ir->getName()
-	);
+	if( tfunc->getParameters().size() == 0 )
+	{
+		fprintf
+		( f
+		, "%scall void %s.update( "
+		  "%%libcasm-rt.updateset* %%.uset, i64 %s, %%libcasm-rt.%s* %s"
+		  ")\n"
+		, indent.str().c_str()
+		, getRegister( func )
+		, getRegister( loc )
+		, getType( ir )
+		, getRegister( ir->getRHS() )
+		);
+	}
+	else
+	{
+		assert( 0 && "unimplemented!" );
+	}
 }
 
 void LLCodeBackend::emit( FILE* f, CallInstruction* ir )
