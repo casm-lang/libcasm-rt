@@ -37,12 +37,15 @@
 using namespace libcasm_ir;
 using namespace libcasm_rt;
 
-
-void Backend::emit( FILE* f, libcasm_ir::Instruction* ir )
+void Backend::emit( FILE* f, Value* ir )
 {
     switch( ir->getValueID() )
     {
-        case Value::LOCATION_INSTRUCTION:    emit( f, ((LocationInstruction*)ir) );     break;
+	    case Value::PARALLEL_BLOCK:     emit( f, ((ParallelBlock*)ir) );     break;
+	    case Value::SEQUENTIAL_BLOCK:   emit( f, ((SequentialBlock*)ir) );   break;
+	    case Value::TRIVIAL_STATEMENT:  emit( f, ((TrivialStatement*)ir) );   break;
+
+	    case Value::LOCATION_INSTRUCTION:    emit( f, ((LocationInstruction*)ir) );     break;
         case Value::LOOKUP_INSTRUCTION:    emit( f, ((LookupInstruction*)ir) );     break;
         case Value::UPDATE_INSTRUCTION:    emit( f, ((UpdateInstruction*)ir) );     break;
         case Value::PRINT_INSTRUCTION:    emit( f, ((PrintInstruction*)ir) );     break;
@@ -67,9 +70,30 @@ void Backend::emit( FILE* f, libcasm_ir::Instruction* ir )
         case Value::NOT_INSTRUCTION:    emit( f, ((NotInstruction*)ir) );     break;
         case Value::MOV_INSTRUCTION:    emit( f, ((MovInstruction*)ir) );     break;
         default:
-            assert( 0 && "unimplemented instruction to emit!" );
+            assert( 0 && "unimplemented value to distribute an emit!" );
     }
 };
+
+
+void Backend::emit( FILE* f, ExecutionSemanticsBlock* ir )
+{
+	assert( Value::isa< ExecutionSemanticsBlock >( ir ) );
+	
+	for( auto value : ir->getBlocks() )
+	{
+	    emit( f, ((Value*)value) );
+	}
+}
+
+void Backend::emit( FILE* f, Statement* ir )
+{
+	assert( Value::isa< Statement >( ir ) );
+	
+	for( auto value : ir->getInstructions() )
+	{
+	    emit( f, ((Value*)value) );
+	}
+}
 
 
 //  

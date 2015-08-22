@@ -37,13 +37,150 @@
 using namespace libcasm_ir;
 using namespace libcasm_rt;
 
+const char* LLCodeBackend::getRegister( Value* value )
+{
+	// printf( "%s: %p\n", __FUNCTION__, value );
+	
+	if( register_cache.size() == 0 )
+	{
+		register_count = 0;
+	}
+	
+	auto result = register_cache.find( value );
+	if( result != register_cache.end() )
+	{
+		return result->second.c_str();
+	}
+
+    if( Value::isa< ConstantValue >( value ) and not Value::isa< Identifier >( value ) )
+	{
+    	register_cache[ value ] = std::string( "@.c" + std::to_string( register_count ) );
+	}
+	else
+	{
+		register_cache[ value ] = std::string( "%r" + std::to_string( register_count ) );
+	}
+	
+	register_count++;	
+	return register_cache[ value ].c_str();
+}
+
+
+
+const char* getType( Value* value )
+{
+	assert( value->getType() );
+	
+	u64 uid = value->getType()->getID();
+	
+	if( uid == BooleanType.getID() )
+	{
+		return "Bool";
+	}
+	else if( uid == IntegerType.getID() )
+	{
+		return "Int";
+	}
+	else
+	{
+		assert( 0 && "unimplemented type to emit!" );
+		return 0;
+	}
+}
+
+// void LLCodeBackend::emit_constant( FILE* f, Value* ir )
+// {
+// 	// const char* ta = getType( ir );
+// 	// const char* ra = getRegister( ir->getLHS() );
+	
+// 	// const char* tb = "Int";
+//     // const char* rb = getRegister( ir->getRHS() );
+	
+// 	// const char* tt = "Int";
+// 	// const char* rt = getRegister( ir );
+	
+	
+// 	// fprintf
+// 	// ( f
+// 	// , "call void @libcasm-rt%s.%s.%s.%s"
+// 	//   "( %%libcasm-rt.%s* %s, %%libcasm-rt.%s* %s, %%libcasm-rt.%s* %s )\n"
+// 	// , ir->getName()
+// 	// , tt, ta, tb, tt, rt, ta, ra, tb, rb
+// 	// );
+
+// 	// assert(0);
+// }
+
+static void getIndent( std::stringstream& indent, Instruction* ir )
+{
+	assert( Value::isa< Instruction >( ir ) );
+	indent << " ";
+	for( u32 i = 0; i < ir->getStatement()->getScope()->getPseudoState(); i++ )
+	{
+		indent << " ";
+	}
+}
+
+void LLCodeBackend::emit_instruction( FILE* f, Instruction* ir, const char* alias = 0 )
+{
+	std::stringstream indent;	
+	std::vector< const char* > reg_type;
+	std::vector< const char* > reg_name;
+	
+	assert( Value::isa< Instruction >( ir ) );
+	
+	indent << " ";
+	for( u32 i = 0; i < ir->getStatement()->getScope()->getPseudoState(); i++ )
+	{
+		indent << " ";
+	}
+	
+	if( !alias )
+	{
+		alias = &(ir->getName()[1]);
+	}
+
+	reg_type.push_back( getType( ir ) );
+	reg_name.push_back( getRegister( ir ) );
+	
+	for( auto value : ir->getValues() )
+	{
+		reg_type.push_back( getType( value ) );
+		reg_name.push_back( getRegister( value ) );
+	}
+	
+	fprintf( f, "%scall void @libcasm-rt.%s", indent.str().c_str(), alias );
+	for( auto rt : reg_type )
+	{
+		fprintf( f, ".%s", rt );
+	}
+	
+	fprintf( f, "( " );
+
+	u1 first = true;
+	for( u32 i = 0; i < reg_type.size(); i++ )
+	{
+		if( first )
+		{
+			first = false;
+		}
+		else
+		{
+			fprintf( f, ", " );
+		}
+		fprintf( f, "%%libcasm-rt.%s* %s", reg_type[i], reg_name[i] );
+	}
+	
+	fprintf( f, " )\n" );
+}
+
 
 void LLCodeBackend::emit( FILE* f, BooleanConstant* ir )
 {
     fprintf
 	( f 
-	, "; @.c%p = private unnamed_addr constant %%libcasm-rt.Bool <{ i1 %u, i1 true }>\n"
-	, ir
+	, "; %s = private unnamed_addr constant %%libcasm-rt.Bool <{ i1 %u, i1 true }>\n"
+	, getRegister( ir )
 	, ir->getValue()
 	);
 }
@@ -52,8 +189,8 @@ void LLCodeBackend::emit( FILE* f, IntegerConstant* ir )
 {
     fprintf
 	( f 
-	, "; @.c%p = private unnamed_addr constant %%libcasm-rt.Int <{ i64 %li, i1 true }>\n"
-	, ir
+	, "; %s = private unnamed_addr constant %%libcasm-rt.Int <{ i64 %li, i1 true }>\n"
+	, getRegister( ir )
 	, ir->getValue()
 	);
 }
@@ -64,74 +201,99 @@ void LLCodeBackend::emit( FILE* f, Rule* ir )
 {
 	fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ );
 	
+	register_count = 0;	
 	emit( f, ir->getContext() );
 }
 
 void LLCodeBackend::emit( FILE* f, ParallelBlock* ir )
 {
-	fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ );
-
-	fprintf( f, "; par\n");
-
-	for( auto value : ir->getBlocks() )
-	{
-		switch( value->getValueID() )
-		{
-		    case Value::PARALLEL_BLOCK:     emit( f, ((ParallelBlock*)ir) );     break;
-		    case Value::SEQUENTIAL_BLOCK:   emit( f, ((SequentialBlock*)ir) );   break;
-		    case Value::TRIVIAL_STATEMENT:  emit( f, ((TrivialStatement*)ir) );   break;
-	        default:
-				assert( 0 );
-		}
-	}
-	
+    fprintf( f, "; par\n");
+    Backend::emit( f, ((ExecutionSemanticsBlock*)ir) );
 	fprintf( f, "; endpar\n");
 }
 
-void LLCodeBackend::emit( FILE* f, SequentialBlock* ir ) { fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ ); }
+void LLCodeBackend::emit( FILE* f, SequentialBlock* ir )
+{
+    fprintf( f, "; seq\n");
+	Backend::emit( f, ((ExecutionSemanticsBlock*)ir) );	
+	fprintf( f, "; endseq\n");
+}
 
 void LLCodeBackend::emit( FILE* f, TrivialStatement* ir )
 {
-	fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ );
-	
-	fprintf( f, "; statement\n");
-
-	for( auto value : ir->getInstructions() )
-	{
-		switch( value->getValueID() )
-		{
-			assert( Value::isa< Instruction >( value ) );
-			Backend::emit( f, ((Instruction*)value) );
-		}
-	}
-	
+	assert( Value::isa< TrivialStatement >( ir ) );	
+	fprintf( f, "; statement\n" );	
+	Backend::emit( f, ((Statement*)ir) );
 	fprintf( f, "; endstatement\n");	
 }
 		
-void LLCodeBackend::emit( FILE* f, LocationInstruction* ir ) { fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ ); }
-void LLCodeBackend::emit( FILE* f, LookupInstruction* ir ) { fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ ); }
-void LLCodeBackend::emit( FILE* f, UpdateInstruction* ir ) { fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ ); }
-void LLCodeBackend::emit( FILE* f, CallInstruction* ir ) { fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ ); }
-void LLCodeBackend::emit( FILE* f, PrintInstruction* ir ) { fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ ); }
-void LLCodeBackend::emit( FILE* f, LetInstruction* ir ) { fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ ); }
+void LLCodeBackend::emit( FILE* f, LocationInstruction* ir )
+{
+	//emit_instruction( f, ir );
+	fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ );
+}
 
-void LLCodeBackend::emit( FILE* f, AddInstruction* ir ) { fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ ); }
-void LLCodeBackend::emit( FILE* f, SubInstruction* ir ) { fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ ); }
-void LLCodeBackend::emit( FILE* f, MulInstruction* ir ) { fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ ); }
-void LLCodeBackend::emit( FILE* f, DivInstruction* ir ) { fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ ); }
-void LLCodeBackend::emit( FILE* f, RivInstruction* ir ) { fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ ); }
-void LLCodeBackend::emit( FILE* f, ModInstruction* ir ) { fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ ); }
-void LLCodeBackend::emit( FILE* f, EquInstruction* ir ) { fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ ); }
-void LLCodeBackend::emit( FILE* f, NeqInstruction* ir ) { fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ ); }
-void LLCodeBackend::emit( FILE* f, LthInstruction* ir ) { fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ ); }
-void LLCodeBackend::emit( FILE* f, LeqInstruction* ir ) { fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ ); }
-void LLCodeBackend::emit( FILE* f, GthInstruction* ir ) { fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ ); }
-void LLCodeBackend::emit( FILE* f, GeqInstruction* ir ) { fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ ); }
-void LLCodeBackend::emit( FILE* f,  OrInstruction* ir ) { fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ ); }
-void LLCodeBackend::emit( FILE* f, XorInstruction* ir ) { fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ ); }
-void LLCodeBackend::emit( FILE* f, AndInstruction* ir ) { fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ ); }
-void LLCodeBackend::emit( FILE* f, NotInstruction* ir ) { fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ ); }
-void LLCodeBackend::emit( FILE* f, MovInstruction* ir ) { fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ ); }
+void LLCodeBackend::emit( FILE* f, LookupInstruction* ir )
+{
+	//emit_instruction( f, ir );
+	fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ );
+}
+
+void LLCodeBackend::emit( FILE* f, UpdateInstruction* ir )
+{
+	//emit_instruction( f, ir );
+	fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ );
+}
+
+void LLCodeBackend::emit( FILE* f, CallInstruction* ir )
+{
+	//emit_instruction( f, ir );
+	fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ );
+}
+
+void LLCodeBackend::emit( FILE* f, PrintInstruction* ir )
+{
+	//emit_instruction( f, ir );
+	fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ );
+}
+
+void LLCodeBackend::emit( FILE* f, LetInstruction* ir )
+{
+	std::stringstream indent;
+	getIndent( indent, ir ); 
+	
+	const char* let_type = getType( ir );
+	const char* let_name = getRegister( ir->getLHS() );
+	
+	const char* expr_type = getType( ir->getRHS() );
+	const char* expr_name = getRegister( ir->getRHS() );
+	
+	fprintf( f, "%s%s = alloca %%libcasm-rt.%s\n", indent.str().c_str(), let_name, let_type );
+	
+	fprintf
+	( f
+	, "%scall void %%libcasm-rt.mov.%s.%s( %%libcasm-rt.%s* %s, %%libcasm-rt.%s* %s )\n"
+	  , indent.str().c_str(), let_type, expr_type, let_type, let_name, expr_type, expr_name
+	);
+}
+
+void LLCodeBackend::emit( FILE* f, AddInstruction* ir ) { emit_instruction( f, ir ); }
+void LLCodeBackend::emit( FILE* f, SubInstruction* ir ) { emit_instruction( f, ir ); }
+void LLCodeBackend::emit( FILE* f, MulInstruction* ir ) { emit_instruction( f, ir ); }
+void LLCodeBackend::emit( FILE* f, DivInstruction* ir ) { emit_instruction( f, ir ); }
+void LLCodeBackend::emit( FILE* f, RivInstruction* ir ) { emit_instruction( f, ir ); }
+void LLCodeBackend::emit( FILE* f, ModInstruction* ir ) { emit_instruction( f, ir ); }
+void LLCodeBackend::emit( FILE* f, EquInstruction* ir ) { emit_instruction( f, ir ); }
+void LLCodeBackend::emit( FILE* f, NeqInstruction* ir ) { emit_instruction( f, ir ); }
+void LLCodeBackend::emit( FILE* f, LthInstruction* ir ) { emit_instruction( f, ir ); }
+void LLCodeBackend::emit( FILE* f, LeqInstruction* ir ) { emit_instruction( f, ir ); }
+void LLCodeBackend::emit( FILE* f, GthInstruction* ir ) { emit_instruction( f, ir ); }
+void LLCodeBackend::emit( FILE* f, GeqInstruction* ir ) { emit_instruction( f, ir ); }
+void LLCodeBackend::emit( FILE* f,  OrInstruction* ir ) { emit_instruction( f, ir ); }
+void LLCodeBackend::emit( FILE* f, XorInstruction* ir ) { emit_instruction( f, ir ); }
+void LLCodeBackend::emit( FILE* f, AndInstruction* ir ) { emit_instruction( f, ir ); }
+void LLCodeBackend::emit( FILE* f, NotInstruction* ir ) { emit_instruction( f, ir ); }
+void LLCodeBackend::emit( FILE* f, MovInstruction* ir ) { emit_instruction( f, ir ); }
 
 
 

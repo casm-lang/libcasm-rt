@@ -42,20 +42,23 @@ namespace libcasm_rt
 {
 	class Backend
 	{
-	protected:
+    protected:
+		void emit( FILE* f, libcasm_ir::Value* ir );
+		void emit( FILE* f, libcasm_ir::ExecutionSemanticsBlock* ir );
+		void emit( FILE* f, libcasm_ir::Statement* ir );
+		
 		virtual void emit( FILE* f, libcasm_ir::BooleanConstant* ir ) = 0;
 		virtual void emit( FILE* f, libcasm_ir::IntegerConstant* ir ) = 0;
 		
 		virtual void emit( FILE* f, libcasm_ir::Function* ir ) = 0;
 		virtual void emit( FILE* f, libcasm_ir::Derived* ir ) = 0;
 		virtual void emit( FILE* f, libcasm_ir::Rule* ir ) = 0;
-				
+	    
 		virtual void emit( FILE* f, libcasm_ir::ParallelBlock*   ir ) = 0;
 		virtual void emit( FILE* f, libcasm_ir::SequentialBlock* ir ) = 0;
 
 		virtual void emit( FILE* f, libcasm_ir::TrivialStatement* ir ) = 0;
-		
-	    void emit( FILE* f, libcasm_ir::Instruction* ir );
+	    
 		virtual void emit( FILE* f, libcasm_ir::LocationInstruction* ir ) = 0;
 		virtual void emit( FILE* f, libcasm_ir::LookupInstruction* ir ) = 0;
 		virtual void emit( FILE* f, libcasm_ir::UpdateInstruction* ir ) = 0;
