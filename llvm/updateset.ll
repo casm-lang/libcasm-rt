@@ -34,14 +34,14 @@
 
 
 ; C wrapper
-%struct.casmrt_updateset  = type %casm-rt.updateset
+%struct.libcasm_rt_updateset  = type %libcasm-rt.updateset
 
-@casmrt_updateset_new     = alias %casm-rt.updateset*( %stdll.mem*, i32 )* @casm-rt.updateset.new
-@casmrt_updateset_del     = alias i8( %casm-rt.updateset* )*               @casm-rt.updateset.del
-@casmrt_updateset_insert  = alias i8*( %casm-rt.updateset*, i64, i64 )*    @casm-rt.updateset.insert
-@casmrt_updateset_fork    = alias i8( %casm-rt.updateset* )*               @casm-rt.updateset.fork
-@casmrt_updateset_merge   = alias i8( %casm-rt.updateset* )*               @casm-rt.updateset.merge
-@casmrt_updateset_dump    = alias i8( %casm-rt.updateset* )*               @casm-rt.updateset.dump
+@libcasm_rt_updateset_new     = alias %libcasm-rt.updateset*( %stdll.mem*, i32 )* @libcasm-rt.updateset.new
+@libcasm_rt_updateset_del     = alias i8( %libcasm-rt.updateset* )*               @libcasm-rt.updateset.del
+@libcasm_rt_updateset_insert  = alias i8*( %libcasm-rt.updateset*, i64, i64 )*    @libcasm-rt.updateset.insert
+@libcasm_rt_updateset_fork    = alias i8( %libcasm-rt.updateset* )*               @libcasm-rt.updateset.fork
+@libcasm_rt_updateset_merge   = alias i8( %libcasm-rt.updateset* )*               @libcasm-rt.updateset.merge
+@libcasm_rt_updateset_dump    = alias i8( %libcasm-rt.updateset* )*               @libcasm-rt.updateset.dump
 
 
 ; import memory component
@@ -71,27 +71,27 @@ declare void @stdll.verbose.ln()
 
 
 
-%casm-rt.updateset = type <{ %stdll.dict*   ; 0 update set
+%libcasm-rt.updateset = type <{ %stdll.dict*   ; 0 update set
                            , i16            ; 1 pseudo state
                            }>
 
 
-define %casm-rt.updateset* @casm-rt.updateset.new( %stdll.mem* %mem, i32 %size )
+define %libcasm-rt.updateset* @libcasm-rt.updateset.new( %stdll.mem* %mem, i32 %size )
 {
 begin:
   ; get size of uset
-  %_sz = getelementptr %casm-rt.updateset* null, i32 1
-  %sz  = ptrtoint %casm-rt.updateset* %_sz to i64
+  %_sz = getelementptr %libcasm-rt.updateset* null, i32 1
+  %sz  = ptrtoint %libcasm-rt.updateset* %_sz to i64
   
   %_uset = call i8* @stdll.malloc( %stdll.mem* %mem, i64 %sz )
-  %uset  = bitcast i8* %_uset to %casm-rt.updateset*
+  %uset  = bitcast i8* %_uset to %libcasm-rt.updateset*
   
-  %check_uset = icmp ne %casm-rt.updateset* %uset, null              
+  %check_uset = icmp ne %libcasm-rt.updateset* %uset, null              
   br i1 %check_uset, label %fetch, label %error_alloc_null
   
 fetch:
-  %dict  = getelementptr %casm-rt.updateset* %uset, i32 0, i32 0
-  %ps    = getelementptr %casm-rt.updateset* %uset, i32 0, i32 1
+  %dict  = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 0
+  %ps    = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 1
   
   %_dict = call %stdll.dict* @stdll.dict.new( %stdll.mem* %mem, i32 %size )
   %check_dict = icmp ne %stdll.dict* %_dict, null
@@ -101,29 +101,29 @@ init:
   store %stdll.dict* %_dict, %stdll.dict** %dict
   store i16 0, i16* %ps
   
-  ret %casm-rt.updateset* %uset
+  ret %libcasm-rt.updateset* %uset
   
 error_alloc_null:
-  ret %casm-rt.updateset* null
+  ret %libcasm-rt.updateset* null
 }
 
 
-define i8 @casm-rt.updateset.del( %casm-rt.updateset* %uset )
+define i8 @libcasm-rt.updateset.del( %libcasm-rt.updateset* %uset )
 {
 begin:
   ret i8 -1
 }
 
 
-define i8* @casm-rt.updateset.insert( %casm-rt.updateset* %uset, i64 %location, i64 %value )
+define i8* @libcasm-rt.updateset.insert( %libcasm-rt.updateset* %uset, i64 %location, i64 %value )
 {
 check:
-  %check_uset = icmp ne %casm-rt.updateset* %uset, null
+  %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
   br i1 %check_uset, label %begin, label %error_uset_null
 
 begin:
-  %_dict = getelementptr %casm-rt.updateset* %uset, i32 0, i32 0
-  %_ps   = getelementptr %casm-rt.updateset* %uset, i32 0, i32 1
+  %_dict = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 0
+  %_ps   = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 1
   
   %dict  = load %stdll.dict** %_dict        
   %ps    = load i16* %_ps
@@ -151,14 +151,14 @@ error_uset_null:
 }
 
 
-define i8 @casm-rt.updateset.fork( %casm-rt.updateset* %uset )
+define i8 @libcasm-rt.updateset.fork( %libcasm-rt.updateset* %uset )
 {
 check:
-  %check_uset = icmp ne %casm-rt.updateset* %uset, null
+  %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
   br i1 %check_uset, label %begin, label %error_uset_null
   
 begin:
-  %_ps   = getelementptr %casm-rt.updateset* %uset, i32 0, i32 1
+  %_ps   = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 1
   %ps    = load i16* %_ps
   
   %new_ps = add i16 %ps, 1
@@ -174,15 +174,15 @@ error_uset_null:
 }
 
 
-define i8 @casm-rt.updateset.merge( %casm-rt.updateset* %uset )
+define i8 @libcasm-rt.updateset.merge( %libcasm-rt.updateset* %uset )
 {
 check:
-  %check_uset = icmp ne %casm-rt.updateset* %uset, null
+  %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
   br i1 %check_uset, label %begin, label %error_uset_null
   
 begin:
-  %_dict = getelementptr %casm-rt.updateset* %uset, i32 0, i32 0
-  %_ps   = getelementptr %casm-rt.updateset* %uset, i32 0, i32 1
+  %_dict = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 0
+  %_ps   = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 1
 
   %dict   = load %stdll.dict** %_dict
   %ps_old = load i16* %_ps
@@ -237,15 +237,15 @@ error_uset_null:
   ret i8 -1
 }
 
-define i8 @casm-rt.updateset.dump( %casm-rt.updateset* %uset )
+define i8 @libcasm-rt.updateset.dump( %libcasm-rt.updateset* %uset )
 {
 check:
-  %check_uset = icmp ne %casm-rt.updateset* %uset, null
+  %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
   br i1 %check_uset, label %begin, label %error_uset_null
   
 begin:
-  %_dict  = getelementptr %casm-rt.updateset* %uset, i32 0, i32 0
-  %_ps    = getelementptr %casm-rt.updateset* %uset, i32 0, i32 1
+  %_dict  = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 0
+  %_ps    = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 1
   
   %dict = load %stdll.dict** %_dict
   %ps   = load i16* %_ps
