@@ -67,7 +67,7 @@
 
 
 ; ; import Bool component
-%libcasm-rt.Bool = type ; opaque
+%libcasm-rt.Bool = type
 <{ i1  ; 0 value
  , i1  ; 1 isdef
  }>
@@ -79,7 +79,7 @@
  }>
 
 
-define void @libcasm-rt.clr.Int
+define linkonce_odr void @libcasm-rt.clr.Int
 ( %libcasm-rt.Int* %rt
 ) #0
 {
@@ -92,7 +92,7 @@ begin:
 }
 
 
-define void @libcasm-rt.set.Int.i64
+define linkonce_odr void @libcasm-rt.set.Int.i64
 ( %libcasm-rt.Int* %rt
 , i64 %imm
 ) #0
@@ -100,7 +100,7 @@ define void @libcasm-rt.set.Int.i64
 begin:
   %pv = getelementptr %libcasm-rt.Int* %rt, i32 0, i32 0
   %pu = getelementptr %libcasm-rt.Int* %rt, i32 0, i32 1
-      
+  
   store i64 %imm, i64* %pv
   store i1  true, i1*  %pu
   
@@ -108,7 +108,7 @@ begin:
 }
 
 
-define void @libcasm-rt.mov.Int.Int
+define linkonce_odr void @libcasm-rt.mov.Int.Int
 ( %libcasm-rt.Int* %rt
 , %libcasm-rt.Int* %ra
 ) #0
@@ -129,7 +129,7 @@ begin:
 }
 
 
-define void @libcasm-rt.add.Int.Int.Int
+define linkonce_odr void @libcasm-rt.add.Int.Int.Int
 ( %libcasm-rt.Int* %rt
 , %libcasm-rt.Int* %ra
 , %libcasm-rt.Int* %rb
@@ -158,7 +158,7 @@ begin:
 }
 
 
-define void @libcasm-rt.sub.Int.Int.Int
+define linkonce_odr void @libcasm-rt.sub.Int.Int.Int
 ( %libcasm-rt.Int* %rt
 , %libcasm-rt.Int* %ra
 , %libcasm-rt.Int* %rb
@@ -187,7 +187,7 @@ begin:
 }
 
 
-define void @libcasm-rt.mul.Int.Int.Int
+define linkonce_odr void @libcasm-rt.mul.Int.Int.Int
 ( %libcasm-rt.Int* %rt
 , %libcasm-rt.Int* %ra
 , %libcasm-rt.Int* %rb
@@ -216,7 +216,7 @@ begin:
 }
 
 
-define void @libcasm-rt.div.Int.Int.Int
+define linkonce_odr void @libcasm-rt.div.Int.Int.Int
 ( %libcasm-rt.Int* %rt
 , %libcasm-rt.Int* %ra
 , %libcasm-rt.Int* %rb
@@ -245,7 +245,7 @@ begin:
 }
 
 
-define void @libcasm-rt.mod.Int.Int.Int
+define linkonce_odr void @libcasm-rt.mod.Int.Int.Int
 ( %libcasm-rt.Int* %rt
 , %libcasm-rt.Int* %ra
 , %libcasm-rt.Int* %rb
@@ -274,7 +274,7 @@ begin:
 }
 
 
-define void @libcasm-rt.lth.Bool.Int.Int
+define linkonce_odr void @libcasm-rt.lth.Bool.Int.Int
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Int* %ra
 , %libcasm-rt.Int* %rb
@@ -306,7 +306,7 @@ begin:
 ; declare void @stdll.verbose.i1( i1 )
 ; declare void @stdll.verbose.ln()
 
-define void @libcasm-rt.leq.Bool.Int.Int
+define linkonce_odr void @libcasm-rt.leq.Bool.Int.Int
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Int* %ra
 , %libcasm-rt.Int* %rb
@@ -347,7 +347,7 @@ begin:
 }
 
 
-define void @libcasm-rt.gth.Bool.Int.Int
+define linkonce_odr void @libcasm-rt.gth.Bool.Int.Int
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Int* %ra
 , %libcasm-rt.Int* %rb
@@ -376,7 +376,7 @@ begin:
 }
 
 
-define void @libcasm-rt.geq.Bool.Int.Int
+define linkonce_odr void @libcasm-rt.geq.Bool.Int.Int
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Int* %ra
 , %libcasm-rt.Int* %rb
@@ -411,7 +411,7 @@ begin:
 }
 
 
-define void @libcasm-rt.equ.Bool.Int.Int
+define linkonce_odr void @libcasm-rt.equ.Bool.Int.Int
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Int* %ra
 , %libcasm-rt.Int* %rb
@@ -448,11 +448,7 @@ other:
 }
 
 
-define void @libcasm-rt.neq.Bool.Int.Int
-( %libcasm-rt.Bool* %rt
-, %libcasm-rt.Int* %ra
-, %libcasm-rt.Int* %rb
-) #0
+define linkonce_odr void @libcasm-rt.neq.Bool.Int.Int( %libcasm-rt.Bool* %rt, %libcasm-rt.Int* %ra, %libcasm-rt.Int* %rb) #0
 {
 begin:
   %ptv = getelementptr %libcasm-rt.Bool* %rt, i32 0, i32 0

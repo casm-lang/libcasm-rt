@@ -32,14 +32,57 @@
 #   WITH THE SOFTWARE.
 #   
 
-STDLL_DIR   = ../stdll
+AR=ar
 
+CC=clang
+CCFLAG += -std=c11
+CCFLAG += -g -O0
+CCFLAG += -Wall
+
+CPP=clang
+CPPFLAG += -std=c++11
+CPPFLAG += -g -O0
+CPPFLAG += -Wall
+#CPPFLAG += -Wextra
+
+TARGET += libcasm-rt.a
+
+CPPOBJECTS += obj/Backend.o
+CPPOBJECTS += obj/LLCodeBackend.o
+
+INCLUDE += -I ../
+INCLUDE += -I ../casm-ir/src/
+
+
+STDLL_DIR   = ../stdll
 GTEST_DIR   = ../gtest
 GTEST_OBJ   = uts/obj
 
 .PHONY: include llvm uts
 
-default: help
+default: obj $(TARGET)
+
+obj:
+	mkdir -p obj
+
+obj/%.o: src/%.cpp
+	@echo "CPP " $<
+	@$(CPP) $(CPPFLAG) $(INCLUDE) -c $< -o $@
+
+$(TARGET): $(CPPOBJECTS)
+	@echo "AR  " $@
+	@$(AR) rsc $@ $(filter %.o,$^)
+	@ranlib $@
+
+clean:
+	@echo "RM  " obj
+	@rm -rf obj
+	@echo "RM  " $(TARGET)
+	@rm -f $(TARGET)
+	@rm -f casm-rt*.bc
+	@rm -f casm-rt*.ll
+#@rm -f $(GTEST_OBJ)/*
+
 
 help:
 	@echo "usage: make <OPTION>"
@@ -50,14 +93,20 @@ help:
 	@echo "                   byte-code object file"
 	@echo "        test       run the unit test suite"
 
-clean:
-	rm -f casm-rt*.bc
-	rm -f $(GTEST_OBJ)/*
 
-llvm: casm-rt.bc
+llvm: casm-rt
 
-casm-rt.bc:
-	llvm-link llvm/*.ll > $@
+casm-rt: llvm/*.ll
+	llvm-link llvm/*.ll -o $@.bc
+	opt $@.bc -S -o $@.ll
+	grep -r $@.ll -e "attributes" > $@.ir
+	grep -r $@.ll -e "declare" >> $@.ir
+	grep -r $@.ll -e "type" >> $@.ir
+	grep -r $@.ll -e "define" | \
+		sed "s/define linkonce_odr/declare/g" | \
+		sed "s/define/declare/g" | \
+		sed "s/{//g" >> $@.ir
+
 
 stdll: $(STDLL_DIR)/stdll.bc
 
@@ -84,8 +133,7 @@ GTEST_OBJS = $(addprefix $(GTEST_OBJ)/,$(notdir \
 		$(patsubst %.cpp,%.ll,$(GTEST_CPP)))))
 
 GTEST_LL  = casm-rt.bc
-#llvm/*.ll
-GTEST_LL += $(STDLL_DIR)/llvm/*.ll
+GTEST_LL += $(STDLL_DIR)/stdll.bc
 
 $(GTEST_OBJ):
 	@mkdir -p uts/obj
