@@ -32,30 +32,33 @@
 //  WITH THE SOFTWARE.
 //  
 
-#ifndef _LIB_CASM_RT_H_
-#define _LIB_CASM_RT_H_
+#include "gtest/gtest.h"
+#include "casm-rt.h"
 
-#include "stdll/c/stdll.h"
-#include "stdhl/c/type.h"
+static stdll_mem mem;
 
-#include "bool.h"
-#include "int.h"
 
-#include "update.h"
-#include "updateset.h"
-
-#ifdef __cplusplus
-extern "C"
+TEST( update, prolog )
 {
-#endif
-	
-	
-
-#ifdef __cplusplus   
+	// create a 32 MB memory pool
+	ASSERT_EQ( 0, stdll_mem_new( &mem, 1024*1024*32 ) );
 }
-#endif
 
-#endif /* _LIB_CASM_RT_H_ */
+TEST( update, new )
+{
+	libcasm_rt_update* u = 0;
+	
+	ASSERT_NE( (void*)0, u = libcasm_rt_update_new( &mem, 123, 1 ) );
+	ASSERT_EQ( u->value, 123 );	
+	ASSERT_EQ( u->isdef, 1 );
+}
+
+TEST( update, epilog )
+{
+	ASSERT_EQ( 0, stdll_mem_del( &mem ) );	
+}
+
+
 
 //  
 //  Local variables:

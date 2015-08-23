@@ -38,7 +38,7 @@
 
 @libcasm_rt_updateset_new     = alias %libcasm-rt.updateset*( %stdll.mem*, i32 )* @libcasm-rt.updateset.new
 @libcasm_rt_updateset_del     = alias i8( %libcasm-rt.updateset* )*               @libcasm-rt.updateset.del
-@libcasm_rt_updateset_insert  = alias i8*( %libcasm-rt.updateset*, i64, i64 )*    @libcasm-rt.updateset.insert
+@libcasm_rt_updateset_insert  = alias i8*( %libcasm-rt.updateset*, i8*, %libcasm-rt.update* )*    @libcasm-rt.updateset.insert
 @libcasm_rt_updateset_fork    = alias i8( %libcasm-rt.updateset* )*               @libcasm-rt.updateset.fork
 @libcasm_rt_updateset_merge   = alias i8( %libcasm-rt.updateset* )*               @libcasm-rt.updateset.merge
 @libcasm_rt_updateset_dump    = alias i8( %libcasm-rt.updateset* )*               @libcasm-rt.updateset.dump
@@ -76,7 +76,7 @@ declare void @stdll.verbose.ln()
                            }>
 
 
-define %libcasm-rt.updateset* @libcasm-rt.updateset.new( %stdll.mem* %mem, i32 %size )
+define linkonce_odr %libcasm-rt.updateset* @libcasm-rt.updateset.new( %stdll.mem* %mem, i32 %size )
 {
 begin:
   ; get size of uset
@@ -108,14 +108,18 @@ error_alloc_null:
 }
 
 
-define i8 @libcasm-rt.updateset.del( %libcasm-rt.updateset* %uset )
+define linkonce_odr i8 @libcasm-rt.updateset.del( %libcasm-rt.updateset* %uset )
 {
 begin:
   ret i8 -1
 }
 
 
-define i8* @libcasm-rt.updateset.insert( %libcasm-rt.updateset* %uset, i64 %location, i64 %value )
+%libcasm-rt.update = type <{ i64 ; 0 value
+                           , i1  ; 1 defined
+                           }>
+
+define linkonce_odr i8* @libcasm-rt.updateset.insert( %libcasm-rt.updateset* %uset, i8* %location, %libcasm-rt.update* %update )
 {
 check:
   %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
@@ -127,14 +131,14 @@ begin:
   
   %dict  = load %stdll.dict** %_dict        
   %ps    = load i16* %_ps
-  
-  %key_high = shl i64 %location, 16
+
+  %loc = ptrtoint i8* %location to i64
+  %key_high = shl i64 %loc, 16
   %key_low  = zext i16 %ps to i64
   %key = or i64 %key_high, %key_low
   
-  %val = inttoptr i64 %value to i8*
-  
-  %result = call i8* @stdll.dict.set( %stdll.dict* %dict, i64 %key, i8* %val )
+  %value = bitcast %libcasm-rt.update* %update to i8*
+  %result = call i8* @stdll.dict.set( %stdll.dict* %dict, i64 %key, i8* %value )
   
   %psmod  = srem i16 %ps, 2
   %parseq = icmp eq i16 %psmod, 0
@@ -151,7 +155,7 @@ error_uset_null:
 }
 
 
-define i8 @libcasm-rt.updateset.fork( %libcasm-rt.updateset* %uset )
+define linkonce_odr i8 @libcasm-rt.updateset.fork( %libcasm-rt.updateset* %uset )
 {
 check:
   %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
@@ -174,7 +178,7 @@ error_uset_null:
 }
 
 
-define i8 @libcasm-rt.updateset.merge( %libcasm-rt.updateset* %uset )
+define linkonce_odr i8 @libcasm-rt.updateset.merge( %libcasm-rt.updateset* %uset )
 {
 check:
   %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
@@ -237,7 +241,7 @@ error_uset_null:
   ret i8 -1
 }
 
-define i8 @libcasm-rt.updateset.dump( %libcasm-rt.updateset* %uset )
+define linkonce_odr i8 @libcasm-rt.updateset.dump( %libcasm-rt.updateset* %uset )
 {
 check:
   %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
@@ -249,8 +253,8 @@ begin:
   
   %dict = load %stdll.dict** %_dict
   %ps   = load i16* %_ps
-  
-  call void @stdll.verbose.i16( i16 %ps )
+  %.ps  = zext i16 %ps to i32
+  call void @stdll.verbose.i32( i32 %.ps )
   call void @stdll.verbose.ln()
   call void @stdll.dict.dump( %stdll.dict* %dict )
   ;call void @stdll.dict.dump.buckets( %stdll.dict* %dict )

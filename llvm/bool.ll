@@ -69,7 +69,7 @@
  }>
 
 
-define void @libcasm-rt.clr.Bool
+define linkonce_odr void @libcasm-rt.clr.Bool
 ( %libcasm-rt.Bool* %rt
 ) #0
 {
@@ -82,7 +82,7 @@ begin:
 }
 
 
-define void @libcasm-rt.set.Bool.i1
+define linkonce_odr void @libcasm-rt.set.Bool.i1
 ( %libcasm-rt.Bool* %rt
 , i1 %imm
 ) #0
@@ -98,7 +98,7 @@ begin:
 }
 
 
-define void @libcasm-rt.mov.Bool.Bool
+define linkonce_odr void @libcasm-rt.mov.Bool.Bool
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Bool* %ra
 ) #0
@@ -119,7 +119,7 @@ begin:
 }
 
 
-define void @libcasm-rt.not.Bool.Bool
+define linkonce_odr void @libcasm-rt.not.Bool.Bool
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Bool* %ra
 ) #0
@@ -142,7 +142,7 @@ begin:
 }
 
 
-define void @libcasm-rt.and.Bool.Bool.Bool
+define linkonce_odr void @libcasm-rt.and.Bool.Bool.Bool
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Bool* %ra
 , %libcasm-rt.Bool* %rb
@@ -171,7 +171,7 @@ begin:
 }
 
 
-define void @libcasm-rt.or.Bool.Bool.Bool
+define linkonce_odr void @libcasm-rt.or.Bool.Bool.Bool
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Bool* %ra
 , %libcasm-rt.Bool* %rb
@@ -200,7 +200,7 @@ begin:
 }
 
 
-define void @libcasm-rt.xor.Bool.Bool.Bool
+define linkonce_odr void @libcasm-rt.xor.Bool.Bool.Bool
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Bool* %ra
 , %libcasm-rt.Bool* %rb
@@ -229,7 +229,7 @@ begin:
 }
 
 
-define void @libcasm-rt.equ.Bool.Bool.Bool
+define linkonce_odr void @libcasm-rt.equ.Bool.Bool.Bool
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Bool* %ra
 , %libcasm-rt.Bool* %rb
@@ -266,7 +266,7 @@ other:
 }
 
 
-define void @libcasm-rt.neq.Bool.Bool.Bool
+define linkonce_odr void @libcasm-rt.neq.Bool.Bool.Bool
 ( %libcasm-rt.Bool* %rt
 , %libcasm-rt.Bool* %ra
 , %libcasm-rt.Bool* %rb

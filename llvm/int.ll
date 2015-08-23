@@ -448,7 +448,11 @@ other:
 }
 
 
-define linkonce_odr void @libcasm-rt.neq.Bool.Int.Int( %libcasm-rt.Bool* %rt, %libcasm-rt.Int* %ra, %libcasm-rt.Int* %rb) #0
+define linkonce_odr void @libcasm-rt.neq.Bool.Int.Int
+( %libcasm-rt.Bool* %rt
+, %libcasm-rt.Int*  %ra
+, %libcasm-rt.Int*  %rb)
+#0
 {
 begin:
   %ptv = getelementptr %libcasm-rt.Bool* %rt, i32 0, i32 0

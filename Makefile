@@ -97,16 +97,14 @@ help:
 llvm: casm-rt
 
 casm-rt: llvm/*.ll
-	llvm-link llvm/*.ll -o $@.bc
-	opt $@.bc -S -o $@.ll
+	llvm-link llvm/*.ll -S -o $@.ll
+	opt $@.ll -o $@.bc
 	grep -r $@.ll -e "attributes" > $@.ir
 	grep -r $@.ll -e "declare" >> $@.ir
 	grep -r $@.ll -e "type" >> $@.ir
-	grep -r $@.ll -e "define" | \
+	grep -r $@.ll -e "define linkonce_odr" | \
 		sed "s/define linkonce_odr/declare/g" | \
-		sed "s/define/declare/g" | \
 		sed "s/{//g" >> $@.ir
-
 
 stdll: $(STDLL_DIR)/stdll.bc
 

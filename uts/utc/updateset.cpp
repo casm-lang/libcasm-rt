@@ -55,6 +55,23 @@ TEST( updateset, insert )
 {
 	ASSERT_EQ( 0, libcasm_rt_updateset_insert( uset, 0xfeed, ~0xfeed ) );
 	ASSERT_EQ( 0, libcasm_rt_updateset_insert( uset, 0xdead, ~0xdead ) );
+
+	libcasm_rt_updateset_dump( uset );
+}
+
+TEST( updateset, iterate )
+{
+	ASSERT_EQ( 0, libcasm_rt_updateset_insert( uset, 0xfeed, ~0xfeed ) );
+	ASSERT_EQ( 0, libcasm_rt_updateset_insert( uset, 0xdead, ~0xdead ) );
+
+	// libcasm_rt_updateset_iterator* it =
+	// 	libcasm_rt_updateset_get_iterator( uset );
+
+	
+	// u8 libcasm_rt_updateset_iterator_next( libcasm_rt_updateset_iterator* iter, uint64_t* location, uint64_t* value );
+
+	
+	libcasm_rt_updateset_dump( uset );
 }
 
 TEST( updateset, fork )

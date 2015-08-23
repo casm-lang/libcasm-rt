@@ -32,30 +32,29 @@
 //  WITH THE SOFTWARE.
 //  
 
-#ifndef _LIB_CASM_RT_H_
-#define _LIB_CASM_RT_H_
+#ifndef _LIB_CASM_RT_UPDATE_H_
+#define _LIB_CASM_RT_UPDATE_H_
 
-#include "stdll/c/stdll.h"
-#include "stdhl/c/type.h"
-
-#include "bool.h"
-#include "int.h"
-
-#include "update.h"
-#include "updateset.h"
+#include "casm-rt.h"
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-	
-	
 
+    struct libcasm_rt_update
+    {
+        i64 value;
+        i1  isdef;
+    };
+    
+    libcasm_rt_update* libcasm_rt_update_new( stdll_mem* mem, u64 value, u1 defined );
+    
 #ifdef __cplusplus   
 }
 #endif
 
-#endif /* _LIB_CASM_RT_H_ */
+#endif /* _LIB_CASM_RT_UPDATE_H_ */
 
 //  
 //  Local variables:
