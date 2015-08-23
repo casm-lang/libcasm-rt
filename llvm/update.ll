@@ -45,6 +45,7 @@
 ; import memory component
 %stdll.mem = type opaque
 declare i8  @stdll.mem.new( %stdll.mem* %mem, i64 %size )
+declare i8  @stdll.mem.del( %stdll.mem* %mem )
 declare i8* @stdll.malloc( %stdll.mem* %mem, i64 %size )
 
 ; import verbose component
@@ -56,7 +57,10 @@ declare void @stdll.verbose.i1( i1 )
 declare void @stdll.verbose.p( i8* )
 declare void @stdll.verbose.ln()
 
+
 declare i8* @libcasm-rt.updateset.insert( %libcasm-rt.updateset*, i8*, %libcasm-rt.update* )
+
+
 
 ; bucket
 %stdll.dict.bucket = type <{ i64                 ; 0 key
@@ -152,8 +156,6 @@ begin:
   %res = bitcast i8* %loc to %libcasm-rt.Int*
   ret %libcasm-rt.Int* %res
 }
-
-
 
 
 attributes #0 = { alwaysinline }
