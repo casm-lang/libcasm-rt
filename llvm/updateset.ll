@@ -257,7 +257,8 @@ begin:
   call void @stdll.verbose.i32( i32 %.ps )
   call void @stdll.verbose.ln()
   call void @stdll.dict.dump( %stdll.dict* %dict )
-  ;call void @stdll.dict.dump.buckets( %stdll.dict* %dict )
+  call void @stdll.verbose.ln()
+  ;;call void @stdll.dict.dump.buckets( %stdll.dict* %dict )
   
   ret i8 0
 

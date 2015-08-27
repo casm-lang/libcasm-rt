@@ -215,6 +215,11 @@ void LLCodeBackend::emit_scope( FILE* f, ExecutionSemanticsBlock* ir )
 		{
 			fprintf
 			( f
+			, "%scall i8 @libcasm-rt.updateset.dump( %%libcasm-rt.updateset* %%.uset )\n"
+			, indent.str().c_str()
+			);
+			fprintf
+			( f
 			, "%scall i8 @libcasm-rt.updateset.merge( %%libcasm-rt.updateset* %%.uset )\n"
 			, indent.str().c_str()
 			);
