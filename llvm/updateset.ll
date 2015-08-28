@@ -41,6 +41,7 @@
 @libcasm_rt_updateset_insert  = alias i8*( %libcasm-rt.updateset*, i8*, %libcasm-rt.update* )*    @libcasm-rt.updateset.insert
 @libcasm_rt_updateset_fork    = alias i8( %libcasm-rt.updateset* )*               @libcasm-rt.updateset.fork
 @libcasm_rt_updateset_merge   = alias i8( %libcasm-rt.updateset* )*               @libcasm-rt.updateset.merge
+@libcasm_rt_updateset_apply   = alias i8( %libcasm-rt.updateset* )*               @libcasm-rt.updateset.apply
 @libcasm_rt_updateset_dump    = alias i8( %libcasm-rt.updateset* )*               @libcasm-rt.updateset.dump
 
 
@@ -50,7 +51,24 @@ declare i8* @stdll.malloc( %stdll.mem* %mem, i64 %size )
 
 
 ; import dict component
-%stdll.dict = type opaque
+; bucket
+%stdll.dict.bucket = type <{ i64                 ; 0 key
+                           , i8*                 ; 1 value
+                           , i1                  ; 2 locked
+                           , %stdll.dict.bucket* ; 3 previous
+                           }>
+
+; dict
+%stdll.dict = type <{ %stdll.dict.bucket* ; 0 buckets
+                    , %stdll.dict.bucket* ; 1 last bucket
+                    , %stdll.dict.bucket* ; 2 stash bucket
+                    , %stdll.mem*         ; 3 memory
+                    , i32                 ; 4 dict counter (=size)
+                    , i32                 ; 5 dict length
+                    , i32                 ; 6 dict load factor
+                    , i1                  ; 7 flag (false=normal, true=branding) behavior
+                    }>                    ;   currently ignored, always branding behavior!
+
 declare %stdll.dict* @stdll.dict.new( %stdll.mem*, i32 )
 declare i8* @stdll.dict.set( %stdll.dict*, i64, i8* )
 declare i8 @stdll.dict.pop( %stdll.dict*, i64*, i8** )
@@ -240,6 +258,71 @@ uset_empty:
 error_uset_null:
   ret i8 -1
 }
+
+
+declare void @libcasm-rt.apply.Int( i8*, i8* )
+
+define linkonce_odr i8 @libcasm-rt.updateset.apply( %libcasm-rt.updateset* %uset )
+{
+check:
+  %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
+  br i1 %check_uset, label %begin, label %error_uset_null
+  
+begin:
+  %_dict  = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 0
+  %_ps    = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 1
+  
+  %dict = load %stdll.dict** %_dict
+  %ps   = load i16* %_ps
+  
+  %check_ps = icmp eq i16 %ps, 0
+  br i1 %check_ps, label %apply, label %error_ps_is_not_zero
+  
+apply:
+  %check_dict = icmp ne %stdll.dict* %dict, null
+  br i1 %check_dict, label %dict_apply, label %error_dict_null
+
+dict_apply:
+  %_d1 = getelementptr %stdll.dict* %dict, i32 0, i32 1
+  %p  = load %stdll.dict.bucket** %_d1
+  %c  = icmp ne %stdll.dict.bucket* %p, null
+  br i1 %c, label %loop, label %error_dict_null
+  
+loop:
+  %ptr  = phi %stdll.dict.bucket* [ %p, %dict_apply ], [ %pre, %loop ]
+  %_key = getelementptr %stdll.dict.bucket* %ptr, i32 0, i32 0
+  %_val = getelementptr %stdll.dict.bucket* %ptr, i32 0, i32 1
+  %_pre = getelementptr %stdll.dict.bucket* %ptr, i32 0, i32 3
+  
+  %key = load i64*                 %_key
+  %val = load i8**                 %_val
+  %pre = load %stdll.dict.bucket** %_pre
+  
+  %key_high = lshr i64 %key, 16
+  %key_loc  = inttoptr i64 %key_high to i8*
+  %upp = bitcast i8* %val to %libcasm-rt.update*
+  %upv = getelementptr %libcasm-rt.update* %upp, i32 0, i32 0
+  %upd = getelementptr %libcasm-rt.update* %upp, i32 0, i32 1
+  ;%upt = getelementptr %libcasm-rt.update* %upd, i32 0, i32 2
+  
+  call void @libcasm-rt.apply.Int( i8* %key_loc, i8* %val )
+  
+  %cond = icmp ne %stdll.dict.bucket* %pre, null
+  br i1 %cond, label %loop, label %error_dict_null
+
+return:
+  ret i8 0
+
+error_dict_null:
+  ret i8 -3
+
+error_ps_is_not_zero:
+  ret i8 -2
+  
+error_uset_null:
+  ret i8 -1
+}
+
 
 define linkonce_odr i8 @libcasm-rt.updateset.dump( %libcasm-rt.updateset* %uset )
 {

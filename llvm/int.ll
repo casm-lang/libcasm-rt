@@ -65,6 +65,8 @@
 @libcasmrt_neq_Bool_Int_Int = alias void( %libcasm-rt.Bool*, %libcasm-rt.Int*, %libcasm-rt.Int* )*
                               @libcasm-rt.neq.Bool.Int.Int
 
+@libcasmrt_dump_Int         = alias void( %libcasm-rt.Int* )*
+                              @libcasm-rt.dump.Int
 
 ; ; import Bool component
 %libcasm-rt.Bool = type
@@ -480,6 +482,28 @@ number_number:
 other:
   %tv_o = xor i1 %au, %bu
   store i1 %tv_o, i1* %ptv
+  ret void
+}
+
+declare void @stdll.verbose.i64( i64 )
+declare void @stdll.verbose.i1( i1 )
+declare void @stdll.verbose.ln()
+
+define linkonce_odr void @libcasm-rt.dump.Int
+( %libcasm-rt.Int* %rt
+) #0
+{
+begin:
+  %pv = getelementptr %libcasm-rt.Int* %rt, i32 0, i32 0
+  %pu = getelementptr %libcasm-rt.Int* %rt, i32 0, i32 1
+  
+  %v = load i64* %pv
+  %u = load i1*  %pu
+
+  call void @stdll.verbose.i64( i64 %v )
+  call void @stdll.verbose.i1( i1 %u )
+  call void @stdll.verbose.ln()
+
   ret void
 }
 
