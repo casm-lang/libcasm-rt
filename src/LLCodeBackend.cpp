@@ -37,11 +37,13 @@
 using namespace libcasm_ir;
 using namespace libcasm_rt;
 
+
 const char* LLCodeBackend::getRegister( Value* value )
 {
 	if( register_cache.size() == 0 )
 	{
 		register_count = 0;
+	    label_count = 0;
 	}
 	
 	auto result = register_cache.find( value );
@@ -49,7 +51,7 @@ const char* LLCodeBackend::getRegister( Value* value )
 	{
 		return result->second.c_str();
 	}
-
+	
 	std::string cnt = std::to_string( register_count );
     if( Value::isa< ConstantValue >( value ) and not Value::isa< Identifier >( value ) )
 	{
@@ -58,6 +60,13 @@ const char* LLCodeBackend::getRegister( Value* value )
     else if( Value::isa< Function >( value ) )
 	{
     	register_cache[ value ] = std::string( "@" + std::string( value->getName() ) );
+		return register_cache[ value ].c_str();
+	}
+    else if( Value::isa< Block >( value ) or Value::isa< Statement >( value ) )
+	{
+		std::string lbl = std::to_string( label_count );
+		label_count++;
+    	register_cache[ value ] = std::string( "blk" + lbl );
 		return register_cache[ value ].c_str();
 	}
 	else
@@ -83,13 +92,21 @@ const char* getType( Value* value )
 	
 	u64 uid = t->getID();
 	
-	if( uid == BooleanType.getID() )
+	if( uid == AgentType.getID() )
+	{
+		return "Agent";
+	}
+	else if( uid == BooleanType.getID() )
 	{
 		return "Bool";
 	}
 	else if( uid == IntegerType.getID() )
 	{
 		return "Int";
+	}
+	else if( uid == RulePointerType.getID() )
+	{
+		return "Rule";
 	}
 	else
 	{
@@ -208,16 +225,16 @@ void LLCodeBackend::emit_scope( FILE* f, ExecutionSemanticsBlock* ir )
 	}
 	
 	Backend::emit( f, ir );
-
+	
 	if( ir->getParent() )
 	{
 		if( ir->getParent()->isParallel() != ir->isParallel() )
 		{
-			fprintf
-			( f
-			, "%scall i8 @libcasm-rt.updateset.dump( %%libcasm-rt.updateset* %%.uset )\n"
-			, indent.str().c_str()
-			);
+			// fprintf
+			// ( f
+			// , "%scall i8 @libcasm-rt.updateset.dump( %%libcasm-rt.updateset* %%.uset )\n"
+			// , indent.str().c_str()
+			// );
 			fprintf
 			( f
 			, "%scall i8 @libcasm-rt.updateset.merge( %%libcasm-rt.updateset* %%.uset )\n"
@@ -252,6 +269,25 @@ void LLCodeBackend::emit_constant( FILE* f, Value* ir, const char* ty, const cha
 	, val
 	, def
 	);
+}
+
+void LLCodeBackend::emit( FILE* f, AgentConstant* ir )
+{
+    emit_constant( f, ir, "i8*", "null", ir->isDefined() );
+}
+
+void LLCodeBackend::emit( FILE* f, RulePointerConstant* ir )
+{
+	Rule* rule = ir->getValue();
+	std::string val = "null";
+		
+	if( rule )
+	{
+		val = std::string( "@" );
+		val.append( rule->getName() );
+	}
+	
+	emit_constant( f, ir, "%libcasm-rt.RuleAddr", val.c_str(), ir->isDefined() );
 }
 
 void LLCodeBackend::emit( FILE* f, BooleanConstant* ir )
@@ -364,6 +400,8 @@ void LLCodeBackend::emit( FILE* f, Derived* ir )
 	fprintf( f, "begin:\n");
 		
 	register_count = 0;	
+	label_count = 0;
+
 	emit( f, ir->getContext() );
 	
 	fprintf( f, "%sret void\n", INDENT );
@@ -377,7 +415,9 @@ void LLCodeBackend::emit( FILE* f, Rule* ir )
 	fprintf( f, "{\n" );
 	fprintf( f, "begin:\n");
 		
-	register_count = 0;	
+	register_count = 0;
+	label_count = 0;
+	
 	emit( f, ir->getContext() );
 	
 	fprintf( f, "%sret void\n", INDENT );
@@ -392,7 +432,7 @@ void LLCodeBackend::emit( FILE* f, ParallelBlock* ir )
 }
 
 void LLCodeBackend::emit( FILE* f, SequentialBlock* ir )
-{ 
+{	
     emit_scope( f, ((ExecutionSemanticsBlock*)ir) );
 }
 
@@ -400,7 +440,54 @@ void LLCodeBackend::emit( FILE* f, TrivialStatement* ir )
 {
 	emit_statement( f, ((Statement*)ir) );
 }
+
+void LLCodeBackend::emit( FILE* f, BranchStatement* ir )
+{
+	std::stringstream indent;
+	getIndent( indent, ir->getScope() );
+	
+	fprintf( f, "%s; branch\n", indent.str().c_str() );	
+	
+	emit_statement( f, ((Statement*)ir) );
+	
+	for( auto value : ir->getBlocks() )
+	{
+		fprintf( f, "%s%s:\n", indent.str().c_str(), getRegister( value ) );
 		
+	    emit( f, ((ParallelBlock*)value) );
+		
+		fprintf( f, "%s%sbr label %%%s\n", indent.str().c_str(), INDENT, getRegister( ir ) );
+	}
+	
+	fprintf( f, "%s%s:\n", indent.str().c_str(), getRegister( ir ) );
+	fprintf( f, "%s; endbranch\n", indent.str().c_str() );
+}
+		
+void LLCodeBackend::emit( FILE* f, BranchInstruction* ir )
+{
+	std::stringstream indent;
+	getIndent( indent, ir );
+
+	
+	fprintf
+	( f
+	, "%s%s = call i1 @libcasm-rt.branch.Bool( %%libcasm-rt.Bool* %s )\n"
+	, indent.str().c_str()
+	, getRegister( ir )
+	, getRegister( ir->get() )
+	);
+	
+	fprintf
+	( f
+	, "%sbr i1 %s, label %%%s, label %%%s\n"
+	, indent.str().c_str()
+	, getRegister( ir )
+	, getRegister( ir->getTrue() )
+	, getRegister( ir->getFalse() )
+	);
+}
+
+
 void LLCodeBackend::emit( FILE* f, LocationInstruction* ir )
 {
 	std::stringstream indent;
@@ -413,14 +500,26 @@ void LLCodeBackend::emit( FILE* f, LocationInstruction* ir )
 	{
 		fprintf
 		( f
-		, "%s%s = call i8* %s.location()\n"
+		, "%s%s = call i8* @%s.location()\n"
 		, indent.str().c_str()
 		, getRegister( ir )
-		, getRegister( func )
+		, func->getName()
 		);
 	}
 	else
 	{
+		if( std::string( func->getName() ).compare( "program" ) == 0 )
+		{
+			fprintf
+			( f
+			, "%s%s = call i8* @%s.location( i8* null )\n"
+			, indent.str().c_str()
+			, getRegister( ir )
+			, func->getName()
+			);
+			return;
+		}
+		
 		assert( 0 && "unimplemented!" );
 	}
 }
@@ -479,6 +578,22 @@ void LLCodeBackend::emit( FILE* f, UpdateInstruction* ir )
 	}
 	else
 	{
+		if( std::string( func->getName() ).compare( "program" ) == 0 )
+		{
+		    fprintf
+		    ( f
+		    , "%scall void @libcasm-rt.update.%s( "
+		      "%%libcasm-rt.updateset* %%.uset, i8* %s, %%libcasm-rt.%s* %s"
+		      ")\n"
+		    , indent.str().c_str()
+		    , getType( ir )
+		    , getRegister( ir->getLHS() )
+		    , getType( ir->getRHS() )
+		    , getRegister( ir->getRHS() )
+		    );
+			return;
+		}
+		
 		assert( 0 && "unimplemented!" );
 	}
 }

@@ -47,6 +47,8 @@ namespace libcasm_rt
 		void emit( FILE* f, libcasm_ir::ExecutionSemanticsBlock* ir );
 		void emit( FILE* f, libcasm_ir::Statement* ir );
 		
+		virtual void emit( FILE* f, libcasm_ir::RulePointerConstant* ir ) = 0;
+		virtual void emit( FILE* f, libcasm_ir::AgentConstant* ir ) = 0;
 		virtual void emit( FILE* f, libcasm_ir::BooleanConstant* ir ) = 0;
 		virtual void emit( FILE* f, libcasm_ir::IntegerConstant* ir ) = 0;
 		
@@ -58,7 +60,10 @@ namespace libcasm_rt
 		virtual void emit( FILE* f, libcasm_ir::SequentialBlock* ir ) = 0;
 
 		virtual void emit( FILE* f, libcasm_ir::TrivialStatement* ir ) = 0;
-	    
+		virtual void emit( FILE* f, libcasm_ir::BranchStatement* ir ) = 0;
+		
+		virtual void emit( FILE* f, libcasm_ir::BranchInstruction* ir ) = 0;
+		
 		virtual void emit( FILE* f, libcasm_ir::LocationInstruction* ir ) = 0;
 		virtual void emit( FILE* f, libcasm_ir::LookupInstruction* ir ) = 0;
 		virtual void emit( FILE* f, libcasm_ir::UpdateInstruction* ir ) = 0;

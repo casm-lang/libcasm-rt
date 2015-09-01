@@ -44,14 +44,17 @@ void Backend::emit( FILE* f, Value* ir )
 	    case Value::PARALLEL_BLOCK:     emit( f, ((ParallelBlock*)ir) );     break;
 	    case Value::SEQUENTIAL_BLOCK:   emit( f, ((SequentialBlock*)ir) );   break;
 	    case Value::TRIVIAL_STATEMENT:  emit( f, ((TrivialStatement*)ir) );   break;
-
+	    case Value::BRANCH_STATEMENT:   emit( f, ((BranchStatement*)ir) );   break;
+		
 	    case Value::LOCATION_INSTRUCTION:    emit( f, ((LocationInstruction*)ir) );     break;
         case Value::LOOKUP_INSTRUCTION:    emit( f, ((LookupInstruction*)ir) );     break;
         case Value::UPDATE_INSTRUCTION:    emit( f, ((UpdateInstruction*)ir) );     break;
         case Value::PRINT_INSTRUCTION:    emit( f, ((PrintInstruction*)ir) );     break;
         case Value::CALL_INSTRUCTION:    emit( f, ((CallInstruction*)ir) );     break;
         case Value::LET_INSTRUCTION:    emit( f, ((LetInstruction*)ir) );     break;
-        			
+
+	    case Value::BRANCH_INSTRUCTION:    emit( f, ((BranchInstruction*)ir) );     break;
+		
         case Value::ADD_INSTRUCTION:    emit( f, ((AddInstruction*)ir) );     break;
         case Value::SUB_INSTRUCTION:    emit( f, ((SubInstruction*)ir) );     break;
         case Value::MUL_INSTRUCTION:    emit( f, ((MulInstruction*)ir) );     break;

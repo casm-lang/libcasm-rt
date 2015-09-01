@@ -32,6 +32,13 @@
 ;;  WITH THE SOFTWARE.
 ;;  
 
+; Agent
+%struct.libcasmrt_Agent  = type %libcasm-rt.Agent
+%libcasm-rt.Agent = type
+<{ i8*
+ , i1
+ }>
+
 
 ; Bool
 %struct.libcasmrt_Bool  = type %libcasm-rt.Bool

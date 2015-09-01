@@ -187,21 +187,29 @@ begin:
 subtract:
   %cnt1 = sub i64 %cnt, 1
   br label %fetch
-  
+
+notfound:
+  %cnt2 = sub i64 %ps_cnt, 2
+  %glchk = icmp sle i64 %cnt2, 0
+  br i1 %glchk, label %state, label %fetch
+
 fetch:
-  %ps_cnt = phi i64 [ %cnt, %begin ], [ %cnt1, %subtract ]
+  %ps_cnt = phi i64 [ %cnt, %begin ], [ %cnt1, %subtract ], [ %cnt2, %notfound ]
   %key  = or i64 %key_high, %ps_cnt
   %val  = alloca i8*
 
   %k = inttoptr i64 %key to i8*
-  call void @stdll.verbose.p( i8* %k )
+  ;call void @stdll.verbose.p( i8* %k )
 
-  call i8 @stdll.dict.get( %stdll.dict* %di, i64 %key, i8** %val )
+  %resget = call i8 @stdll.dict.get( %stdll.dict* %di, i64 %key, i8** %val )
+  %reschk = icmp eq i8 %resget, 0
+  br i1 %reschk, label %found, label %notfound
 
+found:
   %arg = load i8** %val
-
-  call void @stdll.verbose.p( i8* %arg )
-  call void @stdll.verbose.ln()  
+  
+  ;call void @stdll.verbose.p( i8* %arg )
+  ;call void @stdll.verbose.ln()  
   
   %_data = bitcast i8* %arg to %libcasm-rt.Int*
   %_dval = getelementptr %libcasm-rt.Int* %_data, i32 0, i32 0
@@ -210,9 +218,9 @@ fetch:
   %_val = load i64* %_dval
   %_def = load i1*  %_ddef
 
-  call void @stdll.verbose.i64( i64 %_val )
-  call void @stdll.verbose.i1 ( i1  %_def )
-  call void @stdll.verbose.ln()  
+  ;call void @stdll.verbose.i64( i64 %_val )
+  ;call void @stdll.verbose.i1 ( i1  %_def )
+  ;call void @stdll.verbose.ln()  
   
   ret %libcasm-rt.Int* %_data
   
@@ -255,5 +263,52 @@ begin:
 
 
 
+define linkonce_odr void @libcasm-rt.update.Rule
+( %libcasm-rt.updateset* %uset, i8* %loc, %libcasm-rt.Rule* %value )
+#0
+{
+begin:
+  %_dic = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 0
+  %dic = load %stdll.dict** %_dic
+  %_mem = getelementptr %stdll.dict* %dic, i32 0, i32 3
+  %mem = load %stdll.mem** %_mem
+  
+  %_val = getelementptr %libcasm-rt.Rule* %value, i32 0, i32 0
+  %_def = getelementptr %libcasm-rt.Rule* %value, i32 0, i32 1
+
+  %.val = load %libcasm-rt.RuleAddr* %_val
+  %val = ptrtoint %libcasm-rt.RuleAddr %.val to i64
+  %def = load i1* %_def
+  
+  call void @libcasm-rt.update
+  ( %libcasm-rt.updateset* %uset, %stdll.mem* %mem, i8* %loc, i64 %val, i1 %def )
+  
+  ret void
+}
+
+define void @libcasm-rt.update( %libcasm-rt.updateset* %uset, %stdll.mem* %mem, i8* %loc, i64 %val, i1 %def )
+#0
+{
+begin:
+  %upd = call %libcasm-rt.update* @libcasm-rt.update.new( %stdll.mem* %mem, i64 %val, i1 %def )
+  %res = call i8* @libcasm-rt.updateset.insert
+         ( %libcasm-rt.updateset* %uset, i8* %loc, %libcasm-rt.update* %upd )
+  
+  ; ; check res ... parallel conflict etc. TODO: FIXME: PPA:
+  ; %cond = ptrtoint i8* %res to i32
+  ; call void @llvm.debugtrap() ; maybe a solution?
+
+
+  ; call void @assert( i32 %cond )
+  ; unreachable
+  ; %udp_ = bitcast %libcasm-rt.update* %upd to i8*
+  ; call void @stdll.verbose.i64( i64 %val )
+  ; call void @stdll.verbose.i1 ( i1  %def )
+  ; call void @stdll.verbose.p  ( i8* %udp_ )
+  ; call void @stdll.verbose.p  ( i8* %res )
+  ; call void @stdll.verbose.ln()
+    
+  ret void
+}
 
 

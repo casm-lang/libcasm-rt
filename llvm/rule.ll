@@ -70,6 +70,9 @@ begin:
 
 
 
+
+
+
 @program = global %libcasm-rt.Rule zeroinitializer
 define i8* @program.location( i8* %agent )
 {
@@ -83,37 +86,27 @@ begin:
 
 define void @libcasm-rt.main( %stdll.mem* %mem )
 {
-loop:
-  
+begin:
   %.program = call i8* @program.location( i8* null )
   %.prog = bitcast i8* %.program to %libcasm-rt.Rule*
   %.rule = getelementptr %libcasm-rt.Rule* %.prog, i32 0, i32 0
   %.rdef = getelementptr %libcasm-rt.Rule* %.prog, i32 0, i32 1
+  br label %loop
+  
+loop:
   %rule = load void( %libcasm-rt.updateset* )** %.rule
   %rdef = load i1* %.rdef
-;  br i1 %rdef, label %run, label %endloop
-;run:
+  br i1 %rdef, label %execute, label %return
 
+execute:
   %uset = call %libcasm-rt.updateset* @libcasm-rt.updateset.new( %stdll.mem* %mem, i32 100 )
   call void %rule( %libcasm-rt.updateset* %uset )
-  call i8 @libcasm-rt.updateset.dump( %libcasm-rt.updateset* %uset )
+  ;call i8 @libcasm-rt.updateset.dump( %libcasm-rt.updateset* %uset )
   call i8 @libcasm-rt.updateset.apply( %libcasm-rt.updateset* %uset )
-  
   call i8 @stdll.mem.drain( %stdll.mem* %mem )
-;  br label %loop
-;   ; %.x = call i8* @x.location()
-;   ; %.y = call i8* @y.location()
-;   ; %.z = call i8* @z.location()
+  br label %loop
   
-;   ; %x = bitcast i8* %.x to %libcasm-rt.Int*
-;   ; %y = bitcast i8* %.y to %libcasm-rt.Int*
-;   ; %z = bitcast i8* %.z to %libcasm-rt.Int*
-  
-;   ; call void @libcasm-rt.dump.Int( %libcasm-rt.Int* %x )
-;   ; call void @libcasm-rt.dump.Int( %libcasm-rt.Int* %y )
-;   ; call void @libcasm-rt.dump.Int( %libcasm-rt.Int* %z )
-  
-;endloop:
+return:
   ret void
 }
 

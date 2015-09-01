@@ -229,11 +229,11 @@ define linkonce_odr void @libcasm-rt.equ.Bool.Bool.Bool
 {
 begin:
   %ptv = getelementptr %libcasm-rt.Bool* %rt, i32 0, i32 0
-  %pav = getelementptr %libcasm-rt.Bool*  %ra, i32 0, i32 0
-  %pbv = getelementptr %libcasm-rt.Bool*  %rb, i32 0, i32 0
+  %pav = getelementptr %libcasm-rt.Bool* %ra, i32 0, i32 0
+  %pbv = getelementptr %libcasm-rt.Bool* %rb, i32 0, i32 0
   %ptu = getelementptr %libcasm-rt.Bool* %rt, i32 0, i32 1
-  %pau = getelementptr %libcasm-rt.Bool*  %ra, i32 0, i32 1
-  %pbu = getelementptr %libcasm-rt.Bool*  %rb, i32 0, i32 1
+  %pau = getelementptr %libcasm-rt.Bool* %ra, i32 0, i32 1
+  %pbu = getelementptr %libcasm-rt.Bool* %rb, i32 0, i32 1
   
   %av  = load i1* %pav
   %bv  = load i1* %pbv
@@ -293,5 +293,17 @@ other:
   ret void
 }
 
-; attributes #0 = { alwaysinline nounwind }
+
+define linkonce_odr i1 @libcasm-rt.branch.Bool
+( %libcasm-rt.Bool* %rt
+) #0
+{
+begin:
+  %ptv = getelementptr %libcasm-rt.Bool* %rt, i32 0, i32 0
+  %ptd = getelementptr %libcasm-rt.Bool* %rt, i32 0, i32 1  
+  %tv  = load i1* %ptv
+  %td  = load i1* %ptd
+  %res = and i1 %tv, %td
+  ret i1 %res
+}
 

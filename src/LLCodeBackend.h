@@ -43,6 +43,8 @@ namespace libcasm_rt
 	{
 	private:
 		u64 register_count;
+		u64 label_count;
+		
 		std::unordered_map< libcasm_ir::Value*, std::string > register_cache;
 		const char* getRegister( libcasm_ir::Value* value );
 		
@@ -52,6 +54,8 @@ namespace libcasm_rt
 		void emit_instruction( FILE* f, libcasm_ir::Instruction* ir, const char* alias );
 
 	protected:
+		virtual void emit( FILE* f, libcasm_ir::AgentConstant* ir );
+		virtual void emit( FILE* f, libcasm_ir::RulePointerConstant* ir );
 		virtual void emit( FILE* f, libcasm_ir::BooleanConstant* ir );
 		virtual void emit( FILE* f, libcasm_ir::IntegerConstant* ir );
 
@@ -63,6 +67,9 @@ namespace libcasm_rt
 		virtual void emit( FILE* f, libcasm_ir::SequentialBlock* ir );
 		
 		virtual void emit( FILE* f, libcasm_ir::TrivialStatement* ir );
+		virtual void emit( FILE* f, libcasm_ir::BranchStatement* ir );
+		
+		virtual void emit( FILE* f, libcasm_ir::BranchInstruction* ir );
 		
 		virtual void emit( FILE* f, libcasm_ir::LocationInstruction* ir );
 		virtual void emit( FILE* f, libcasm_ir::LookupInstruction* ir );
