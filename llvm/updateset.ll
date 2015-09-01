@@ -33,9 +33,6 @@
 ;;  
 
 
-; C wrapper
-%struct.libcasm_rt_updateset  = type %libcasm-rt.updateset
-
 @libcasm_rt_updateset_new     = alias %libcasm-rt.updateset*( %stdll.mem*, i32 )* @libcasm-rt.updateset.new
 @libcasm_rt_updateset_del     = alias i8( %libcasm-rt.updateset* )*               @libcasm-rt.updateset.del
 @libcasm_rt_updateset_insert  = alias i8*( %libcasm-rt.updateset*, i8*, %libcasm-rt.update* )*    @libcasm-rt.updateset.insert
@@ -45,53 +42,49 @@
 @libcasm_rt_updateset_dump    = alias i8( %libcasm-rt.updateset* )*               @libcasm-rt.updateset.dump
 
 
-; import memory component
-%stdll.mem = type opaque
-declare i8* @stdll.malloc( %stdll.mem* %mem, i64 %size )
+; ; import memory component
+; %stdll.mem = type opaque
+; declare i8* @stdll.malloc( %stdll.mem* %mem, i64 %size )
 
 
-; import dict component
-; bucket
-%stdll.dict.bucket = type <{ i64                 ; 0 key
-                           , i8*                 ; 1 value
-                           , i1                  ; 2 locked
-                           , %stdll.dict.bucket* ; 3 previous
-                           }>
+; ; import dict component
+; ; bucket
+; %stdll.dict.bucket = type <{ i64                 ; 0 key
+;                            , i8*                 ; 1 value
+;                            , i1                  ; 2 locked
+;                            , %stdll.dict.bucket* ; 3 previous
+;                            }>
 
-; dict
-%stdll.dict = type <{ %stdll.dict.bucket* ; 0 buckets
-                    , %stdll.dict.bucket* ; 1 last bucket
-                    , %stdll.dict.bucket* ; 2 stash bucket
-                    , %stdll.mem*         ; 3 memory
-                    , i32                 ; 4 dict counter (=size)
-                    , i32                 ; 5 dict length
-                    , i32                 ; 6 dict load factor
-                    , i1                  ; 7 flag (false=normal, true=branding) behavior
-                    }>                    ;   currently ignored, always branding behavior!
+; ; dict
+; %stdll.dict = type <{ %stdll.dict.bucket* ; 0 buckets
+;                     , %stdll.dict.bucket* ; 1 last bucket
+;                     , %stdll.dict.bucket* ; 2 stash bucket
+;                     , %stdll.mem*         ; 3 memory
+;                     , i32                 ; 4 dict counter (=size)
+;                     , i32                 ; 5 dict length
+;                     , i32                 ; 6 dict load factor
+;                     , i1                  ; 7 flag (false=normal, true=branding) behavior
+;                     }>                    ;   currently ignored, always branding behavior!
 
-declare %stdll.dict* @stdll.dict.new( %stdll.mem*, i32 )
-declare i8* @stdll.dict.set( %stdll.dict*, i64, i8* )
-declare i8 @stdll.dict.pop( %stdll.dict*, i64*, i8** )
-declare i8 @stdll.dict.stash( %stdll.dict* %dict, i64 %key, i8* %val )
-declare i8 @stdll.dict.resolve( %stdll.dict* %dict )
-declare void @stdll.dict.dump( %stdll.dict* )
-declare void @stdll.dict.dump.buckets( %stdll.dict* )
-
-
-; import verbose component
-declare void @stdll.verbose.i64( i64 )
-declare void @stdll.verbose.i32( i32 )
-declare void @stdll.verbose.i16( i16 )
-declare void @stdll.verbose.i8( i8 )
-declare void @stdll.verbose.i1( i1 )
-declare void @stdll.verbose.p( i8* )
-declare void @stdll.verbose.ln()
+; declare %stdll.dict* @stdll.dict.new( %stdll.mem*, i32 )
+; declare i8* @stdll.dict.set( %stdll.dict*, i64, i8* )
+; declare i8 @stdll.dict.pop( %stdll.dict*, i64*, i8** )
+; declare i8 @stdll.dict.stash( %stdll.dict* %dict, i64 %key, i8* %val )
+; declare i8 @stdll.dict.resolve( %stdll.dict* %dict )
+; declare void @stdll.dict.dump( %stdll.dict* )
+; declare void @stdll.dict.dump.buckets( %stdll.dict* )
 
 
+; ; import verbose component
+; declare void @stdll.verbose.i64( i64 )
+; declare void @stdll.verbose.i32( i32 )
+; declare void @stdll.verbose.i16( i16 )
+; declare void @stdll.verbose.i8( i8 )
+; declare void @stdll.verbose.i1( i1 )
+; declare void @stdll.verbose.p( i8* )
+; declare void @stdll.verbose.ln()
 
-%libcasm-rt.updateset = type <{ %stdll.dict*   ; 0 update set
-                           , i16            ; 1 pseudo state
-                           }>
+
 
 
 define linkonce_odr %libcasm-rt.updateset* @libcasm-rt.updateset.new( %stdll.mem* %mem, i32 %size )
@@ -133,9 +126,9 @@ begin:
 }
 
 
-%libcasm-rt.update = type <{ i64 ; 0 value
-                           , i1  ; 1 defined
-                           }>
+; %libcasm-rt.update = type <{ i64 ; 0 value
+;                            , i1  ; 1 defined
+;                            }>
 
 define linkonce_odr i8* @libcasm-rt.updateset.insert( %libcasm-rt.updateset* %uset, i8* %location, %libcasm-rt.update* %update )
 {
@@ -260,7 +253,7 @@ error_uset_null:
 }
 
 
-declare void @libcasm-rt.apply.Int( i8*, i8* )
+; declare void @libcasm-rt.apply.Int( i8*, i8* )
 
 define linkonce_odr i8 @libcasm-rt.updateset.apply( %libcasm-rt.updateset* %uset )
 {
@@ -358,7 +351,7 @@ error_uset_null:
 ;   ret i32 0
 ; }
 
-attributes #0 = { alwaysinline }
+; attributes #0 = { alwaysinline }
 
 
 

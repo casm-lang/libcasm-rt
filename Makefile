@@ -53,6 +53,12 @@ CPPOBJECTS += obj/LLCodeBackend.o
 INCLUDE += -I ../
 INCLUDE += -I ../casm-ir/src/
 
+LLSRC += llvm/type.ll
+LLSRC += llvm/bool.ll
+LLSRC += llvm/int.ll
+LLSRC += llvm/updateset.ll
+LLSRC += llvm/update.ll
+LLSRC += llvm/rule.ll
 
 STDLL_DIR   = ../stdll
 GTEST_DIR   = ../gtest
@@ -96,22 +102,26 @@ help:
 
 llvm: casm-rt
 
-casm-rt: llvm/*.ll
-	llvm-link llvm/*.ll -S -o $@.ll
+casm-rt: $(STDLL_DIR)/stdll.ll $(LLSRC)
+	cat $(STDLL_DIR)/stdll.ir $(LLSRC) > $@.ir
+	llvm-link $@.ir -S -o $@.ll
 	opt $@.ll -o $@.bc
-	grep -r $@.ll -e "attributes" > $@.ir
-	grep -r $@.ll -e "declare" >> $@.ir
-	grep -r $@.ll -e "type" >> $@.ir
-	grep -r $@.ll -e "define linkonce_odr" | \
-		sed "s/define linkonce_odr/declare/g" | \
-		sed "s/{//g" >> $@.ir
+
+#	llvm-link llvm/*.ll -S -o $@.ll
+#	opt $@.ll -o $@.bc
+#	grep -r $@.ll -e "attributes" > $@.ir
+#	grep -r $@.ll -e "declare" >> $@.ir
+#	grep -r $@.ll -e "type" >> $@.ir
+#	grep -r $@.ll -e "define linkonce_odr" | \
+#		sed "s/define linkonce_odr/declare/g" | \
+#		sed "s/{//g" >> $@.ir
 
 stdll: $(STDLL_DIR)/stdll.bc
 
-$(STDLL_DIR)/stdll.bc:
+$(STDLL_DIR)/stdll.ll:
 	$(MAKE) llvm -C $(STDLL_DIR)
 
-test: stdll llvm $(GTEST_OBJ) $(GTEST_OBJ)/gtest
+test: llvm $(GTEST_OBJ) $(GTEST_OBJ)/gtest
 	@echo "===--- UNIT TEST SUITE ---==="
 	./$(GTEST_OBJ)/gtest
 
@@ -130,8 +140,7 @@ GTEST_OBJS = $(addprefix $(GTEST_OBJ)/,$(notdir \
 		$(patsubst %.cc,%.ll,\
 		$(patsubst %.cpp,%.ll,$(GTEST_CPP)))))
 
-GTEST_LL  = casm-rt.bc
-GTEST_LL += $(STDLL_DIR)/stdll.bc
+GTEST_LL  = casm-rt.ll
 
 $(GTEST_OBJ):
 	@mkdir -p uts/obj

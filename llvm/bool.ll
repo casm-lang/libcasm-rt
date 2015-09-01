@@ -33,9 +33,6 @@
 ;;  
 
 
-; C wrapper
-%struct.libcasmrt_Bool  = type %libcasm-rt.Bool
-
 @libcasmrt_clr_Bool           = alias void( %libcasm-rt.Bool* )*
                                 @libcasm-rt.clr.Bool
 @libcasmrt_set_Bool_i1        = alias void( %libcasm-rt.Bool*, i1 )*
@@ -62,11 +59,6 @@
                                 void( %libcasm-rt.Bool*, %libcasm-rt.Bool*, %libcasm-rt.Bool* )*
                                 @libcasm-rt.neq.Bool.Bool.Bool
 
-
-%libcasm-rt.Bool = type
-<{ i1  ; 0 value
- , i1  ; 1 isdef
- }>
 
 
 define linkonce_odr void @libcasm-rt.clr.Bool
@@ -301,5 +293,5 @@ other:
   ret void
 }
 
-attributes #0 = { alwaysinline nounwind }
+; attributes #0 = { alwaysinline nounwind }
 

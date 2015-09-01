@@ -33,8 +33,6 @@
 ;;  
 
 
-; C wrapper
-%struct.libcasm_rt_update = type %libcasm-rt.update
 
 @libcasm_rt_update_new = alias %libcasm-rt.update*( %stdll.mem*, i64, i1 )* @libcasm-rt.update.new
 @libcasm_rt_update_Int = alias void( %libcasm-rt.updateset*, i8*, %libcasm-rt.Int* )* @libcasm-rt.update.Int
@@ -43,54 +41,51 @@
 
 
 
-; import memory component
-%stdll.mem = type opaque
-declare i8  @stdll.mem.new( %stdll.mem* %mem, i64 %size )
-declare i8  @stdll.mem.del( %stdll.mem* %mem )
-declare i8* @stdll.malloc( %stdll.mem* %mem, i64 %size )
+; ; import memory component
+; ; %stdll.mem = type opaque
+; declare i8  @stdll.mem.new( %stdll.mem* %mem, i64 %size )
+; declare i8  @stdll.mem.del( %stdll.mem* %mem )
+; declare i8* @stdll.malloc( %stdll.mem* %mem, i64 %size )
 
-; import verbose component
-declare void @stdll.verbose.i64( i64 )
-declare void @stdll.verbose.i32( i32 )
-declare void @stdll.verbose.i16( i16 )
-declare void @stdll.verbose.i8( i8 )
-declare void @stdll.verbose.i1( i1 )
-declare void @stdll.verbose.p( i8* )
-declare void @stdll.verbose.ln()
-
-
-declare i8* @libcasm-rt.updateset.insert( %libcasm-rt.updateset*, i8*, %libcasm-rt.update* )
+; ; import verbose component
+; declare void @stdll.verbose.i64( i64 )
+; declare void @stdll.verbose.i32( i32 )
+; declare void @stdll.verbose.i16( i16 )
+; declare void @stdll.verbose.i8( i8 )
+; declare void @stdll.verbose.i1( i1 )
+; declare void @stdll.verbose.p( i8* )
+; declare void @stdll.verbose.ln()
 
 
-
-; bucket
-%stdll.dict.bucket = type <{ i64                 ; 0 key
-                           , i8*                 ; 1 value
-                           , i1                  ; 2 locked
-                           , %stdll.dict.bucket* ; 3 previous
-                           }>
-
-; dict
-%stdll.dict = type <{ %stdll.dict.bucket* ; 0 buckets
-                    , %stdll.dict.bucket* ; 1 last bucket
-                    , %stdll.dict.bucket* ; 2 stash bucket
-                    , %stdll.mem*         ; 3 memory
-                    , i32                 ; 4 dict counter (=size)
-                    , i32                 ; 5 dict length
-                    , i32                 ; 6 dict load factor
-                    , i1                  ; 7 flag (false=normal, true=branding) behavior
-                    }>                    ;   currently ignored, always branding behavior!
-
-; ; import uset
-%libcasm-rt.updateset = type <{ %stdll.dict*   ; 0 update set
-                           , i16            ; 1 pseudo state
-                           }>
+; declare i8* @libcasm-rt.updateset.insert( %libcasm-rt.updateset*, i8*, %libcasm-rt.update* )
 
 
 
-%libcasm-rt.update = type <{ i64 ; 0 value
-                           , i1  ; 1 isdef
-                           }>
+; ; bucket
+; %stdll.dict.bucket = type <{ i64                 ; 0 key
+;                            , i8*                 ; 1 value
+;                            , i1                  ; 2 locked
+;                            , %stdll.dict.bucket* ; 3 previous
+;                            }>
+
+; ; dict
+; %stdll.dict = type <{ %stdll.dict.bucket* ; 0 buckets
+;                     , %stdll.dict.bucket* ; 1 last bucket
+;                     , %stdll.dict.bucket* ; 2 stash bucket
+;                     , %stdll.mem*         ; 3 memory
+;                     , i32                 ; 4 dict counter (=size)
+;                     , i32                 ; 5 dict length
+;                     , i32                 ; 6 dict load factor
+;                     , i1                  ; 7 flag (false=normal, true=branding) behavior
+;                     }>                    ;   currently ignored, always branding behavior!
+
+; ; ; import uset
+; %libcasm-rt.updateset = type <{ %stdll.dict*   ; 0 update set
+;                            , i16            ; 1 pseudo state
+;                            }>
+
+
+
 
 
 define linkonce_odr %libcasm-rt.update* @libcasm-rt.update.new
@@ -121,12 +116,12 @@ error_alloc_null:
 }
 
 
-%libcasm-rt.Int = type
-<{ i64 ; 0 value
- , i1  ; 1 isdef
- }>
+; %libcasm-rt.Int = type
+; <{ i64 ; 0 value
+;  , i1  ; 1 isdef
+;  }>
 
-declare void @llvm.debugtrap() noreturn nounwind
+; declare void @llvm.debugtrap() noreturn nounwind
 
 define linkonce_odr void @libcasm-rt.update.Int
 ( %libcasm-rt.updateset* %uset, i8* %loc, %libcasm-rt.Int* %value )
@@ -165,8 +160,8 @@ begin:
 }
 
 
-declare i8 @stdll.dict.get( %stdll.dict* %dict, i64 %key, i8** %val )
-declare void @stdll.dict.dump( %stdll.dict* %di )
+; declare i8 @stdll.dict.get( %stdll.dict* %dict, i64 %key, i8** %val )
+; declare void @stdll.dict.dump( %stdll.dict* %di )
 
 define linkonce_odr %libcasm-rt.Int* @libcasm-rt.lookup.Int
 ( %libcasm-rt.updateset* %uset, i8* %loc )
@@ -253,7 +248,8 @@ begin:
 }
 
 
-attributes #0 = { alwaysinline }
+
+
 
 
 

@@ -33,8 +33,6 @@
 ;;  
 
 
-; C wrapper
-%struct.libcasmrt_Int  = type %libcasm-rt.Int
 
 @libcasmrt_clr_Int          = alias void( %libcasm-rt.Int* )*
                               @libcasm-rt.clr.Int
@@ -68,17 +66,6 @@
 @libcasmrt_dump_Int         = alias void( %libcasm-rt.Int* )*
                               @libcasm-rt.dump.Int
 
-; ; import Bool component
-%libcasm-rt.Bool = type
-<{ i1  ; 0 value
- , i1  ; 1 isdef
- }>
-
-
-%libcasm-rt.Int = type
-<{ i64 ; 0 value
- , i1  ; 1 isdef
- }>
 
 
 define linkonce_odr void @libcasm-rt.clr.Int
@@ -485,9 +472,9 @@ other:
   ret void
 }
 
-declare void @stdll.verbose.i64( i64 )
-declare void @stdll.verbose.i1( i1 )
-declare void @stdll.verbose.ln()
+; declare void @stdll.verbose.i64( i64 )
+; declare void @stdll.verbose.i1( i1 )
+; declare void @stdll.verbose.ln()
 
 define linkonce_odr void @libcasm-rt.dump.Int
 ( %libcasm-rt.Int* %rt
@@ -508,5 +495,5 @@ begin:
 }
 
 
-attributes #0 = { alwaysinline nounwind }
+
 
