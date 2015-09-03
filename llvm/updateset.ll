@@ -88,6 +88,7 @@
 
 
 define linkonce_odr %libcasm-rt.updateset* @libcasm-rt.updateset.new( %stdll.mem* %mem, i32 %size )
+#0
 {
 begin:
   ; get size of uset
@@ -120,6 +121,7 @@ error_alloc_null:
 
 
 define linkonce_odr i8 @libcasm-rt.updateset.del( %libcasm-rt.updateset* %uset )
+#0
 {
 begin:
   ret i8 -1
@@ -131,6 +133,7 @@ begin:
 ;                            }>
 
 define linkonce_odr i8* @libcasm-rt.updateset.insert( %libcasm-rt.updateset* %uset, i8* %location, %libcasm-rt.update* %update )
+#0
 {
 check:
   %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
@@ -167,6 +170,7 @@ error_uset_null:
 
 
 define linkonce_odr i8 @libcasm-rt.updateset.fork( %libcasm-rt.updateset* %uset )
+#0
 {
 check:
   %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
@@ -190,6 +194,7 @@ error_uset_null:
 
 
 define linkonce_odr i8 @libcasm-rt.updateset.merge( %libcasm-rt.updateset* %uset )
+#0
 {
 check:
   %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
@@ -256,6 +261,7 @@ error_uset_null:
 ; declare void @libcasm-rt.apply.Int( i8*, i8* )
 
 define linkonce_odr i8 @libcasm-rt.updateset.apply( %libcasm-rt.updateset* %uset )
+#0
 {
 check:
   %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
@@ -318,6 +324,7 @@ error_uset_null:
 
 
 define linkonce_odr i8 @libcasm-rt.updateset.dump( %libcasm-rt.updateset* %uset )
+#0
 {
 check:
   %check_uset = icmp ne %libcasm-rt.updateset* %uset, null

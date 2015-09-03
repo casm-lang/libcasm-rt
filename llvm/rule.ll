@@ -74,7 +74,8 @@ begin:
 
 
 @program = global %libcasm-rt.Rule zeroinitializer
-define i8* @program.location( i8* %agent )
+define linkonce_odr i8* @program.location( i8* %agent )
+#0
 {
 begin:
   %ptr = getelementptr %libcasm-rt.Rule* @program, i64 0
@@ -84,7 +85,8 @@ begin:
 
 
 
-define void @libcasm-rt.main( %stdll.mem* %mem )
+define linkonce_odr void @libcasm-rt.main( %stdll.mem* %mem )
+#0
 {
 begin:
   %.program = call i8* @program.location( i8* null )

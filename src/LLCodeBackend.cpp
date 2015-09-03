@@ -312,7 +312,7 @@ void LLCodeBackend::emit( FILE* f, Function* ir )
 		);
 		
 		// location
-		fprintf( f, "define linkonce_odr i8* %s.location() alwaysinline\n", getRegister( ir ) );
+		fprintf( f, "define linkonce_odr i8* %s.location() #0\n", getRegister( ir ) );
 		fprintf( f, "{\n");
 		fprintf( f, "begin:\n");
 		
@@ -395,7 +395,7 @@ void LLCodeBackend::emit( FILE* f, Function* ir )
 
 void LLCodeBackend::emit( FILE* f, Derived* ir )
 {
-	fprintf( f, "define void @%s()\n", ir->getName() );
+	fprintf( f, "define linkonce_odr void @%s() #0\n", ir->getName() );
 	fprintf( f, "{\n" );
 	fprintf( f, "begin:\n");
 		
@@ -411,7 +411,7 @@ void LLCodeBackend::emit( FILE* f, Derived* ir )
 
 void LLCodeBackend::emit( FILE* f, Rule* ir )
 {
-	fprintf( f, "define void @%s( %%libcasm-rt.updateset* %%.uset )\n", ir->getName() );
+	fprintf( f, "define linkonce_odr void @%s( %%libcasm-rt.updateset* %%.uset ) #0\n", ir->getName() );
 	fprintf( f, "{\n" );
 	fprintf( f, "begin:\n");
 		
