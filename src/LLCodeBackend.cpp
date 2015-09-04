@@ -38,7 +38,7 @@ using namespace libcasm_ir;
 using namespace libcasm_rt;
 
 
-const char* LLCodeBackend::getRegister( Value* value )
+const char* LLCodeBackend::getRegister( Value* value, u1 let_flag )
 {
 	if( register_cache.size() == 0 )
 	{
@@ -68,6 +68,10 @@ const char* LLCodeBackend::getRegister( Value* value )
 		label_count++;
     	register_cache[ value ] = std::string( "blk" + lbl );
 		return register_cache[ value ].c_str();
+	}
+    else if( let_flag == true )
+	{
+		register_cache[ value ] = std::string( "%_r" + cnt );
 	}
 	else
 	{
@@ -144,6 +148,77 @@ static void getIndent( std::stringstream& indent, Instruction* ir )
 }
 
 
+void LLCodeBackend::lifetime_start( FILE* f, Instruction* ir )
+{
+	return;
+	
+	std::stringstream indent;	
+	getIndent( indent, ir );
+
+	if( Value::isa< LocationInstruction >( ir ) )
+	{
+		fprintf
+		( f
+		, "%scall void @llvm.lifetime.start( i64 -1, i8* %s )\n"
+		  "%s%s.inv = call {}* @llvm.invariant.start( i64 -1, i8* %s )\n"
+		, indent.str().c_str()
+		, getRegister( ir )
+		, indent.str().c_str()
+		, getRegister( ir )
+		, getRegister( ir )
+		);
+		
+		return;
+	}
+	
+	fprintf
+	( f
+	, "%s%s.ptr = bitcast %%libcasm-rt.%s* %s to i8*\n"
+	  "%scall void @llvm.lifetime.start( i64 -1, i8* %s.ptr )\n"
+	  "%s%s.inv = call {}* @llvm.invariant.start( i64 -1, i8* %s.ptr )\n"
+	, indent.str().c_str()
+	, getRegister( ir )
+	, getType( ir )
+	, getRegister( ir )
+    , indent.str().c_str()
+	, getRegister( ir )
+    , indent.str().c_str()
+	, getRegister( ir )
+	, getRegister( ir )
+	);
+}
+
+void LLCodeBackend::lifetime_end( FILE* f, Instruction* ir )
+{
+    return;
+	
+	std::stringstream indent;	
+	getIndent( indent, ir );
+
+	const char* postfix = ".ptr";
+
+	if( Value::isa< LocationInstruction >( ir ) )
+	{
+		return;
+		postfix = "";
+	}
+	
+	fprintf
+	( f
+	, "%scall void @llvm.invariant.end( {}* %s.inv, i64 -1, i8* %s%s )\n"
+	  "%scall void @llvm.lifetime.end( i64 -1, i8* %s%s )\n"
+	, indent.str().c_str()
+	, getRegister( ir )
+	, getRegister( ir )
+	, postfix
+	, indent.str().c_str()
+	, getRegister( ir )
+	, postfix
+	);
+}
+
+
+
 void LLCodeBackend::emit_instruction( FILE* f, Instruction* ir, const char* alias = 0 )
 {
 	std::vector< const char* > reg_type;
@@ -199,6 +274,21 @@ void LLCodeBackend::emit_instruction( FILE* f, Instruction* ir, const char* alia
 	}
 	
 	fprintf( f, " )\n" );
+
+	i32 cnt = 0;
+    for( auto value : ir->getValues() )
+	{
+		if( Value::isa< Instruction >( value ) )
+		{
+			if( reg_name[ cnt ][ 0 ] == '%' && reg_name[ cnt ][ 1 ] == '.' )
+			{
+				lifetime_end( f, (Instruction*)value );
+			}
+		}
+		cnt++;
+	}
+	
+	lifetime_start( f, ir );
 }
 
 
@@ -253,7 +343,7 @@ void LLCodeBackend::emit_statement( FILE* f, Statement* ir )
 	
 	fprintf( f, "%s; stmt\n", indent.str().c_str() );	
 	Backend::emit( f, ir );	
-	fprintf( f, "%s; endstmt\n", indent.str().c_str() );
+	fprintf( f, "%s;\n", indent.str().c_str() );
 }
 
 void LLCodeBackend::emit_constant( FILE* f, Value* ir, const char* ty, const char* val, u1 def )
@@ -522,6 +612,8 @@ void LLCodeBackend::emit( FILE* f, LocationInstruction* ir )
 		
 		assert( 0 && "unimplemented!" );
 	}
+
+	lifetime_start( f, ir );
 }
 
 void LLCodeBackend::emit( FILE* f, LookupInstruction* ir )
@@ -546,11 +638,15 @@ void LLCodeBackend::emit( FILE* f, LookupInstruction* ir )
 		, getType( ir )
 		, getRegister( loc )
 		);
+		
+		lifetime_end( f, (Instruction*)loc );
 	}
 	else
 	{
 		assert( 0 && "unimplemented!" );
 	}
+
+	lifetime_start( f, ir );
 }
 
 void LLCodeBackend::emit( FILE* f, UpdateInstruction* ir )
@@ -596,6 +692,15 @@ void LLCodeBackend::emit( FILE* f, UpdateInstruction* ir )
 		
 		assert( 0 && "unimplemented!" );
 	}
+	
+	if( Value::isa< Instruction >( ir->getLHS() ) )
+	{
+		lifetime_end( f, ((Instruction*)ir->getLHS()) );
+	}
+	if( Value::isa< Instruction >( ir->getRHS() ) )
+	{
+		lifetime_end( f, ((Instruction*)ir->getRHS()) );
+	}
 }
 
 void LLCodeBackend::emit( FILE* f, CallInstruction* ir )
@@ -616,7 +721,7 @@ void LLCodeBackend::emit( FILE* f, LetInstruction* ir )
 	getIndent( indent, ir ); 
 	
 	const char* let_type = getType( ir );
-	const char* let_name = getRegister( ir->getLHS() );
+	const char* let_name = getRegister( ir->getLHS(), true );
 	
 	const char* expr_type = getType( ir->getRHS() );
 	const char* expr_name = getRegister( ir->getRHS() );

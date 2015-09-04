@@ -46,7 +46,10 @@ namespace libcasm_rt
 		u64 label_count;
 		
 		std::unordered_map< libcasm_ir::Value*, std::string > register_cache;
-		const char* getRegister( libcasm_ir::Value* value );
+		const char* getRegister( libcasm_ir::Value* value, u1 let_flag = false );
+
+		void lifetime_start( FILE* f, libcasm_ir::Instruction* ir );
+		void lifetime_end( FILE* f, libcasm_ir::Instruction* ir );
 		
 		void emit_constant( FILE* f, libcasm_ir::Value* ir, const char* ty, const char* val,u1 def );
 		void emit_scope( FILE* f, libcasm_ir::ExecutionSemanticsBlock* ir );

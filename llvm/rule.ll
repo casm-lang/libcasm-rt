@@ -83,6 +83,10 @@ begin:
   ret i8* %loc
 }
 
+declare void @llvm.lifetime.start( i64 %size, i8* nocapture %ptr )
+declare void @llvm.lifetime.end( i64 %size, i8* nocapture %ptr )
+declare {}* @llvm.invariant.start( i64 %size, i8* nocapture %ptr )
+declare void @llvm.invariant.end( {}* %start, i64 %size, i8* nocapture %ptr )
 
 
 define linkonce_odr void @libcasm-rt.main( %stdll.mem* %mem )

@@ -137,7 +137,7 @@ begin:
   %au  = load i1* %pau
   %bu  = load i1* %pbu
   
-  %tv  = add i64 %av, %bv
+  %tv  = add nuw i64 %av, %bv
   %tu  = and i1  %au, %bu
   
   store i64 %tv, i64* %ptv
