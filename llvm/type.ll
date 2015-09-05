@@ -35,49 +35,49 @@
 ; Agent
 %struct.libcasmrt_Agent  = type %libcasm-rt.Agent
 %libcasm-rt.Agent = type
-<{ i8*
+ { i8*
  , i1
- }>
+ }
 
 
 ; Bool
 %struct.libcasmrt_Bool  = type %libcasm-rt.Bool
 %libcasm-rt.Bool = type
-<{ i1  ; 0 value
+ { i1  ; 0 value
  , i1  ; 1 isdef
- }>
+ }
 
 
 ; Int
 %struct.libcasmrt_Int  = type %libcasm-rt.Int
 %libcasm-rt.Int = type
-<{ i64 ; 0 value
+ { i64 ; 0 value
  , i1  ; 1 isdef
- }>
+ }
 
 
 
 ; update
 %struct.libcasm_rt_update = type %libcasm-rt.update
 %libcasm-rt.update = type
-<{ i64 ; 0 value
+ { i64 ; 0 value
  , i1  ; 1 isdef
- }>
+ }
 
 
 ; updateset
 %struct.libcasm_rt_updateset  = type %libcasm-rt.updateset
 %libcasm-rt.updateset = type
-<{ %stdll.dict*   ; 0 update set
+ { %stdll.dict*   ; 0 update set
  , i16            ; 1 pseudo state
- }>
+ }
 
 
 ; Rule
 %libcasm-rt.RuleAddr = type void( %libcasm-rt.updateset* )*
 
 %libcasm-rt.Rule = type
-<{ %libcasm-rt.RuleAddr ;void(%libcasm-rt.updateset*)*
+ { %libcasm-rt.RuleAddr ;void(%libcasm-rt.updateset*)*
  , i1
- }>
+ }
 

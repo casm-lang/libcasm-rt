@@ -190,7 +190,7 @@ void LLCodeBackend::lifetime_start( FILE* f, Instruction* ir )
 
 void LLCodeBackend::lifetime_end( FILE* f, Instruction* ir )
 {
-    return;
+	return;
 	
 	std::stringstream indent;	
 	getIndent( indent, ir );
@@ -352,7 +352,7 @@ void LLCodeBackend::emit_constant( FILE* f, Value* ir, const char* ty, const cha
 	( f 
 	, "%s = "
 	  "private unnamed_addr "
-	  "constant %%libcasm-rt.%s <{ %s %s, i1 %u }>\n"
+	  "constant %%libcasm-rt.%s { %s %s, i1 %u }\n"
 	, getRegister( ir )
 	, getType( ir )
 	, ty

@@ -59,8 +59,7 @@ extern "C"
     
     void libcasmrt_equ_Bool_Bool_Bool( libcasmrt_Bool* rt, libcasmrt_Bool* ra, libcasmrt_Bool* rb );
     void libcasmrt_neq_Bool_Bool_Bool( libcasmrt_Bool* rt, libcasmrt_Bool* ra, libcasmrt_Bool* rb );
-    
-    
+        
 #ifdef __cplusplus   
 }
 #endif

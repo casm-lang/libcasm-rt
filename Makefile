@@ -99,6 +99,22 @@ help:
 	@echo "                   byte-code object file"
 	@echo "        test       run the unit test suite"
 
+c11: obj libcasm-rt.c11.a
+
+libcasm-rt.c11.a: obj/bool.o
+	@echo "AR  " $@
+	@$(AR) rsc $@ $(filter %.o,$^)
+	@ranlib $@
+	@$(CC) $(CCFLAG) -o obj/main $@
+
+obj/%.o: c11/%.c
+	@echo "CC  " $<
+	@$(CC) $(CCFLAG) $(INCLUDE) -c $< -o $@
+	@$(CC) $(CCFLAG) -S $(INCLUDE) -c $< -o $@.s
+	@$(CC) -std=c11 -O3 -S $(INCLUDE) -c $< -o $@.O3.s
+
+
+
 
 llvm: casm-rt
 

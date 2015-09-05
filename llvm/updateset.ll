@@ -135,9 +135,9 @@ begin:
 define linkonce_odr i8* @libcasm-rt.updateset.insert( %libcasm-rt.updateset* %uset, i8* %location, %libcasm-rt.update* %update )
 #0
 {
-check:
-  %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
-  br i1 %check_uset, label %begin, label %error_uset_null
+; check:
+;   %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
+;   br i1 %check_uset, label %begin, label %error_uset_null
 
 begin:
   %_dict = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 0
@@ -164,17 +164,17 @@ par:
 seq:
   ret i8* null
   
-error_uset_null:
-  ret i8* null
+; error_uset_null:
+;   ret i8* null
 }
 
 
 define linkonce_odr i8 @libcasm-rt.updateset.fork( %libcasm-rt.updateset* %uset )
 #0
 {
-check:
-  %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
-  br i1 %check_uset, label %begin, label %error_uset_null
+; check:
+;   %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
+;   br i1 %check_uset, label %begin, label %error_uset_null
   
 begin:
   %_ps   = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 1
@@ -188,17 +188,17 @@ begin:
   
   ret i8 0
   
-error_uset_null:
-  ret i8 -1
+; error_uset_null:
+;   ret i8 -1
 }
 
 
 define linkonce_odr i8 @libcasm-rt.updateset.merge( %libcasm-rt.updateset* %uset )
 #0
 {
-check:
-  %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
-  br i1 %check_uset, label %begin, label %error_uset_null
+; check:
+;   %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
+;   br i1 %check_uset, label %begin, label %error_uset_null
   
 begin:
   %_dict = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 0
@@ -253,8 +253,8 @@ return:
 uset_empty:
   ret i8 1
 
-error_uset_null:
-  ret i8 -1
+; error_uset_null:
+;   ret i8 -1
 }
 
 
@@ -263,9 +263,9 @@ error_uset_null:
 define linkonce_odr i8 @libcasm-rt.updateset.apply( %libcasm-rt.updateset* %uset )
 #0
 {
-check:
-  %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
-  br i1 %check_uset, label %begin, label %error_uset_null
+; check:
+;   %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
+;   br i1 %check_uset, label %begin, label %error_uset_null
   
 begin:
   %_dict  = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 0
@@ -278,17 +278,17 @@ begin:
   br i1 %check_ps, label %apply, label %error_ps_is_not_zero
   
 apply:
-  %check_dict = icmp ne %stdll.dict* %dict, null
-  br i1 %check_dict, label %dict_apply, label %error_dict_null
+;   %check_dict = icmp ne %stdll.dict* %dict, null
+;   br i1 %check_dict, label %dict_apply, label %error_dict_null
 
-dict_apply:
+; dict_apply:
   %_d1 = getelementptr %stdll.dict* %dict, i32 0, i32 1
   %p  = load %stdll.dict.bucket** %_d1
   %c  = icmp ne %stdll.dict.bucket* %p, null
   br i1 %c, label %loop, label %error_dict_null
   
 loop:
-  %ptr  = phi %stdll.dict.bucket* [ %p, %dict_apply ], [ %pre, %loop ]
+  %ptr  = phi %stdll.dict.bucket* [ %p, %apply ], [ %pre, %loop ]
   %_key = getelementptr %stdll.dict.bucket* %ptr, i32 0, i32 0
   %_val = getelementptr %stdll.dict.bucket* %ptr, i32 0, i32 1
   %_pre = getelementptr %stdll.dict.bucket* %ptr, i32 0, i32 3
@@ -318,17 +318,17 @@ error_dict_null:
 error_ps_is_not_zero:
   ret i8 -2
   
-error_uset_null:
-  ret i8 -1
+; error_uset_null:
+;   ret i8 -1
 }
 
 
 define linkonce_odr i8 @libcasm-rt.updateset.dump( %libcasm-rt.updateset* %uset )
 #0
 {
-check:
-  %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
-  br i1 %check_uset, label %begin, label %error_uset_null
+; check:
+;   %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
+;   br i1 %check_uset, label %begin, label %error_uset_null
   
 begin:
   %_dict  = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 0
@@ -345,8 +345,8 @@ begin:
   
   ret i8 0
 
-error_uset_null:
-  ret i8 -1
+; error_uset_null:
+;   ret i8 -1
 }
 
 
