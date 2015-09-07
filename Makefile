@@ -56,6 +56,7 @@ INCLUDE += -I ../casm-ir/src/
 LLSRC += llvm/type.ll
 LLSRC += llvm/bool.ll
 LLSRC += llvm/int.ll
+LLSRC += llvm/str.ll
 LLSRC += llvm/updateset.ll
 LLSRC += llvm/update.ll
 LLSRC += llvm/rule.ll

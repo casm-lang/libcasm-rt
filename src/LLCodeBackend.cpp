@@ -100,6 +100,10 @@ const char* getType( Value* value )
 	{
 		return "Agent";
 	}
+	else if( uid == RulePointerType.getID() )
+	{
+		return "Rule";
+	}
 	else if( uid == BooleanType.getID() )
 	{
 		return "Bool";
@@ -108,9 +112,9 @@ const char* getType( Value* value )
 	{
 		return "Int";
 	}
-	else if( uid == RulePointerType.getID() )
+	else if( uid == StringType.getID() )
 	{
-		return "Rule";
+		return "Str";
 	}
 	else
 	{
@@ -390,6 +394,31 @@ void LLCodeBackend::emit( FILE* f, IntegerConstant* ir )
 	emit_constant( f, ir, "i64", to_string( ir->getValue() ).c_str(), ir->isDefined() );
 }
 
+void LLCodeBackend::emit( FILE* f, StringConstant* ir )
+{
+	std::string s( ir->getValue() );
+	
+    fprintf
+	( f 
+	, "%s.str = "
+	  "private unnamed_addr "
+	  "constant [ %lu x i8 ] c\""
+	, getRegister( ir )
+	, s.size()
+	);
+
+	for( i32 i = 0; i < s.size(); i++ )
+	{
+		fprintf( f, "\\%02x", s.c_str()[i] );
+	}
+    
+	fprintf( f, "\"\n" );
+	
+	std::string r( "getelementptr inbounds( [ " + to_string( s.size() ) + " x i8 ]* " + getRegister( ir ) + ".str, i32 0, i32 0 )" );
+	
+	emit_constant( f, ir, "i8*", r.c_str(), ir->isDefined() );
+}
+
 void LLCodeBackend::emit( FILE* f, Function* ir )
 {
 	if( ir->getType()->getParameters().size() == 0 )
@@ -629,17 +658,23 @@ void LLCodeBackend::emit( FILE* f, LookupInstruction* ir )
 	{
 		fprintf
 		( f
-		, "%s%s = call %%libcasm-rt.%s* @libcasm-rt.lookup.%s( "
-		  "%%libcasm-rt.updateset* %%.uset, i8* %s"
-		  ")\n"
+		, "%s%s.lup = call i8* @libcasm-rt.lookup( %%libcasm-rt.updateset* %%.uset, i8* %s )\n"
 		, indent.str().c_str()
 		, getRegister( ir )
-		, getType( ir )
-		, getType( ir )
 		, getRegister( loc )
 		);
 		
 		lifetime_end( f, (Instruction*)loc );
+
+		fprintf
+		( f
+		, "%s%s = bitcast i8* %s.lup to %%libcasm-rt.%s*\n"
+		, indent.str().c_str()
+		, getRegister( ir )
+		, getRegister( ir )
+		, getType( ir )
+		);
+		
 	}
 	else
 	{
@@ -712,7 +747,19 @@ void LLCodeBackend::emit( FILE* f, CallInstruction* ir )
 void LLCodeBackend::emit( FILE* f, PrintInstruction* ir )
 {
 	//emit_instruction( f, ir );
-	fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ );
+	//fprintf( stderr, "+++ FIXME +++: %s:%i: %s\n", __FILE__, __LINE__, __FUNCTION__ );
+	
+	std::stringstream indent;
+	getIndent( indent, ir ); 
+	
+	for( auto value : ir->getValues() )
+	{
+		fprintf
+		( f
+		, "%scall void @libcasm-rt.print.%s( %%libcasm-rt.%s* %s )\n"
+		, indent.str().c_str(), getType( value ), getType( value ), getRegister( value )
+		);
+	}
 }
 
 void LLCodeBackend::emit( FILE* f, LetInstruction* ir )

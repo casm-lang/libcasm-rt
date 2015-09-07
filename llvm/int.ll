@@ -472,9 +472,6 @@ other:
   ret void
 }
 
-; declare void @stdll.verbose.i64( i64 )
-; declare void @stdll.verbose.i1( i1 )
-; declare void @stdll.verbose.ln()
 
 define linkonce_odr void @libcasm-rt.dump.Int
 ( %libcasm-rt.Int* %rt
@@ -487,10 +484,12 @@ begin:
   %v = load i64* %pv
   %u = load i1*  %pu
 
+  %p = bitcast %libcasm-rt.Int* %rt to i8*
+  call void @stdll.verbose.p( i8* %p )
   call void @stdll.verbose.i64( i64 %v )
   call void @stdll.verbose.i1( i1 %u )
   call void @stdll.verbose.ln()
-
+  
   ret void
 }
 

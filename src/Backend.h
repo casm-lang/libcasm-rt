@@ -51,6 +51,7 @@ namespace libcasm_rt
 		virtual void emit( FILE* f, libcasm_ir::AgentConstant* ir ) = 0;
 		virtual void emit( FILE* f, libcasm_ir::BooleanConstant* ir ) = 0;
 		virtual void emit( FILE* f, libcasm_ir::IntegerConstant* ir ) = 0;
+		virtual void emit( FILE* f, libcasm_ir::StringConstant* ir ) = 0;
 		
 		virtual void emit( FILE* f, libcasm_ir::Function* ir ) = 0;
 		virtual void emit( FILE* f, libcasm_ir::Derived* ir ) = 0;

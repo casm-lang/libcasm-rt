@@ -61,7 +61,8 @@ namespace libcasm_rt
 		virtual void emit( FILE* f, libcasm_ir::RulePointerConstant* ir );
 		virtual void emit( FILE* f, libcasm_ir::BooleanConstant* ir );
 		virtual void emit( FILE* f, libcasm_ir::IntegerConstant* ir );
-
+		virtual void emit( FILE* f, libcasm_ir::StringConstant* ir );
+		
 		virtual void emit( FILE* f, libcasm_ir::Function* ir );
 		virtual void emit( FILE* f, libcasm_ir::Derived* ir );
 		virtual void emit( FILE* f, libcasm_ir::Rule* ir );

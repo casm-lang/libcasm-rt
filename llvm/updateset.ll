@@ -42,51 +42,6 @@
 @libcasm_rt_updateset_dump    = alias i8( %libcasm-rt.updateset* )*               @libcasm-rt.updateset.dump
 
 
-; ; import memory component
-; %stdll.mem = type opaque
-; declare i8* @stdll.malloc( %stdll.mem* %mem, i64 %size )
-
-
-; ; import dict component
-; ; bucket
-; %stdll.dict.bucket = type <{ i64                 ; 0 key
-;                            , i8*                 ; 1 value
-;                            , i1                  ; 2 locked
-;                            , %stdll.dict.bucket* ; 3 previous
-;                            }>
-
-; ; dict
-; %stdll.dict = type <{ %stdll.dict.bucket* ; 0 buckets
-;                     , %stdll.dict.bucket* ; 1 last bucket
-;                     , %stdll.dict.bucket* ; 2 stash bucket
-;                     , %stdll.mem*         ; 3 memory
-;                     , i32                 ; 4 dict counter (=size)
-;                     , i32                 ; 5 dict length
-;                     , i32                 ; 6 dict load factor
-;                     , i1                  ; 7 flag (false=normal, true=branding) behavior
-;                     }>                    ;   currently ignored, always branding behavior!
-
-; declare %stdll.dict* @stdll.dict.new( %stdll.mem*, i32 )
-; declare i8* @stdll.dict.set( %stdll.dict*, i64, i8* )
-; declare i8 @stdll.dict.pop( %stdll.dict*, i64*, i8** )
-; declare i8 @stdll.dict.stash( %stdll.dict* %dict, i64 %key, i8* %val )
-; declare i8 @stdll.dict.resolve( %stdll.dict* %dict )
-; declare void @stdll.dict.dump( %stdll.dict* )
-; declare void @stdll.dict.dump.buckets( %stdll.dict* )
-
-
-; ; import verbose component
-; declare void @stdll.verbose.i64( i64 )
-; declare void @stdll.verbose.i32( i32 )
-; declare void @stdll.verbose.i16( i16 )
-; declare void @stdll.verbose.i8( i8 )
-; declare void @stdll.verbose.i1( i1 )
-; declare void @stdll.verbose.p( i8* )
-; declare void @stdll.verbose.ln()
-
-
-
-
 define linkonce_odr %libcasm-rt.updateset* @libcasm-rt.updateset.new( %stdll.mem* %mem, i32 %size )
 #0
 {
@@ -196,14 +151,9 @@ begin:
 define linkonce_odr i8 @libcasm-rt.updateset.merge( %libcasm-rt.updateset* %uset )
 #0
 {
-; check:
-;   %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
-;   br i1 %check_uset, label %begin, label %error_uset_null
-  
 begin:
   %_dict = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 0
   %_ps   = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 1
-
   %dict   = load %stdll.dict** %_dict
   %ps_old = load i16* %_ps
   
@@ -214,42 +164,41 @@ begin:
 prepare_merge:
   %ps = sub i16 %ps_old, 1
   store i16 %ps, i16* %_ps
+
+  ; call void @stdll.verbose.i16( i16 %ps_old )
+  ; call i8 @libcasm-rt.updateset.dump( %libcasm-rt.updateset* %uset )
   
-  %_key = alloca i64
-  %_val = alloca i8*
+  %_last = call %stdll.dict.bucket* @stdll.dict.peek( %stdll.dict* %dict )
   br label %fetch_element
 
 fetch_element:
-  %res = call i8 @stdll.dict.pop( %stdll.dict* %dict, i64* %_key, i8** %_val )  
-  %check_empty = icmp eq i8 %res, 0
-  br i1 %check_empty, label %process_element, label %handle_result
+  %res  = phi %stdll.dict.bucket* [ %_last, %prepare_merge ], [ %_previous, %merge_element ]
+  %check_empty = icmp eq %stdll.dict.bucket* %res, null
+  br i1 %check_empty, label %process_element, label %return
   
 process_element:
-  %key_old = load i64* %_key
-  %val     = load i8** %_val
-  %key_low = trunc i64 %key_old to i16
+  %_key    = getelementptr %stdll.dict.bucket* %res, i32 0, i32 0
+  %key     = load i64* %_key
+  %key_low = trunc i64 %key to i16
+  
+  ; %key_ptr = inttoptr i64 %key_old to i8*
+  ; call void @stdll.verbose.p( i8* %key_ptr )
+  ; call void @stdll.verbose.i16( i16 %key_low )
+  ; call void @stdll.verbose.p( i8* %val )
+  ; call void @stdll.verbose.ln()
   
   %check_ps = icmp ule i16 %key_low, %ps
-  br i1 %check_ps, label %merge_done, label %merge_element
+  br i1 %check_ps, label %return, label %merge_element
   
 merge_element:
-  %key = sub i64 %key_old, 1  
-  call i8 @stdll.dict.stash( %stdll.dict* %dict, i64 %key, i8* %val )
-
+  %key_new = sub nsw i64 %key, 1
+  store i64 %key_new, i64* %_key
+  %_previous = call %stdll.dict.bucket* @stdll.dict.previous( %stdll.dict.bucket* %res )
   br label %fetch_element
 
-handle_result:
-;  ret i8 -2
-  br label %return
-
-merge_done:
-  call i8 @stdll.dict.stash( %stdll.dict* %dict, i64 %key_old, i8* %val )
-  br label %return
-
 return:
-  call i8 @stdll.dict.resolve( %stdll.dict* %dict )
   ret i8 0
-
+  
 uset_empty:
   ret i8 1
 
@@ -258,40 +207,119 @@ uset_empty:
 }
 
 
+; define linkonce_odr i8 @libcasm-rt.updateset.merge( %libcasm-rt.updateset* %uset )
+; #0
+; {
+; ; check:
+; ;   %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
+; ;   br i1 %check_uset, label %begin, label %error_uset_null
+  
+; begin:
+;   %_dict = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 0
+;   %_ps   = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 1
+
+;   %dict   = load %stdll.dict** %_dict
+;   %ps_old = load i16* %_ps
+  
+;   ; check if merge is valid or pseudostate is already zero then return
+;   %c_no_merge = icmp eq i16 %ps_old, 0
+;   br i1 %c_no_merge, label %return, label %prepare_merge
+
+; prepare_merge:
+;   %ps = sub i16 %ps_old, 1
+;   store i16 %ps, i16* %_ps
+
+;   ; call void @stdll.verbose.i16( i16 %ps_old )
+;   ; call i8 @libcasm-rt.updateset.dump( %libcasm-rt.updateset* %uset )
+  
+;   %_key = alloca i64
+;   %_val = alloca i8*
+;   br label %fetch_element
+
+; fetch_element:
+;   %res = call i8 @stdll.dict.pop( %stdll.dict* %dict, i64* %_key, i8** %_val )  
+;   %key_old = load i64* %_key
+;   %val     = load i8** %_val
+;   %check_empty = icmp eq i8 %res, 0
+;   br i1 %check_empty, label %process_element, label %at_top
+  
+; process_element:
+;   %key_low = trunc i64 %key_old to i16
+
+;   ; %key_ptr = inttoptr i64 %key_old to i8*
+;   ; call void @stdll.verbose.p( i8* %key_ptr )
+;   ; call void @stdll.verbose.i16( i16 %key_low )
+;   ; call void @stdll.verbose.p( i8* %val )
+;   ; call void @stdll.verbose.ln()
+  
+;   %check_ps = icmp ule i16 %key_low, %ps
+;   br i1 %check_ps, label %merge_done, label %merge_element
+  
+; merge_element:
+;   %key = sub i64 %key_old, 1  
+;   call i8 @stdll.dict.stash( %stdll.dict* %dict, i64 %key, i8* %val )
+;   br label %fetch_element
+  
+; merge_done:
+;   call i8* @stdll.dict.set( %stdll.dict* %dict, i64 %key_old, i8* %val )
+;   call i8 @stdll.dict.resolve( %stdll.dict* %dict )
+;   ret i8 0
+
+; at_top:
+;   call i8 @stdll.dict.resolve( %stdll.dict* %dict )
+;   ret i8 0
+
+; return:
+;   ret i8 0
+  
+; uset_empty:
+;   ret i8 1
+
+; ; error_uset_null:
+; ;   ret i8 -1
+; }
+
+
+
+
+
+
+
+
 ; declare void @libcasm-rt.apply.Int( i8*, i8* )
 
 define linkonce_odr i8 @libcasm-rt.updateset.apply( %libcasm-rt.updateset* %uset )
 #0
 {
-; check:
-;   %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
-;   br i1 %check_uset, label %begin, label %error_uset_null
-  
 begin:
-  %_dict  = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 0
-  %_ps    = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 1
-  
-  %dict = load %stdll.dict** %_dict
-  %ps   = load i16* %_ps
+  %_dict = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 0
+  %_ps   = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 1
+  %dict  = load %stdll.dict** %_dict
+  %ps    = load i16* %_ps
+
+  %_last = call %stdll.dict.bucket* @stdll.dict.peek( %stdll.dict* %dict )
   
   %check_ps = icmp eq i16 %ps, 0
   br i1 %check_ps, label %apply, label %error_ps_is_not_zero
   
 apply:
+  %res  = phi %stdll.dict.bucket* [ %_last, %begin ], [ %pre, %process_element ]
+  %check_empty = icmp ne %stdll.dict.bucket* %res, null
+  br i1 %check_empty, label %process_element, label %return
 ;   %check_dict = icmp ne %stdll.dict* %dict, null
 ;   br i1 %check_dict, label %dict_apply, label %error_dict_null
 
-; dict_apply:
-  %_d1 = getelementptr %stdll.dict* %dict, i32 0, i32 1
-  %p  = load %stdll.dict.bucket** %_d1
-  %c  = icmp ne %stdll.dict.bucket* %p, null
-  br i1 %c, label %loop, label %error_dict_null
+; ; dict_apply:
+;   %_d1 = getelementptr %stdll.dict* %dict, i32 0, i32 1
+;   %p  = load %stdll.dict.bucket** %_d1
+;   %c  = icmp ne %stdll.dict.bucket* %p, null
+;   br i1 %c, label %loop, label %error_dict_null
   
-loop:
-  %ptr  = phi %stdll.dict.bucket* [ %p, %apply ], [ %pre, %loop ]
-  %_key = getelementptr %stdll.dict.bucket* %ptr, i32 0, i32 0
-  %_val = getelementptr %stdll.dict.bucket* %ptr, i32 0, i32 1
-  %_pre = getelementptr %stdll.dict.bucket* %ptr, i32 0, i32 3
+process_element:
+  ; %ptr  = phi %stdll.dict.bucket* [ %p, %apply ], [ %pre, %loop ]
+  %_key = getelementptr %stdll.dict.bucket* %res, i32 0, i32 0
+  %_val = getelementptr %stdll.dict.bucket* %res, i32 0, i32 1
+  %_pre = getelementptr %stdll.dict.bucket* %res, i32 0, i32 3
   
   %key = load i64*                 %_key
   %val = load i8**                 %_val
@@ -299,15 +327,16 @@ loop:
   
   %key_high = lshr i64 %key, 16
   %key_loc  = inttoptr i64 %key_high to i8*
-  %upp = bitcast i8* %val to %libcasm-rt.update*
-  %upv = getelementptr %libcasm-rt.update* %upp, i32 0, i32 0
-  %upd = getelementptr %libcasm-rt.update* %upp, i32 0, i32 1
-  ;%upt = getelementptr %libcasm-rt.update* %upd, i32 0, i32 2
+  
+  ; %upp = bitcast i8* %val to %libcasm-rt.update*
+  ; %upv = getelementptr %libcasm-rt.update* %upp, i32 0, i32 0
+  ; %upd = getelementptr %libcasm-rt.update* %upp, i32 0, i32 1
+  ; ;%upt = getelementptr %libcasm-rt.update* %upd, i32 0, i32 2
   
   call void @libcasm-rt.apply.Int( i8* %key_loc, i8* %val )
-  
-  %cond = icmp ne %stdll.dict.bucket* %pre, null
-  br i1 %cond, label %loop, label %error_dict_null
+  br label %apply
+  ;%cond = icmp ne %stdll.dict.bucket* %pre, null
+  ;br i1 %cond, label %loop, label %error_dict_null
 
 return:
   ret i8 0
@@ -316,10 +345,7 @@ error_dict_null:
   ret i8 -3
 
 error_ps_is_not_zero:
-  ret i8 -2
-  
-; error_uset_null:
-;   ret i8 -1
+  ret i8 -1
 }
 
 

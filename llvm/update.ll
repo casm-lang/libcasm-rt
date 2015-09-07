@@ -36,7 +36,7 @@
 
 @libcasm_rt_update_new = alias %libcasm-rt.update*( %stdll.mem*, i64, i1 )* @libcasm-rt.update.new
 @libcasm_rt_update_Int = alias void( %libcasm-rt.updateset*, i8*, %libcasm-rt.Int* )* @libcasm-rt.update.Int
-@libcasm_rt_lookup_Int = alias %libcasm-rt.Int*( %libcasm-rt.updateset*, i8* )* @libcasm-rt.lookup.Int
+; @libcasm_rt_lookup_Int = alias %libcasm-rt.Int*( %libcasm-rt.updateset*, i8* )* @libcasm-rt.lookup.Int
 @libcasm_rt_apply_Int  = alias void( i8*, i8* )* @libcasm-rt.apply.Int
 
 
@@ -123,48 +123,10 @@ error_alloc_null:
 
 ; declare void @llvm.debugtrap() noreturn nounwind
 
-define linkonce_odr void @libcasm-rt.update.Int
-( %libcasm-rt.updateset* %uset, i8* %loc, %libcasm-rt.Int* %value )
-#0
-{
-begin:
-  %_dic = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 0
-  %dic = load %stdll.dict** %_dic
-  %_mem = getelementptr %stdll.dict* %dic, i32 0, i32 3
-  %mem = load %stdll.mem** %_mem
-  
-  %_val = getelementptr %libcasm-rt.Int* %value, i32 0, i32 0
-  %_def = getelementptr %libcasm-rt.Int* %value, i32 0, i32 1
-  %val = load i64* %_val
-  %def = load i1*  %_def
-
-  %upd = call %libcasm-rt.update* @libcasm-rt.update.new( %stdll.mem* %mem, i64 %val, i1 %def )
-  
-  %res = call i8* @libcasm-rt.updateset.insert( %libcasm-rt.updateset* %uset, i8* %loc, %libcasm-rt.update* %upd )
-  
-  ; ; check res ... parallel conflict etc. TODO: FIXME: PPA:
-  ; %cond = ptrtoint i8* %res to i32
-  ; call void @llvm.debugtrap() ; maybe a solution?
 
 
-  ; call void @assert( i32 %cond )
-  ; unreachable
-  ; %udp_ = bitcast %libcasm-rt.update* %upd to i8*
-  ; call void @stdll.verbose.i64( i64 %val )
-  ; call void @stdll.verbose.i1 ( i1  %def )
-  ; call void @stdll.verbose.p  ( i8* %udp_ )
-  ; call void @stdll.verbose.p  ( i8* %res )
-  ; call void @stdll.verbose.ln()
-  
-  ret void
-}
 
-
-; declare i8 @stdll.dict.get( %stdll.dict* %dict, i64 %key, i8** %val )
-; declare void @stdll.dict.dump( %stdll.dict* %di )
-
-define linkonce_odr %libcasm-rt.Int* @libcasm-rt.lookup.Int
-( %libcasm-rt.updateset* %uset, i8* %loc )
+define linkonce_odr i8* @libcasm-rt.lookup( %libcasm-rt.updateset* %uset, i8* %loc )
 #0
 {
 begin:
@@ -175,9 +137,12 @@ begin:
   %_ps = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 1
   %di = load %stdll.dict** %_di
   %ps = load i16* %_ps
-
-;  call void @stdll.dict.dump( %stdll.dict* %di )
-
+  ; call void @stdll.verbose.p( i8* null )
+  ; call void @stdll.verbose.ln()
+  ; call i8 @libcasm-rt.updateset.dump( %libcasm-rt.updateset* %uset )
+  ; call void @stdll.verbose.p( i8* null )
+  ; call void @stdll.verbose.ln()
+    
   %cnt = zext i16 %ps to i64
   
   %mod = urem i64 %cnt, 2
@@ -200,34 +165,32 @@ fetch:
 
   %k = inttoptr i64 %key to i8*
   ;call void @stdll.verbose.p( i8* %k )
-
+  
   %resget = call i8 @stdll.dict.get( %stdll.dict* %di, i64 %key, i8** %val )
   %reschk = icmp eq i8 %resget, 0
   br i1 %reschk, label %found, label %notfound
 
 found:
   %arg = load i8** %val
-  
-  ;call void @stdll.verbose.p( i8* %arg )
-  ;call void @stdll.verbose.ln()  
-  
-  %_data = bitcast i8* %arg to %libcasm-rt.Int*
-  %_dval = getelementptr %libcasm-rt.Int* %_data, i32 0, i32 0
-  %_ddef = getelementptr %libcasm-rt.Int* %_data, i32 0, i32 1
-  
-  %_val = load i64* %_dval
-  %_def = load i1*  %_ddef
-
-  ;call void @stdll.verbose.i64( i64 %_val )
-  ;call void @stdll.verbose.i1 ( i1  %_def )
-  ;call void @stdll.verbose.ln()  
-  
-  ret %libcasm-rt.Int* %_data
+  br label %state    
   
 state:  
-  %res = bitcast i8* %loc to %libcasm-rt.Int*
-  ret %libcasm-rt.Int* %res
+  %ptr = phi i8* [ %arg, %found ], [ %loc, %notfound ]
+  ret i8* %ptr
+  ;%res = bitcast i8* %ptr to %libcasm-rt.Int*
+  ; %_dval = getelementptr %libcasm-rt.Int* %res, i32 0, i32 0
+  ; %_ddef = getelementptr %libcasm-rt.Int* %res, i32 0, i32 1
+  ; %_val = load i64* %_dval
+  ; %_def = load i1*  %_ddef
+  ; call void @stdll.verbose.p( i8* %loc )
+  ; call void @stdll.verbose.p( i8* %ptr )
+  ; call void @stdll.verbose.i64( i64 %_val )
+  ; call void @stdll.verbose.i1 ( i1  %_def )
+  ; call void @stdll.verbose.ln()  
+  ;ret %libcasm-rt.Int* %res
 }
+
+
 
 
 ;declare void @llvm.memcpy.p0i8.p0i8.i32( i8*, i8*, i32, i32, i1 ) nounwind
@@ -259,33 +222,6 @@ begin:
 
 
 
-
-
-
-
-define linkonce_odr void @libcasm-rt.update.Rule
-( %libcasm-rt.updateset* %uset, i8* %loc, %libcasm-rt.Rule* %value )
-#0
-{
-begin:
-  %_dic = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 0
-  %dic = load %stdll.dict** %_dic
-  %_mem = getelementptr %stdll.dict* %dic, i32 0, i32 3
-  %mem = load %stdll.mem** %_mem
-  
-  %_val = getelementptr %libcasm-rt.Rule* %value, i32 0, i32 0
-  %_def = getelementptr %libcasm-rt.Rule* %value, i32 0, i32 1
-
-  %.val = load %libcasm-rt.RuleAddr* %_val
-  %val = ptrtoint %libcasm-rt.RuleAddr %.val to i64
-  %def = load i1* %_def
-  
-  call void @libcasm-rt.update
-  ( %libcasm-rt.updateset* %uset, %stdll.mem* %mem, i8* %loc, i64 %val, i1 %def )
-  
-  ret void
-}
-
 define void @libcasm-rt.update( %libcasm-rt.updateset* %uset, %stdll.mem* %mem, i8* %loc, i64 %val, i1 %def )
 #0
 {
@@ -311,4 +247,72 @@ begin:
   ret void
 }
 
+
+define linkonce_odr void @libcasm-rt.update.Rule
+( %libcasm-rt.updateset* %uset, i8* %loc, %libcasm-rt.Rule* %value )
+#0
+{
+begin:
+  %_dic = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 0
+  %dic  = load %stdll.dict** %_dic
+  %_mem = getelementptr %stdll.dict* %dic, i32 0, i32 3
+  %mem  = load %stdll.mem** %_mem
+  
+  %_val = getelementptr %libcasm-rt.Rule* %value, i32 0, i32 0
+  %_def = getelementptr %libcasm-rt.Rule* %value, i32 0, i32 1
+
+  %.val = load %libcasm-rt.RuleAddr* %_val
+  %val  = ptrtoint %libcasm-rt.RuleAddr %.val to i64
+  %def  = load i1* %_def
+  
+  call void @libcasm-rt.update
+  ( %libcasm-rt.updateset* %uset, %stdll.mem* %mem, i8* %loc, i64 %val, i1 %def )
+  
+  ret void
+}
+
+
+define linkonce_odr void @libcasm-rt.update.Int
+( %libcasm-rt.updateset* %uset, i8* %loc, %libcasm-rt.Int* %value )
+#0
+{
+begin:
+  %_dic = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 0
+  %dic  = load %stdll.dict** %_dic
+  %_mem = getelementptr %stdll.dict* %dic, i32 0, i32 3
+  %mem  = load %stdll.mem** %_mem
+  
+  %_val = getelementptr %libcasm-rt.Int* %value, i32 0, i32 0
+  %_def = getelementptr %libcasm-rt.Int* %value, i32 0, i32 1
+  %val  = load i64* %_val
+  %def  = load i1* %_def
+  
+  call void @libcasm-rt.update
+  ( %libcasm-rt.updateset* %uset, %stdll.mem* %mem, i8* %loc, i64 %val, i1 %def )
+
+  ret void
+}
+
+
+define linkonce_odr void @libcasm-rt.update.Str
+( %libcasm-rt.updateset* %uset, i8* %loc, %libcasm-rt.Str* %value )
+#0
+{
+begin:
+  %_dic = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 0
+  %dic  = load %stdll.dict** %_dic
+  %_mem = getelementptr %stdll.dict* %dic, i32 0, i32 3
+  %mem  = load %stdll.mem** %_mem
+  
+  %_val = getelementptr %libcasm-rt.Str* %value, i32 0, i32 0
+  %_def = getelementptr %libcasm-rt.Str* %value, i32 0, i32 1
+  %.val = load i8** %_val
+  %val  = ptrtoint i8* %.val to i64
+  %def  = load i1* %_def
+  
+  call void @libcasm-rt.update
+  ( %libcasm-rt.updateset* %uset, %stdll.mem* %mem, i8* %loc, i64 %val, i1 %def )
+
+  ret void
+}
 

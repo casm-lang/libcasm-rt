@@ -32,66 +32,54 @@
 ;;  WITH THE SOFTWARE.
 ;;  
 
-; update
-%struct.libcasm_rt_update = type %libcasm-rt.update
-%libcasm-rt.update = type
- { i64 ; 0 value
- , i1  ; 1 isdef
- }
+
+@libcasm-rt.Str.undef  = internal constant [5 x i8] c"undef"
+;@libcasm-rt.Str.Bool   = internal constant [4 x i8] c"%u"
+@libcasm-rt.Str.Int    = internal constant [4 x i8] c"%lli"
+;@libcasm-rt.Str.Str    = internal constant [2 x i8] c"%s"
+;@libcasm-rt.Str.Str
+
+define linkonce_odr void @libcasm-rt.print.Str
+( %libcasm-rt.Str* %rt
+) #0
+{
+begin:
+  %pv = getelementptr %libcasm-rt.Str* %rt, i32 0, i32 0
+  %pu = getelementptr %libcasm-rt.Str* %rt, i32 0, i32 1
+  %u = load i1*  %pu
+  br i1 %u, label %print_value, label %print_undef
+
+print_value:
+  %v = load i8** %pv
+  ;%fmt_v = getelementptr inbounds [2 x i8]* @libcasm-rt.Str.Str, i32 0, i32 0  
+  call i32 (i8*, ...)* @printf( i8* %v )
+  ret void
+
+print_undef:
+  %fmt = getelementptr inbounds [5 x i8]* @libcasm-rt.Str.undef, i32 0, i32 0  
+  call i32 (i8*, ...)* @printf( i8* %fmt )
+  ret void
+}
 
 
-; updateset
-%struct.libcasm_rt_updateset  = type %libcasm-rt.updateset
-%libcasm-rt.updateset = type
- { %stdll.dict*   ; 0 update set
- , i16            ; 1 pseudo state
- }
+define linkonce_odr void @libcasm-rt.print.Int
+( %libcasm-rt.Int* %rt
+) #0
+{
+begin:
+  %pv = getelementptr %libcasm-rt.Int* %rt, i32 0, i32 0
+  %pu = getelementptr %libcasm-rt.Int* %rt, i32 0, i32 1
+  %u = load i1*  %pu
+  br i1 %u, label %print_value, label %print_undef
 
+print_value:
+  %v = load i64* %pv
+  %fmt_v = getelementptr inbounds [4 x i8]* @libcasm-rt.Str.Int, i32 0, i32 0  
+  call i32 (i8*, ...)* @printf( i8* %fmt_v, i64 %v )
+  ret void
 
-
-; Agent
-%struct.libcasmrt_Agent  = type %libcasm-rt.Agent
-%libcasm-rt.Agent = type
- { i8*
- , i1
- }
-
-; RulePointer
-%libcasm-rt.RuleAddr = type void( %libcasm-rt.updateset* )*
-%struct.libcasmrt_Rule  = type %libcasm-rt.Rule
-%libcasm-rt.Rule = type
- { %libcasm-rt.RuleAddr
- , i1
- }
-
-
-; Boolean
-%struct.libcasmrt_Bool  = type %libcasm-rt.Bool
-%libcasm-rt.Bool = type
- { i1  ; 0 value
- , i1  ; 1 isdef
- }
-
-
-; Integer
-%struct.libcasmrt_Int  = type %libcasm-rt.Int
-%libcasm-rt.Int = type
- { i64 ; 0 value
- , i1  ; 1 isdef
- }
-
-
-
-; String
-%struct.libcasmrt_Str  = type %libcasm-rt.Str
-%libcasm-rt.Str = type
- { i8* ; 0 value
- , i1  ; 1 isdef
- }
-
-
-
-
-
-
-
+print_undef:
+  %fmt = getelementptr inbounds [5 x i8]* @libcasm-rt.Str.undef, i32 0, i32 0  
+  call i32 (i8*, ...)* @printf( i8* %fmt )
+  ret void
+}

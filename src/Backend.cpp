@@ -45,7 +45,7 @@ void Backend::emit( FILE* f, Value* ir )
 	    case Value::SEQUENTIAL_BLOCK:   emit( f, ((SequentialBlock*)ir) );   break;
 	    case Value::TRIVIAL_STATEMENT:  emit( f, ((TrivialStatement*)ir) );   break;
 	    case Value::BRANCH_STATEMENT:   emit( f, ((BranchStatement*)ir) );   break;
-		
+			
 	    case Value::LOCATION_INSTRUCTION:    emit( f, ((LocationInstruction*)ir) );     break;
         case Value::LOOKUP_INSTRUCTION:    emit( f, ((LookupInstruction*)ir) );     break;
         case Value::UPDATE_INSTRUCTION:    emit( f, ((UpdateInstruction*)ir) );     break;
