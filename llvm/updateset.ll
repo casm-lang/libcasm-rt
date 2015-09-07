@@ -148,12 +148,81 @@ begin:
 }
 
 
+; define linkonce_odr i8 @libcasm-rt.updateset.merge( %libcasm-rt.updateset* %uset )
+; #0
+; {
+; begin:
+;   %_dict = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 0
+;   %_ps   = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 1
+;   %dict   = load %stdll.dict** %_dict
+;   %ps_old = load i16* %_ps
+  
+;   ; check if merge is valid or pseudostate is already zero then return
+;   %c_no_merge = icmp eq i16 %ps_old, 0
+;   br i1 %c_no_merge, label %return, label %prepare_merge
+
+; prepare_merge:
+;   %ps = sub i16 %ps_old, 1
+;   store i16 %ps, i16* %_ps
+
+;   call void @stdll.verbose.i16( i16 %ps_old )
+;   call i8 @libcasm-rt.updateset.dump( %libcasm-rt.updateset* %uset )
+  
+;   %_last = call %stdll.dict.bucket* @stdll.dict.peek( %stdll.dict* %dict )
+;   br label %fetch_element
+
+; fetch_element:
+;   %res  = phi %stdll.dict.bucket* [ %_last, %prepare_merge ], [ %_previous, %merge_element ]
+;   %check_empty = icmp ne %stdll.dict.bucket* %res, null
+;   br i1 %check_empty, label %process_element, label %return
+  
+; process_element:
+;   %_key    = getelementptr %stdll.dict.bucket* %res, i32 0, i32 0
+;   %key     = load i64* %_key
+;   %key_low = trunc i64 %key to i16
+  
+;   %key_ptr = inttoptr i64 %key to i8*
+;   call void @stdll.verbose.p( i8* %key_ptr )
+;   call void @stdll.verbose.i16( i16 %key_low )
+;   %_val    = getelementptr %stdll.dict.bucket* %res, i32 0, i32 1
+;   %val     = load i8** %_val
+;   call void @stdll.verbose.p( i8* %val )
+;   call void @stdll.verbose.ln()
+  
+;   %check_ps = icmp ule i16 %key_low, %ps
+;   br i1 %check_ps, label %return, label %merge_element
+  
+; merge_element:
+;   %key_new = sub nsw i64 %key, 1
+;   store i64 %key_new, i64* %_key
+;   %_previous = call %stdll.dict.bucket* @stdll.dict.previous( %stdll.dict.bucket* %res )
+;   br label %fetch_element
+
+; return:
+;   call void @stdll.verbose.i16( i16 %ps_old )
+;   call i8 @libcasm-rt.updateset.dump( %libcasm-rt.updateset* %uset )
+  
+;   ret i8 0
+  
+; uset_empty:
+;   ret i8 1
+
+; ; error_uset_null:
+; ;   ret i8 -1
+; }
+
+
 define linkonce_odr i8 @libcasm-rt.updateset.merge( %libcasm-rt.updateset* %uset )
 #0
 {
+; check:
+;   %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
+;   br i1 %check_uset, label %begin, label %error_uset_null
+  
 begin:
   %_dict = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 0
   %_ps   = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 1
+
   %dict   = load %stdll.dict** %_dict
   %ps_old = load i16* %_ps
   
@@ -168,19 +237,20 @@ prepare_merge:
   ; call void @stdll.verbose.i16( i16 %ps_old )
   ; call i8 @libcasm-rt.updateset.dump( %libcasm-rt.updateset* %uset )
   
-  %_last = call %stdll.dict.bucket* @stdll.dict.peek( %stdll.dict* %dict )
+  %_key = alloca i64
+  %_val = alloca i8*
   br label %fetch_element
 
 fetch_element:
-  %res  = phi %stdll.dict.bucket* [ %_last, %prepare_merge ], [ %_previous, %merge_element ]
-  %check_empty = icmp eq %stdll.dict.bucket* %res, null
-  br i1 %check_empty, label %process_element, label %return
+  %res = call i8 @stdll.dict.pop( %stdll.dict* %dict, i64* %_key, i8** %_val )  
+  %key_old = load i64* %_key
+  %val     = load i8** %_val
+  %check_empty = icmp eq i8 %res, 0
+  br i1 %check_empty, label %process_element, label %at_top
   
 process_element:
-  %_key    = getelementptr %stdll.dict.bucket* %res, i32 0, i32 0
-  %key     = load i64* %_key
-  %key_low = trunc i64 %key to i16
-  
+  %key_low = trunc i64 %key_old to i16
+
   ; %key_ptr = inttoptr i64 %key_old to i8*
   ; call void @stdll.verbose.p( i8* %key_ptr )
   ; call void @stdll.verbose.i16( i16 %key_low )
@@ -188,13 +258,21 @@ process_element:
   ; call void @stdll.verbose.ln()
   
   %check_ps = icmp ule i16 %key_low, %ps
-  br i1 %check_ps, label %return, label %merge_element
+  br i1 %check_ps, label %merge_done, label %merge_element
   
 merge_element:
-  %key_new = sub nsw i64 %key, 1
-  store i64 %key_new, i64* %_key
-  %_previous = call %stdll.dict.bucket* @stdll.dict.previous( %stdll.dict.bucket* %res )
+  %key = sub i64 %key_old, 1  
+  call i8 @stdll.dict.stash( %stdll.dict* %dict, i64 %key, i8* %val )
   br label %fetch_element
+  
+merge_done:
+  call i8* @stdll.dict.set( %stdll.dict* %dict, i64 %key_old, i8* %val )
+  call i8 @stdll.dict.resolve( %stdll.dict* %dict )
+  ret i8 0
+
+at_top:
+  call i8 @stdll.dict.resolve( %stdll.dict* %dict )
+  ret i8 0
 
 return:
   ret i8 0
@@ -205,79 +283,6 @@ uset_empty:
 ; error_uset_null:
 ;   ret i8 -1
 }
-
-
-; define linkonce_odr i8 @libcasm-rt.updateset.merge( %libcasm-rt.updateset* %uset )
-; #0
-; {
-; ; check:
-; ;   %check_uset = icmp ne %libcasm-rt.updateset* %uset, null
-; ;   br i1 %check_uset, label %begin, label %error_uset_null
-  
-; begin:
-;   %_dict = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 0
-;   %_ps   = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 1
-
-;   %dict   = load %stdll.dict** %_dict
-;   %ps_old = load i16* %_ps
-  
-;   ; check if merge is valid or pseudostate is already zero then return
-;   %c_no_merge = icmp eq i16 %ps_old, 0
-;   br i1 %c_no_merge, label %return, label %prepare_merge
-
-; prepare_merge:
-;   %ps = sub i16 %ps_old, 1
-;   store i16 %ps, i16* %_ps
-
-;   ; call void @stdll.verbose.i16( i16 %ps_old )
-;   ; call i8 @libcasm-rt.updateset.dump( %libcasm-rt.updateset* %uset )
-  
-;   %_key = alloca i64
-;   %_val = alloca i8*
-;   br label %fetch_element
-
-; fetch_element:
-;   %res = call i8 @stdll.dict.pop( %stdll.dict* %dict, i64* %_key, i8** %_val )  
-;   %key_old = load i64* %_key
-;   %val     = load i8** %_val
-;   %check_empty = icmp eq i8 %res, 0
-;   br i1 %check_empty, label %process_element, label %at_top
-  
-; process_element:
-;   %key_low = trunc i64 %key_old to i16
-
-;   ; %key_ptr = inttoptr i64 %key_old to i8*
-;   ; call void @stdll.verbose.p( i8* %key_ptr )
-;   ; call void @stdll.verbose.i16( i16 %key_low )
-;   ; call void @stdll.verbose.p( i8* %val )
-;   ; call void @stdll.verbose.ln()
-  
-;   %check_ps = icmp ule i16 %key_low, %ps
-;   br i1 %check_ps, label %merge_done, label %merge_element
-  
-; merge_element:
-;   %key = sub i64 %key_old, 1  
-;   call i8 @stdll.dict.stash( %stdll.dict* %dict, i64 %key, i8* %val )
-;   br label %fetch_element
-  
-; merge_done:
-;   call i8* @stdll.dict.set( %stdll.dict* %dict, i64 %key_old, i8* %val )
-;   call i8 @stdll.dict.resolve( %stdll.dict* %dict )
-;   ret i8 0
-
-; at_top:
-;   call i8 @stdll.dict.resolve( %stdll.dict* %dict )
-;   ret i8 0
-
-; return:
-;   ret i8 0
-  
-; uset_empty:
-;   ret i8 1
-
-; ; error_uset_null:
-; ;   ret i8 -1
-; }
 
 
 

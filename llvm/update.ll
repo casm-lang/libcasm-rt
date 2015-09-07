@@ -137,6 +137,7 @@ begin:
   %_ps = getelementptr %libcasm-rt.updateset* %uset, i32 0, i32 1
   %di = load %stdll.dict** %_di
   %ps = load i16* %_ps
+  
   ; call void @stdll.verbose.p( i8* null )
   ; call void @stdll.verbose.ln()
   ; call i8 @libcasm-rt.updateset.dump( %libcasm-rt.updateset* %uset )
@@ -176,8 +177,8 @@ found:
   
 state:  
   %ptr = phi i8* [ %arg, %found ], [ %loc, %notfound ]
-  ret i8* %ptr
-  ;%res = bitcast i8* %ptr to %libcasm-rt.Int*
+
+  ; %res = bitcast i8* %ptr to %libcasm-rt.Int*
   ; %_dval = getelementptr %libcasm-rt.Int* %res, i32 0, i32 0
   ; %_ddef = getelementptr %libcasm-rt.Int* %res, i32 0, i32 1
   ; %_val = load i64* %_dval
@@ -187,7 +188,8 @@ state:
   ; call void @stdll.verbose.i64( i64 %_val )
   ; call void @stdll.verbose.i1 ( i1  %_def )
   ; call void @stdll.verbose.ln()  
-  ;ret %libcasm-rt.Int* %res
+  
+  ret i8* %ptr
 }
 
 
@@ -237,7 +239,10 @@ begin:
 
   ; call void @assert( i32 %cond )
   ; unreachable
+
   ; %udp_ = bitcast %libcasm-rt.update* %upd to i8*
+  ; call void @stdll.verbose.i64( i64 -1 )
+  ; call void @stdll.verbose.p  ( i8* %loc )
   ; call void @stdll.verbose.i64( i64 %val )
   ; call void @stdll.verbose.i1 ( i1  %def )
   ; call void @stdll.verbose.p  ( i8* %udp_ )
@@ -289,7 +294,7 @@ begin:
   
   call void @libcasm-rt.update
   ( %libcasm-rt.updateset* %uset, %stdll.mem* %mem, i8* %loc, i64 %val, i1 %def )
-
+  
   ret void
 }
 
