@@ -45,13 +45,11 @@ CPPFLAG += -g -O0
 CPPFLAG += -Wall
 #CPPFLAG += -Wextra
 
-TARGET += libcasm-rt.a
-
-CPPOBJECTS += obj/Backend.o
-CPPOBJECTS += obj/LLCodeBackend.o
-
-INCLUDE += -I ../
-INCLUDE += -I ../casm-ir/src/
+# TARGET += libcasm-rt.a
+# CPPOBJECTS += obj/Backend.o
+# CPPOBJECTS += obj/LLCodeBackend.o
+# INCLUDE += -I ../
+# INCLUDE += -I ../casm-ir/src/
 
 LLSRC += llvm/type.ll
 LLSRC += llvm/bool.ll
@@ -67,27 +65,29 @@ GTEST_OBJ   = uts/obj
 
 .PHONY: include llvm uts
 
-default: obj $(TARGET)
+default: help
+# default: obj $(TARGET)
 
-obj:
-	mkdir -p obj
+# obj:
+# 	mkdir -p obj
 
-obj/%.o: src/%.cpp
-	@echo "CPP " $<
-	@$(CPP) $(CPPFLAG) $(INCLUDE) -c $< -o $@
+# obj/%.o: src/%.cpp
+# 	@echo "CPP " $<
+# 	@$(CPP) $(CPPFLAG) $(INCLUDE) -c $< -o $@
 
-$(TARGET): $(CPPOBJECTS)
-	@echo "AR  " $@
-	@$(AR) rsc $@ $(filter %.o,$^)
-	@ranlib $@
+# $(TARGET): $(CPPOBJECTS)
+# 	@echo "AR  " $@
+# 	@$(AR) rsc $@ $(filter %.o,$^)
+# 	@ranlib $@
 
 clean:
-	@echo "RM  " obj
-	@rm -rf obj
-	@echo "RM  " $(TARGET)
-	@rm -f $(TARGET)
+#	@echo "RM  " obj
+#	@rm -rf obj
+#	@echo "RM  " $(TARGET)
+#	@rm -f $(TARGET)
 	@rm -f casm-rt*.bc
 	@rm -f casm-rt*.ll
+	@rm -f casm-rt*.ir
 #@rm -f $(GTEST_OBJ)/*
 
 
@@ -100,19 +100,19 @@ help:
 	@echo "                   byte-code object file"
 	@echo "        test       run the unit test suite"
 
-c11: obj libcasm-rt.c11.a
+# c11: obj libcasm-rt.c11.a
 
-libcasm-rt.c11.a: obj/bool.o
-	@echo "AR  " $@
-	@$(AR) rsc $@ $(filter %.o,$^)
-	@ranlib $@
-	@$(CC) $(CCFLAG) -o obj/main $@
+# libcasm-rt.c11.a: obj/bool.o
+# 	@echo "AR  " $@
+# 	@$(AR) rsc $@ $(filter %.o,$^)
+# 	@ranlib $@
+# 	@$(CC) $(CCFLAG) -o obj/main $@
 
-obj/%.o: c11/%.c
-	@echo "CC  " $<
-	@$(CC) $(CCFLAG) $(INCLUDE) -c $< -o $@
-	@$(CC) $(CCFLAG) -S $(INCLUDE) -c $< -o $@.s
-	@$(CC) -std=c11 -O3 -S $(INCLUDE) -c $< -o $@.O3.s
+# obj/%.o: c11/%.c
+# 	@echo "CC  " $<
+# 	@$(CC) $(CCFLAG) $(INCLUDE) -c $< -o $@
+# 	@$(CC) $(CCFLAG) -S $(INCLUDE) -c $< -o $@.s
+# 	@$(CC) -std=c11 -O3 -S $(INCLUDE) -c $< -o $@.O3.s
 
 
 
