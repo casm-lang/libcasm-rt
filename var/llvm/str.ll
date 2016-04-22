@@ -18,7 +18,7 @@
 ;;  GNU General Public License for more details.
 ;;  
 ;;  You should have received a copy of the GNU General Public License
-;;  along with this program. If not, see <http://www.gnu.org/licenses/>.
+;;  along with libcasm-rt. If not, see <http://www.gnu.org/licenses/>.
 ;;  
 
 @libcasm-rt.Str.undef  = internal constant [5 x i8] c"undef"

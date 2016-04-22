@@ -18,32 +18,23 @@
 //  GNU General Public License for more details.
 //  
 //  You should have received a copy of the GNU General Public License
-//  along with this program. If not, see <http://www.gnu.org/licenses/>.
+//  along with libcasm-rt. If not, see <http://www.gnu.org/licenses/>.
 //  
 
-#ifndef _LIB_CASM_RT_UPDATE_H_
-#define _LIB_CASM_RT_UPDATE_H_
+#include "Update.h"
 
-#include "casm-rt.h"
+using namespace libcasm_rt;
+using namespace libcasm_ir;
 
-#ifdef __cplusplus
-extern "C"
+
+Update::Update( void )
+//: type_id( id )
+//, type_uid_hash( 0 )
 {
-#endif
-
-    struct libcasm_rt_update
-    {
-        i64 value;
-        i1  isdef;
-    };
-    
-    libcasm_rt_update* libcasm_rt_update_new( stdll_mem* mem, u64 value, u1 defined );
-    
-#ifdef __cplusplus   
+	Value::isa< Value >( (Value*)0 );
 }
-#endif
 
-#endif /* _LIB_CASM_RT_UPDATE_H_ */
+
 
 //  
 //  Local variables:

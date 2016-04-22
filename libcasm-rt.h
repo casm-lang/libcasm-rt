@@ -21,20 +21,21 @@
 //  along with libcasm-rt. If not, see <http://www.gnu.org/licenses/>.
 //  
 
-#include "gtest/gtest.h"
-#include "casm-rt.h"
+#ifndef _LIB_CASMRT_H_
+#define _LIB_CASMRT_H_
 
 
-TEST( basic, true_witness  )
+#include "src/Update.h"
+
+
+namespace libcasm_rt
 {
-    ASSERT_EQ( 0, 0 );
+	class CasmRT
+	{
+	};	
 }
 
-TEST( basic, false_witness  )
-{
-    ASSERT_NE( 0, 1 );
-}
-
+#endif /* _LIB_CASMRT_H_ */
 
 //  
 //  Local variables:

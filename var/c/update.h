@@ -21,20 +21,29 @@
 //  along with libcasm-rt. If not, see <http://www.gnu.org/licenses/>.
 //  
 
-#include "gtest/gtest.h"
+#ifndef _LIB_CASM_RT_UPDATE_H_
+#define _LIB_CASM_RT_UPDATE_H_
+
 #include "casm-rt.h"
 
-
-TEST( basic, true_witness  )
+#ifdef __cplusplus
+extern "C"
 {
-    ASSERT_EQ( 0, 0 );
-}
+#endif
 
-TEST( basic, false_witness  )
-{
-    ASSERT_NE( 0, 1 );
+    struct libcasm_rt_update
+    {
+        i64 value;
+        i1  isdef;
+    };
+    
+    libcasm_rt_update* libcasm_rt_update_new( stdll_mem* mem, u64 value, u1 defined );
+    
+#ifdef __cplusplus   
 }
+#endif
 
+#endif /* _LIB_CASM_RT_UPDATE_H_ */
 
 //  
 //  Local variables:

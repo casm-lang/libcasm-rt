@@ -18,33 +18,33 @@
 //  GNU General Public License for more details.
 //  
 //  You should have received a copy of the GNU General Public License
-//  along with this program. If not, see <http://www.gnu.org/licenses/>.
+//  along with libcasm-rt. If not, see <http://www.gnu.org/licenses/>.
 //  
 
-#ifndef _LIB_CASM_RT_H_
-#define _LIB_CASM_RT_H_
+/**
+   @brief    TODO
+   
+   TODO
+*/
 
-#include "stdll/c/stdll.h"
-#include "stdhl/c/type.h"
+#ifndef _LIB_CASMIR_UPDATE_H_
+#define _LIB_CASMIR_UPDATE_H_
 
-#include "bool.h"
-#include "int.h"
+#include "libcasm-rt.h"
+#include "libcasm-ir.h"
 
-#include "update.h"
-#include "updateset.h"
 
-#ifdef __cplusplus
-extern "C"
+namespace libcasm_rt
 {
-#endif
-	
-	
-
-#ifdef __cplusplus   
+	class Update : public CasmRT
+	{
+    public:
+		Update( void );
+	};	
 }
-#endif
 
-#endif /* _LIB_CASM_RT_H_ */
+#endif /* _LIB_CASMIR_UPDATE_H_ */
+
 
 //  
 //  Local variables:

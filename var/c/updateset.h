@@ -21,20 +21,43 @@
 //  along with libcasm-rt. If not, see <http://www.gnu.org/licenses/>.
 //  
 
-#include "gtest/gtest.h"
+#ifndef _LIB_CASM_RT_UPDATESET_H_
+#define _LIB_CASM_RT_UPDATESET_H_
+
 #include "casm-rt.h"
 
-
-TEST( basic, true_witness  )
+#ifdef __cplusplus
+extern "C"
 {
-    ASSERT_EQ( 0, 0 );
-}
+#endif
 
-TEST( basic, false_witness  )
-{
-    ASSERT_NE( 0, 1 );
-}
+	struct libcasm_rt_updateset;
 
+	libcasm_rt_updateset* libcasm_rt_updateset_new( stdll_mem* mem, uint32_t size );
+
+	u8 libcasm_rt_updateset_del( libcasm_rt_updateset* uset );
+
+	u8 libcasm_rt_updateset_insert( libcasm_rt_updateset* uset, uint64_t location, uint64_t value );
+
+	u8 libcasm_rt_updateset_fork( libcasm_rt_updateset* uset );
+
+	u8 libcasm_rt_updateset_merge( libcasm_rt_updateset* uset );
+
+	u8 libcasm_rt_updateset_dump( libcasm_rt_updateset* uset );
+
+
+	struct libcasm_rt_updateset_iterator;
+	
+	libcasm_rt_updateset_iterator* libcasm_rt_updateset_get_iterator( libcasm_rt_updateset* uset );
+
+	u8 libcasm_rt_updateset_iterator_next( libcasm_rt_updateset_iterator* iter, uint64_t* location, uint64_t* value );
+
+	
+#ifdef __cplusplus   
+}
+#endif
+
+#endif /* _LIB_CASM_RT_UPDATESET_H_ */
 
 //  
 //  Local variables:

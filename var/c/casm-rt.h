@@ -18,46 +18,33 @@
 //  GNU General Public License for more details.
 //  
 //  You should have received a copy of the GNU General Public License
-//  along with this program. If not, see <http://www.gnu.org/licenses/>.
+//  along with libcasm-rt. If not, see <http://www.gnu.org/licenses/>.
 //  
 
-#ifndef _LIB_CASM_RT_UPDATESET_H_
-#define _LIB_CASM_RT_UPDATESET_H_
+#ifndef _LIB_CASM_RT_H_
+#define _LIB_CASM_RT_H_
 
-#include "casm-rt.h"
+#include "stdll/c/stdll.h"
+#include "stdhl/c/type.h"
+
+#include "bool.h"
+#include "int.h"
+
+#include "update.h"
+#include "updateset.h"
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-
-	struct libcasm_rt_updateset;
-
-	libcasm_rt_updateset* libcasm_rt_updateset_new( stdll_mem* mem, uint32_t size );
-
-	u8 libcasm_rt_updateset_del( libcasm_rt_updateset* uset );
-
-	u8 libcasm_rt_updateset_insert( libcasm_rt_updateset* uset, uint64_t location, uint64_t value );
-
-	u8 libcasm_rt_updateset_fork( libcasm_rt_updateset* uset );
-
-	u8 libcasm_rt_updateset_merge( libcasm_rt_updateset* uset );
-
-	u8 libcasm_rt_updateset_dump( libcasm_rt_updateset* uset );
-
-
-	struct libcasm_rt_updateset_iterator;
 	
-	libcasm_rt_updateset_iterator* libcasm_rt_updateset_get_iterator( libcasm_rt_updateset* uset );
-
-	u8 libcasm_rt_updateset_iterator_next( libcasm_rt_updateset_iterator* iter, uint64_t* location, uint64_t* value );
-
 	
+
 #ifdef __cplusplus   
 }
 #endif
 
-#endif /* _LIB_CASM_RT_UPDATESET_H_ */
+#endif /* _LIB_CASM_RT_H_ */
 
 //  
 //  Local variables:
