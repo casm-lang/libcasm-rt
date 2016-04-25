@@ -27,8 +27,8 @@
    TODO
 */
 
-#ifndef _LIB_CASMRT_UPDATE_H_
-#define _LIB_CASMRT_UPDATE_H_
+#ifndef _LIB_CASMRT_CONSTANT_H_
+#define _LIB_CASMRT_CONSTANT_H_
 
 #include "libcasm-rt.h"
 #include "libcasm-ir.h"
@@ -37,39 +37,14 @@
 
 namespace libcasm_rt
 {
-    class UpdateImplementation //: public CasmRT
-    {
-    public:
-        static libnovel::CallableUnit* create( libcasm_ir::UpdateInstruction& value );
-    };
-	
-	class FunctionState
-    {
-    public:
-        static libnovel::Variable* create( libcasm_ir::Function& value );
-    };
-
-	class FunctionLocation
-    {
-    public:
-        static libnovel::CallableUnit* create( libcasm_ir::Function& value );
-    };
-		
-	class ProgramFunctionState
-    {
-    public:
-        static libnovel::Variable* create( libnovel::Variable* value = 0 );
-    };
-
-	class ProgramRuleSignature
-    {
-    public:
-        static libnovel::CallableUnit* create( void );
-    };
-	
+	class Constant //: public CasmRT
+	{
+	public:
+		static libnovel::Value* create( libnovel::Type& type );
+	};
 }
 
-#endif /* _LIB_CASMRT_UPDATE_H_ */
+#endif /* _LIB_CASMRT_CONSTANT_H_ */
 
 
 //  

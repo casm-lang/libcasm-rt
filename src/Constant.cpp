@@ -21,55 +21,30 @@
 //  along with libcasm-rt. If not, see <http://www.gnu.org/licenses/>.
 //  
 
-/**
-   @brief    TODO
-   
-   TODO
-*/
+#include "Constant.h"
 
-#ifndef _LIB_CASMRT_UPDATE_H_
-#define _LIB_CASMRT_UPDATE_H_
-
-#include "libcasm-rt.h"
-#include "libcasm-ir.h"
-#include "libnovel.h"
+using namespace libcasm_rt;
 
 
-namespace libcasm_rt
+libnovel::Value* Constant::create( libnovel::Type& type )
 {
-    class UpdateImplementation //: public CasmRT
-    {
-    public:
-        static libnovel::CallableUnit* create( libcasm_ir::UpdateInstruction& value );
-    };
+	libnovel::Value* c = 0;
 	
-	class FunctionState
-    {
-    public:
-        static libnovel::Variable* create( libcasm_ir::Function& value );
-    };
-
-	class FunctionLocation
-    {
-    public:
-        static libnovel::CallableUnit* create( libcasm_ir::Function& value );
-    };
-		
-	class ProgramFunctionState
-    {
-    public:
-        static libnovel::Variable* create( libnovel::Variable* value = 0 );
-    };
-
-	class ProgramRuleSignature
-    {
-    public:
-        static libnovel::CallableUnit* create( void );
-    };
+	if( type.getIDKind() == libnovel::Type::STRUCTURE )
+	{
+		libnovel::Value* b = type.getBound();
+		assert( b and libnovel::Value::isa< libnovel::Structure >( b ) );
+		libnovel::Structure* s = (libnovel::Structure*)b;
+		c = libnovel::StructureConstant::create( s );
+	}
+	else
+	{
+		assert( !"unsupported type to create constant found!" );
+	}
 	
+	assert( c );
+	return c;
 }
-
-#endif /* _LIB_CASMRT_UPDATE_H_ */
 
 
 //  

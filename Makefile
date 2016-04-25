@@ -36,6 +36,8 @@ CPPFLAG += -Wall
 
 TARGET += libcasm-rt.a
 
+CPPOBJECTS += obj/Constant.o
+CPPOBJECTS += obj/Type.o
 CPPOBJECTS += obj/Update.o
 
 INCLUDE += -I ./

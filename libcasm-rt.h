@@ -25,6 +25,8 @@
 #define _LIB_CASMRT_H_
 
 
+#include "src/Constant.h"
+#include "src/Type.h"
 #include "src/Update.h"
 
 
