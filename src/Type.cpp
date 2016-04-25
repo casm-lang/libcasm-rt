@@ -26,11 +26,14 @@
 using namespace libcasm_rt;
 
 
-libnovel::Structure* Type::create( libcasm_ir::Type& type )
+libnovel::Structure* Type::create( libcasm_ir::Value& value )
 {
-	assert( type.getSubTypes().size() == 0 );
+	libcasm_ir::Type* type = value.getType();
+    assert( type and " invalid type pointer! " );
 	
-	u64 tid = type.getResultType()->getID();
+	assert( type->getSubTypes().size() == 0 ); // PPA: LIMITATION for now!
+	
+	u64 tid = type->getResultType()->getID();
 	
 	if( tid == libcasm_ir::IntegerType.getID() )
 	{
@@ -38,7 +41,7 @@ libnovel::Structure* Type::create( libcasm_ir::Type& type )
 	}
 	else if( tid == libcasm_ir::RulePointerType.getID() )
 	{
-		return Integer::create();
+		return RulePtr::create();
 	}
 	else
 	{
@@ -114,8 +117,8 @@ libnovel::Structure* Update::create( void )
 	{
 		type = type_factory
 		( "Update"
-		, { "loc", "val", 0 }
-		, { &libnovel::TypeId, &libnovel::TypeB64, 0 }
+		, { "isused", "location", "value", "isdef", 0 }
+		, { &libnovel::TypeB1, &libnovel::TypeId, &libnovel::TypeB64, &libnovel::TypeB1, 0 }
 		);
 	}
 	return type;

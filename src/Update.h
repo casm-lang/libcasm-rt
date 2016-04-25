@@ -43,6 +43,12 @@ namespace libcasm_rt
         static libnovel::CallableUnit* create( libcasm_ir::UpdateInstruction& value );
     };
 	
+    class LookupImplementation //: public CasmRT
+    {
+    public:
+        static libnovel::CallableUnit* create( libcasm_ir::LookupInstruction& value );
+    };
+	
 	class FunctionState
     {
     public:

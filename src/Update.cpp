@@ -28,48 +28,115 @@ using namespace libcasm_rt;
 
 libnovel::CallableUnit* UpdateImplementation::create( libcasm_ir::UpdateInstruction& value )
 {
-	static libnovel::Intrinsic* update_implementation = 0;
+	static std::unordered_map< libnovel::Structure*, libnovel::CallableUnit* > cache;
 	
-	if( !update_implementation )
+	libnovel::Structure* key = libcasm_rt::Type::create( *(value.getRHS()) );
+    if( cache.count( key ) > 0 )
 	{
-		update_implementation = new libnovel::Intrinsic( "casm_rt__update" );
-		assert( update_implementation );
-		
-		libnovel::Reference* uset = new libnovel::Reference
-		( "uset"
-		, libcasm_rt::UpdateSet::create()->getType()
-		, update_implementation
-		);
-		assert( uset );
-		
-		libnovel::Reference* loc = new libnovel::Reference
-		( "uloc"
-		, &libnovel::TypeId // ASSUMTION: PPA: addresses stay in the 48-bit range!
-		, update_implementation
-		);
-		assert( loc );
-		
-		libnovel::Reference* val = new libnovel::Reference
-		( "uval"
-		, libcasm_rt::Integer::create()->getType() // ASSUMTION: PPA: values are numbers only for now!
-		                                           // later, dyn ptr. too for SW-emit only!
-		, update_implementation
-		);
-		assert( val );
-		
-		libnovel::SequentialScope* scope = new libnovel::SequentialScope();
-		assert( scope );
-		update_implementation->setContext( scope );
-
-		libnovel::TrivialStatement* blk = new libnovel::TrivialStatement( scope );
-		libnovel::StreamInstruction* output = new libnovel::StreamInstruction( libnovel::StreamInstruction::OUTPUT );
-		assert( output );
-		output->add( libnovel::StringConstant::create( "update" ) );
-		output->add( &libnovel::StringConstant::LF );
-	    blk->add( output );
+		return cache[ key ];
 	}
 	
-	return update_implementation;
+	const char* name = libstdhl::Allocator::string
+	( "casm_rt__update_" + std::string( key->getName() )
+	);
+	
+	libnovel::CallableUnit* obj = new libnovel::Intrinsic( name );
+	assert( obj );
+	cache[ key ] = obj;
+	
+	libnovel::Reference* uset = new libnovel::Reference
+	( "uset"
+	, libcasm_rt::UpdateSet::create()->getType()
+	, obj
+	);
+	assert( uset );
+	
+	libnovel::Reference* loc = new libnovel::Reference
+	( "uloc"
+	, &libnovel::TypeId // ASSUMTION: PPA: addresses stay in the 48-bit range!
+	, obj
+	);
+	assert( loc );
+	
+	libnovel::Reference* val = new libnovel::Reference
+	( "uval"
+	, key->getType()
+	, obj
+	);
+	assert( val );
+	
+	libnovel::SequentialScope* scope = new libnovel::SequentialScope();
+	assert( scope );
+	obj->setContext( scope );
+
+	libnovel::TrivialStatement* blk = new libnovel::TrivialStatement( scope );
+	libnovel::StreamInstruction* output = new libnovel::StreamInstruction( libnovel::StreamInstruction::OUTPUT );
+	assert( output );
+	output->add( libnovel::StringConstant::create( "update" ) );
+	output->add( &libnovel::StringConstant::LF );
+	blk->add( output );
+    
+	return obj;
+}
+
+
+libnovel::CallableUnit* LookupImplementation::create( libcasm_ir::LookupInstruction& value )
+{
+	static std::unordered_map< libnovel::Structure*, libnovel::CallableUnit* > cache;
+
+	libnovel::Structure* key = libcasm_rt::Type::create( *(value.get()) );
+	if( cache.count( key ) > 0 )
+	{
+		return cache[ key ];
+	}
+
+	const char* name = libstdhl::Allocator::string
+	( "casm_rt__lookup_" + std::string( key->getName() )
+	);
+		
+	libnovel::CallableUnit* obj = new libnovel::Intrinsic( name );
+	assert( obj );
+	cache[ key ] = obj;
+	
+	libnovel::Reference* uset = new libnovel::Reference
+	( "uset"
+	, libcasm_rt::UpdateSet::create()->getType()
+	, obj
+	);
+	assert( uset );
+	
+	libnovel::Reference* loc = new libnovel::Reference
+	( "lookup_loc"
+	, &libnovel::TypeId // ASSUMTION: PPA: addresses stay in the 48-bit range!
+	, obj
+	);
+	assert( loc );
+	
+	libnovel::Reference* val = new libnovel::Reference
+	( "lookup_value"
+	, key->getType() // ASSUMTION: TODO: FIXME: PPA: Integer for now!
+	, obj
+	, libnovel::Reference::OUTPUT
+	);
+	assert( val );
+	
+	libnovel::SequentialScope* scope = new libnovel::SequentialScope();
+	assert( scope );
+	obj->setContext( scope );
+	
+	libnovel::TrivialStatement* blk = new libnovel::TrivialStatement( scope );
+	libnovel::StreamInstruction* output = new libnovel::StreamInstruction( libnovel::StreamInstruction::OUTPUT );
+	assert( output );
+	output->add( libnovel::StringConstant::create( "lookup" ) );
+	output->add( &libnovel::StringConstant::LF );
+	blk->add( output );
+	
+	// PPA: EXPERIMENTAL:
+	libnovel::CastInstruction* cast = new libnovel::CastInstruction( libcasm_rt::Integer::create(), loc );
+	libnovel::StoreInstruction* sto = new libnovel::StoreInstruction( cast, val );
+    blk->add( sto );
+	
+	return obj;
 }
 
 
@@ -81,7 +148,7 @@ libnovel::Variable* FunctionState::create( libcasm_ir::Function& value )
 		return cache[ &value ];
 	}
 	
-	libnovel::Structure* ty = Type::create( *value.getType() );	
+	libnovel::Structure* ty = Type::create( value );	
 	libnovel::Variable* obj = new libnovel::Variable
 	( ty->getType()
 	, libcasm_rt::Constant::create( *ty->getType() )
@@ -162,9 +229,8 @@ libnovel::CallableUnit* ProgramRuleSignature::create( void )
 	return obj;
 }
 
-/*
 
-*/
+
 
 //  
 //  Local variables:

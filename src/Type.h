@@ -40,7 +40,7 @@ namespace libcasm_rt
 	class Type //: public CasmRT
 	{
 	public:
-		static libnovel::Structure* create( libcasm_ir::Type& type );
+		static libnovel::Structure* create( libcasm_ir::Value& value );
 	};
 	
 	
