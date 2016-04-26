@@ -26,7 +26,41 @@
 using namespace libcasm_rt;
 
 
-libnovel::CallableUnit* UpdateImplementation::create( libcasm_ir::UpdateInstruction& value )
+libnovel::CallableUnit* HashImplementation::create( void )
+{
+	static libnovel::CallableUnit* obj = 0;
+	if( obj )
+	{
+		return obj;
+	}
+	
+	obj = new libnovel::Intrinsic( "casm_rt__hash" );
+	assert( obj );
+	
+	libnovel::Value* v = obj->in( "value", &libnovel::TypeB64 );
+	libnovel::Value* s = obj->in( "size",  &libnovel::TypeB16 );
+	libnovel::Value* r = obj->out( "res",  &libnovel::TypeB16 );
+	
+	libnovel::SequentialScope* scope = new libnovel::SequentialScope( obj );
+	libnovel::TrivialStatement* blk = new libnovel::TrivialStatement( scope );
+	
+	libnovel::StreamInstruction* output = new libnovel::StreamInstruction( libnovel::StreamInstruction::OUTPUT );
+	assert( output );
+	output->add( libnovel::StringConstant::create( "hash" ) );
+	output->add( &libnovel::StringConstant::LF );
+	blk->add( output );
+	
+	libnovel::Instruction* s_ = new libnovel::ZeroExtendInstruction( s, v->getType() );	
+	libnovel::Instruction* p_ = new libnovel::ModUnsignedInstruction( v, s_ );
+	libnovel::Instruction* t_ = new libnovel::TruncationInstruction( p_, r->getType() );
+	libnovel::Instruction* r_ = new libnovel::StoreInstruction( t_, r );
+	blk->add( r_ );
+	
+	return obj;
+}
+
+
+libnovel::CallableUnit* UpdateImplementation::create( libcasm_ir::UpdateInstruction& value, libnovel::Module* module )
 {
 	static std::unordered_map< libnovel::Structure*, libnovel::CallableUnit* > cache;
 	
@@ -43,44 +77,47 @@ libnovel::CallableUnit* UpdateImplementation::create( libcasm_ir::UpdateInstruct
 	libnovel::CallableUnit* obj = new libnovel::Intrinsic( name );
 	assert( obj );
 	cache[ key ] = obj;
-	
-	libnovel::Reference* uset = new libnovel::Reference
-	( "uset"
-	, libcasm_rt::UpdateSet::create()->getType()
-	, obj
-	);
-	assert( uset );
-	
-	libnovel::Reference* loc = new libnovel::Reference
-	( "uloc"
-	, &libnovel::TypeId // ASSUMTION: PPA: addresses stay in the 48-bit range!
-	, obj
-	);
-	assert( loc );
-	
-	libnovel::Reference* val = new libnovel::Reference
-	( "uval"
-	, key->getType()
-	, obj
-	);
-	assert( val );
-	
-	libnovel::SequentialScope* scope = new libnovel::SequentialScope();
-	assert( scope );
-	obj->setContext( scope );
+	if( module )
+	{
+		module->add( obj );
+	}
 
+	libnovel::Memory* uset_mem = libcasm_rt::UpdateSet::create();
+	
+	libnovel::Value* refs = obj->in( "refs", libcasm_rt::State::create()->getType() );
+	libnovel::Value* uset = obj->in( "uset", uset_mem->getType() );
+	libnovel::Value* loc  = obj->in( "loc", &libnovel::TypeId ); // ASSUMTION: PPA: addresses stay in the 48-bit range!
+	libnovel::Value* val  = obj->in( "value", key->getType() );
+	
+	libnovel::SequentialScope* scope = new libnovel::SequentialScope( obj );
 	libnovel::TrivialStatement* blk = new libnovel::TrivialStatement( scope );
 	libnovel::StreamInstruction* output = new libnovel::StreamInstruction( libnovel::StreamInstruction::OUTPUT );
 	assert( output );
 	output->add( libnovel::StringConstant::create( "update" ) );
 	output->add( &libnovel::StringConstant::LF );
 	blk->add( output );
-    
+
+	libnovel::CallableUnit* hash = HashImplementation::create();
+	libnovel::Instruction* hash_call = new libnovel::CallInstruction( hash );
+	
+	u16 size = hash->getReference( "size" )->getType()->getBitsize();
+	libnovel::Value* size_bc = libnovel::BitConstant::create( uset_mem->getSize(), size );
+	if( module )
+	{
+		module->add( size_bc );
+	}
+	
+	libnovel::Instruction* pos = new libnovel::AllocInstruction( hash->getReference( "res" )->getType() );	
+    hash_call->add( loc );
+	hash_call->add( size_bc );
+	hash_call->add( pos );
+	blk->add( hash_call );
+	
 	return obj;
 }
 
 
-libnovel::CallableUnit* LookupImplementation::create( libcasm_ir::LookupInstruction& value )
+libnovel::CallableUnit* LookupImplementation::create( libcasm_ir::LookupInstruction& value, libnovel::Module* module )
 {
 	static std::unordered_map< libnovel::Structure*, libnovel::CallableUnit* > cache;
 
@@ -97,34 +134,19 @@ libnovel::CallableUnit* LookupImplementation::create( libcasm_ir::LookupInstruct
 	libnovel::CallableUnit* obj = new libnovel::Intrinsic( name );
 	assert( obj );
 	cache[ key ] = obj;
+	if( module )
+	{
+		module->add( obj );
+	}
 	
-	libnovel::Reference* uset = new libnovel::Reference
-	( "uset"
-	, libcasm_rt::UpdateSet::create()->getType()
-	, obj
-	);
-	assert( uset );
+	libnovel::Value* refs = obj->in( "refs", libcasm_rt::State::create()->getType() );
+	/*libnovel::Value* uset = */obj->in( "uset", libcasm_rt::UpdateSet::create()->getType() );
+	libnovel::Value* loc  = obj->in( "loc", &libnovel::TypeId ); // ASSUMTION: PPA: addresses stay in the 48-bit range!
+	libnovel::Value* val  = obj->out( "value", key->getType() );
 	
-	libnovel::Reference* loc = new libnovel::Reference
-	( "lookup_loc"
-	, &libnovel::TypeId // ASSUMTION: PPA: addresses stay in the 48-bit range!
-	, obj
-	);
-	assert( loc );
-	
-	libnovel::Reference* val = new libnovel::Reference
-	( "lookup_value"
-	, key->getType() // ASSUMTION: TODO: FIXME: PPA: Integer for now!
-	, obj
-	, libnovel::Reference::OUTPUT
-	);
-	assert( val );
-	
-	libnovel::SequentialScope* scope = new libnovel::SequentialScope();
-	assert( scope );
-	obj->setContext( scope );
-	
+	libnovel::SequentialScope* scope = new libnovel::SequentialScope( obj );
 	libnovel::TrivialStatement* blk = new libnovel::TrivialStatement( scope );
+	
 	libnovel::StreamInstruction* output = new libnovel::StreamInstruction( libnovel::StreamInstruction::OUTPUT );
 	assert( output );
 	output->add( libnovel::StringConstant::create( "lookup" ) );
@@ -219,12 +241,9 @@ libnovel::CallableUnit* ProgramRuleSignature::create( void )
 	{
 		obj = new libnovel::Function( "casm_rt____rule_signature" );
 	    assert( obj );
-	    libnovel::Reference* ref_mem = new libnovel::Reference
-	    ( "ref_mem"
-		, libcasm_rt::UpdateSet::create()->getType()
-	    , obj
-	    );
-	    assert( ref_mem );
+
+		obj->in( "refs", libcasm_rt::State::create()->getType() );
+		obj->in( "uset", libcasm_rt::UpdateSet::create()->getType() );
 	}
 	return obj;
 }

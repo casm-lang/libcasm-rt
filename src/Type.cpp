@@ -51,29 +51,29 @@ libnovel::Structure* Type::create( libcasm_ir::Value& value )
 }
 
 
+struct type_factory_argument
+{
+	const char* name;
+	libnovel::Type* type;
+};
 
 static libnovel::Structure* type_factory
 ( const std::string& name
-, const std::vector< const char* >& args
-, const std::vector< libnovel::Type* >& argt
+, const std::vector< struct type_factory_argument >& args
 )
 {
-	//assert( args.size() == argv.size() and " invalid argument lists for 'name' and 'type' provided! " );
-	
-	libnovel::Structure* type = new libnovel::Structure( libstdhl::Allocator::string( name.c_str() ) );
+    libnovel::Structure* type = new libnovel::Structure( libstdhl::Allocator::string( name.c_str() ) );
 	assert( type );
 	type->getType()->bind( type );
-
-	u32 c = 0;
-	while( args[ c ] != 0 )
+	
+	for( u32 c = 0; c < args.size(); c++ )
 	{
 		libnovel::Structure* arg = new libnovel::Structure
-		( args[ c ]
-		, argt[ c ]
+		( args[ c ].name
+		, args[ c ].type
 		, type
 		);
 		assert( arg );
-		c++;
 	}
 	
 	return type;
@@ -87,8 +87,9 @@ libnovel::Structure* Integer::create( void )
 	{
 		type = type_factory
 		( "Integer"
-		, { "value",            "isdef",           0 }
-		, { &libnovel::TypeB64, &libnovel::TypeB1, 0 }
+		, { { "value", &libnovel::TypeB64 }
+		  , { "isdef", &libnovel::TypeB1 }
+		  }
 		);
 	}
 	return type;
@@ -101,8 +102,9 @@ libnovel::Structure* RulePtr::create( void )
 	{
 		type = type_factory
 		( "RulePtr"
-		, { "value",           "isdef",           0 }
-		, { &libnovel::TypeId, &libnovel::TypeB1, 0 }
+		, { { "value", &libnovel::TypeId }
+		  , { "isdef", &libnovel::TypeB1 }
+		  }
 		);
 	}
 	return type;
@@ -117,8 +119,11 @@ libnovel::Structure* Update::create( void )
 	{
 		type = type_factory
 		( "Update"
-		, { "isused", "location", "value", "isdef", 0 }
-		, { &libnovel::TypeB1, &libnovel::TypeId, &libnovel::TypeB64, &libnovel::TypeB1, 0 }
+		, { { "branded",  &libnovel::TypeB1 }
+		  , { "location", &libnovel::TypeId }
+		  , { "value",    &libnovel::TypeB64 }
+		  , { "isdef",    &libnovel::TypeB1 }
+		  }
 		);
 	}
 	return type;
@@ -129,9 +134,19 @@ libnovel::Memory* UpdateSet::create( void )
 	libnovel::Memory* type = 0;
 	if( not type )
 	{
-		type = new libnovel::Memory( Update::create(), 32 );
+		type = new libnovel::Memory( Update::create(), 31 );
 	}
-	return type;	
+	return type;
+}
+
+libnovel::Interconnect* State::create( void )
+{
+	libnovel::Interconnect* type = 0;
+	if( not type )
+	{
+		type = new libnovel::Interconnect();
+	}
+	return type;
 }
 
 

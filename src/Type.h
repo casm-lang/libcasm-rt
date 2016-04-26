@@ -73,6 +73,12 @@ namespace libcasm_rt
     public:
 		static libnovel::Memory* create( void );
 	};
+	
+	class State : public Type
+	{
+    public:
+		static libnovel::Interconnect* create( void );
+	};
 }
 
 #endif /* _LIB_CASMRT_TYPE_H_ */

@@ -37,16 +37,22 @@
 
 namespace libcasm_rt
 {
+    class HashImplementation //: public CasmRT
+    {
+    public:
+        static libnovel::CallableUnit* create( void );
+    };
+	
     class UpdateImplementation //: public CasmRT
     {
     public:
-        static libnovel::CallableUnit* create( libcasm_ir::UpdateInstruction& value );
+        static libnovel::CallableUnit* create( libcasm_ir::UpdateInstruction& value, libnovel::Module* module = 0 );
     };
 	
     class LookupImplementation //: public CasmRT
     {
     public:
-        static libnovel::CallableUnit* create( libcasm_ir::LookupInstruction& value );
+        static libnovel::CallableUnit* create( libcasm_ir::LookupInstruction& value, libnovel::Module* module = 0 );
     };
 	
 	class FunctionState
