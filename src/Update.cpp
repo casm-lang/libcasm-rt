@@ -153,10 +153,12 @@ libnovel::CallableUnit* LookupImplementation::create( libcasm_ir::LookupInstruct
 	output->add( &libnovel::StringConstant::LF );
 	blk->add( output );
 	
-	// PPA: EXPERIMENTAL:
-	libnovel::CastInstruction* cast = new libnovel::CastInstruction( libcasm_rt::Integer::create(), loc );
-	libnovel::StoreInstruction* sto = new libnovel::StoreInstruction( cast, val );
-    blk->add( sto );
+	// PPA: EXPERIMENTAL: needs more attention in the future, because we only support parallel only for now!!!
+	libnovel::Instruction* el = new libnovel::ExtractInstruction( refs, loc );
+	libnovel::Instruction* ca = new libnovel::CastInstruction( libcasm_rt::Integer::create(), el );
+	libnovel::Instruction* ld = new libnovel::LoadInstruction( ca );
+	libnovel::Instruction* st = new libnovel::StoreInstruction( ld, val );
+    blk->add( st );
 	
 	return obj;
 }
