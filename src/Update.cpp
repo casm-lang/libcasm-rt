@@ -113,6 +113,40 @@ libnovel::CallableUnit* UpdateImplementation::create( libcasm_ir::UpdateInstruct
 	hash_call->add( pos );
 	blk->add( hash_call );
 	
+	
+	libnovel::Instruction* el = new libnovel::ExtractInstruction( uset, pos );
+	libnovel::Structure* update_type = libcasm_rt::Update::create();
+	libnovel::Instruction* ca = new libnovel::CastInstruction( update_type, el );
+	
+	libnovel::Instruction* u_bra = new libnovel::ExtractInstruction( ca, update_type->get(0) );
+	libnovel::Instruction* u_loc = new libnovel::ExtractInstruction( ca, update_type->get(1) );
+	libnovel::Instruction* u_val = new libnovel::ExtractInstruction( ca, update_type->get(2) );
+	libnovel::Instruction* u_def = new libnovel::ExtractInstruction( ca, update_type->get(3) );
+
+	libnovel::Instruction* v_val = new libnovel::ExtractInstruction( val, key->get(0) );
+	libnovel::Instruction* v_def = new libnovel::ExtractInstruction( val, key->get(1) );
+	
+	
+	libnovel::Value* u_c = libnovel::BitConstant::create( 1, 1 );
+	if( module )
+	{
+		module->add( u_c );
+	}
+	libnovel::Instruction* s_bra = new libnovel::StoreInstruction( u_c, u_bra );
+	blk->add( s_bra );
+	libnovel::Instruction* s_loc = new libnovel::StoreInstruction( loc, u_loc );
+	blk->add( s_loc );
+	libnovel::Instruction* s_val = new libnovel::StoreInstruction( v_val, u_val );
+	blk->add( s_val );
+	libnovel::Instruction* s_def = new libnovel::StoreInstruction( v_def, u_def );
+	blk->add( s_def );
+	
+	
+
+	
+	
+	
+	
 	return obj;
 }
 
