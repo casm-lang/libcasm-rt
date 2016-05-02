@@ -252,7 +252,7 @@ libnovel::CallableUnit* FunctionLocation::create( libcasm_ir::Function& value )
 	stmt->add( store );
 	
 	return obj;
-}	
+}
 
 
 libnovel::Variable* ProgramFunctionState::create( libnovel::Variable* value )
