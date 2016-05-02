@@ -82,7 +82,7 @@ static libnovel::Structure* type_factory
 
 libnovel::Structure* Integer::create( void )
 {
-	libnovel::Structure* type = 0;
+	static libnovel::Structure* type = 0;
 	if( not type )
 	{
 		type = type_factory
@@ -95,9 +95,31 @@ libnovel::Structure* Integer::create( void )
 	return type;
 }
 
+
+libnovel::Structure* String::create( libcasm_ir::StringConstant& value )
+{
+	static std::unordered_map< i16, libnovel::Structure* > cache;
+	i16 length = strlen( value.getValue() );
+	
+	if( cache.count( length ) > 0 )
+	{
+		return cache[ length ];
+	}
+	
+	libnovel::Structure* type = type_factory
+	( libstdhl::Allocator::string( std::string( "String" + std::to_string( length ) ) )
+	, { { "value", new libnovel::Type( libnovel::Type::STRING, length, libnovel::Type::STATE::LOCKED ) }
+	  , { "isdef", &libnovel::TypeB1 }
+	  }
+	);
+	
+	return type;
+}
+
+
 libnovel::Structure* RulePtr::create( void )
 {
-	libnovel::Structure* type = 0;
+	static libnovel::Structure* type = 0;
 	if( not type )
 	{
 		type = type_factory
@@ -114,7 +136,7 @@ libnovel::Structure* RulePtr::create( void )
 
 libnovel::Structure* Update::create( void )
 {
-	libnovel::Structure* type = 0;
+	static libnovel::Structure* type = 0;
 	if( not type )
 	{
 		type = type_factory
@@ -131,7 +153,7 @@ libnovel::Structure* Update::create( void )
 
 libnovel::Memory* UpdateSet::create( void )
 {
-	libnovel::Memory* type = 0;
+	static libnovel::Memory* type = 0;
 	if( not type )
 	{
 		type = new libnovel::Memory( Update::create(), 31 );
@@ -141,7 +163,7 @@ libnovel::Memory* UpdateSet::create( void )
 
 libnovel::Interconnect* State::create( void )
 {
-	libnovel::Interconnect* type = 0;
+	static libnovel::Interconnect* type = 0;
 	if( not type )
 	{
 		type = new libnovel::Interconnect();

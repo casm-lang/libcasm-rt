@@ -49,6 +49,12 @@ namespace libcasm_rt
     public:
 		static libnovel::Structure* create( void );
 	};
+
+	class String : public Type
+	{
+    public:
+		static libnovel::Structure* create( libcasm_ir::StringConstant& value );
+	};
 	
 	class RulePtr : public Type
 	{
