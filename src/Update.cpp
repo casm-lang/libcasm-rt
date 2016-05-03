@@ -44,11 +44,12 @@ libnovel::CallableUnit* HashImplementation::create( void )
 	libnovel::SequentialScope* scope = new libnovel::SequentialScope( obj );
 	libnovel::TrivialStatement* blk = new libnovel::TrivialStatement( scope );
 	
-	libnovel::StreamInstruction* output = new libnovel::StreamInstruction( libnovel::StreamInstruction::OUTPUT );
-	assert( output );
-	output->add( libnovel::StringConstant::create( "hash" ) );
-	output->add( &libnovel::StringConstant::LF );
-	blk->add( output );
+	// libnovel::StreamInstruction* output = new libnovel::StreamInstruction( libnovel::StreamInstruction::OUTPUT );
+	// assert( output );
+	// output->add( libnovel::StringConstant::create( "hash" ) );
+	// output->add( &libnovel::StringConstant::LF );
+	// blk->add( output );
+	
 	
 	libnovel::Instruction* s_ = new libnovel::ZeroExtendInstruction( s, v->getType() );	
 	libnovel::Instruction* p_ = new libnovel::ModUnsignedInstruction( v, s_ );
@@ -91,12 +92,12 @@ libnovel::CallableUnit* UpdateImplementation::create( libcasm_ir::UpdateInstruct
 	
 	libnovel::SequentialScope* scope = new libnovel::SequentialScope( obj );
 	libnovel::TrivialStatement* blk = new libnovel::TrivialStatement( scope );
-	libnovel::StreamInstruction* output = new libnovel::StreamInstruction( libnovel::StreamInstruction::OUTPUT );
-	assert( output );
-	output->add( libnovel::StringConstant::create( "update" ) );
-	output->add( &libnovel::StringConstant::LF );
-	blk->add( output );
-
+	// libnovel::StreamInstruction* output = new libnovel::StreamInstruction( libnovel::StreamInstruction::OUTPUT );
+	// assert( output );
+	// output->add( libnovel::StringConstant::create( "update" ) );
+	// output->add( &libnovel::StringConstant::LF );
+	// blk->add( output );
+	
 	libnovel::CallableUnit* hash = HashImplementation::create();
 	libnovel::Instruction* hash_call = new libnovel::CallInstruction( hash );
 	
@@ -181,11 +182,12 @@ libnovel::CallableUnit* LookupImplementation::create( libcasm_ir::LookupInstruct
 	libnovel::SequentialScope* scope = new libnovel::SequentialScope( obj );
 	libnovel::TrivialStatement* blk = new libnovel::TrivialStatement( scope );
 	
-	libnovel::StreamInstruction* output = new libnovel::StreamInstruction( libnovel::StreamInstruction::OUTPUT );
-	assert( output );
-	output->add( libnovel::StringConstant::create( "lookup" ) );
-	output->add( &libnovel::StringConstant::LF );
-	blk->add( output );
+	// libnovel::StreamInstruction* output = new libnovel::StreamInstruction( libnovel::StreamInstruction::OUTPUT );
+	// assert( output );
+	// output->add( libnovel::StringConstant::create( "lookup" ) );
+	// output->add( &libnovel::StringConstant::LF );
+	// blk->add( output );
+	
 	
 	// PPA: EXPERIMENTAL: needs more attention in the future, because we only support parallel only for now!!!
 	libnovel::Instruction* el = new libnovel::ExtractInstruction( refs, loc );

@@ -99,7 +99,12 @@ libnovel::Structure* Integer::create( void )
 libnovel::Structure* String::create( libcasm_ir::StringConstant& value )
 {
 	static std::unordered_map< i16, libnovel::Structure* > cache;
-	i16 length = strlen( value.getValue() );
+	
+	i16 length = 0;
+	if( value.getValue() )
+	{
+		length = strlen( value.getValue() );
+	}
 	
 	if( cache.count( length ) > 0 )
 	{

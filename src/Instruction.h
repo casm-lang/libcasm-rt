@@ -21,24 +21,51 @@
 //  along with libcasm-rt. If not, see <http://www.gnu.org/licenses/>.
 //  
 
-#ifndef _LIB_CASMRT_H_
-#define _LIB_CASMRT_H_
+/**
+   @brief    TODO
+   
+   TODO
+*/
 
+#ifndef _LIB_CASMRT_INSTRUCTION_H_
+#define _LIB_CASMRT_INSTRUCTION_H_
 
-#include "src/Constant.h"
-#include "src/Instruction.h"
-#include "src/Type.h"
-#include "src/Update.h"
+#include "libcasm-rt.h"
+#include "libcasm-ir.h"
+#include "libnovel.h"
 
 
 namespace libcasm_rt
 {
-	class CasmRT
-	{
-	};	
+    class Instruction //: public CasmRT
+    {
+    public:
+        static libnovel::CallableUnit* create( libcasm_ir::Value& value, libnovel::Module* module = 0 );
+    };
+	
+    // class AddInstruction //: public CasmRT
+    // {
+    // public:
+    //     static libnovel::CallableUnit* create( libcasm_ir::AddInstruction& value, libnovel::Module* module = 0 );
+    // };
+
+	// class DivInstruction //: public CasmRT
+    // {
+    // public:
+    //     static libnovel::CallableUnit* create( libcasm_ir::DivInstruction& value, libnovel::Module* module = 0 );
+    // };
+	
+	template< class INSTR >
+	class ArithmeticInstruction //: public CasmRT
+    {
+    public:
+       static libnovel::CallableUnit* create( libcasm_ir::Value& value, libnovel::Module* module = 0 );
+    };
+	
 }
 
-#endif /* _LIB_CASMRT_H_ */
+#endif /* _LIB_CASMRT_INSTRUCTION_H_ */
+
 
 //  
 //  Local variables:
