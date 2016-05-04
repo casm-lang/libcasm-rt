@@ -191,7 +191,9 @@ libnovel::CallableUnit* EquInstruction::create( libcasm_ir::Value& value, libnov
 	libnovel::Value* rad = new libnovel::ExtractInstruction( ra, ra->getStructure()->get(1) );
 	libnovel::Value* rbv = new libnovel::ExtractInstruction( rb, rb->getStructure()->get(0) );
 	libnovel::Value* rbd = new libnovel::ExtractInstruction( rb, rb->getStructure()->get(1) );
-		
+    libnovel::Value* rtv = new libnovel::ExtractInstruction( rt, rt->getStructure()->get(0) );
+	libnovel::Value* rtd = new libnovel::ExtractInstruction( rt, rt->getStructure()->get(1) );
+	
 	libnovel::Value* lav  = new libnovel::LoadInstruction( rav );
 	libnovel::Value* lad  = new libnovel::LoadInstruction( rad );
 	libnovel::Value* lbv  = new libnovel::LoadInstruction( rbv );
@@ -204,18 +206,29 @@ libnovel::CallableUnit* EquInstruction::create( libcasm_ir::Value& value, libnov
 	{
 		module->add( def );
 	}
-	libnovel::Value* rtd = new libnovel::ExtractInstruction( rt, rt->getStructure()->get(1) );
 	libnovel::Value* scd = new libnovel::StoreInstruction( def, rtd );
 	stmt_d->add( scd );
+
 	
+	libnovel::Value* check = new libnovel::AndInstruction( lad, lbd );
+	libnovel::Statement* br = new libnovel::BranchStatement( scope );
+	br->add( rtv );
+	br->add( check );
 	
-    // libnovel::Value* icd = new libnovel::AndInstruction( lad, lbd );
-    libnovel::Value* rtv = new libnovel::ExtractInstruction( rt, rt->getStructure()->get(0) );
-    // libnovel::Value* scv = new libnovel::StoreInstruction( icv, rtv );
-    libnovel::Value* scv = new libnovel::StoreInstruction( def, rtv ); // TODO: FIXME: PPA: INCORRECT IMPLEMENTATION !!! CONTINUE HERE !!!
-	libnovel::Statement* stmt_v = new libnovel::TrivialStatement( scope );
-    stmt_v->add( scv );
-	
+	libnovel::Scope* br_true = new libnovel::ParallelScope();
+    br->addScope( br_true );
+    libnovel::Value* equ_v = new libnovel::EquUnsignedInstruction( lav, lbv );
+	libnovel::Value* equ_s = new libnovel::StoreInstruction( equ_v, rtv );
+	libnovel::Statement* st_true = new libnovel::TrivialStatement( br_true );
+	st_true->add( equ_s );
+
+	libnovel::Scope* br_false = new libnovel::ParallelScope();
+    br->addScope( br_false );
+    libnovel::Value* equ_x = new libnovel::XorInstruction( lad, lbd );
+	libnovel::Value* equ_y = new libnovel::NotInstruction( equ_x );
+	libnovel::Value* equ_u = new libnovel::StoreInstruction( equ_y, rtv );
+	libnovel::Statement* st_false = new libnovel::TrivialStatement( br_false );
+	st_false->add( equ_u );
 	
 	return obj;	
 }
