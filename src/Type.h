@@ -44,6 +44,12 @@ namespace libcasm_rt
 	};
 	
 	
+	class Boolean : public Type
+	{
+    public:
+		static libnovel::Structure* create( void );
+	};
+	
 	class Integer : public Type
 	{
     public:

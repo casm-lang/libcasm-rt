@@ -35,7 +35,11 @@ libnovel::Structure* Type::create( libcasm_ir::Value& value )
 	
 	u64 tid = type->getResultType()->getID();
 	
-	if( tid == libcasm_ir::IntegerType.getID() )
+	if( tid == libcasm_ir::BooleanType.getID() )
+	{
+		return Boolean::create();
+	}
+	else if( tid == libcasm_ir::IntegerType.getID() )
 	{
 		return Integer::create();
 	}
@@ -76,6 +80,22 @@ static libnovel::Structure* type_factory
 		assert( arg );
 	}
 	
+	return type;
+}
+
+
+libnovel::Structure* Boolean::create( void )
+{
+	static libnovel::Structure* type = 0;
+	if( not type )
+	{
+		type = type_factory
+		( "Boolean"
+		, { { "value", &libnovel::TypeB1 }
+		  , { "isdef", &libnovel::TypeB1 }
+		  }
+		);
+	}
 	return type;
 }
 

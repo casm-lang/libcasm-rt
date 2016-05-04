@@ -43,7 +43,14 @@ namespace libcasm_rt
         static libnovel::CallableUnit* create( libcasm_ir::Value& value, libnovel::Module* module = 0 );
     };
 	
-    // class AddInstruction //: public CasmRT
+	template< class INSTR >
+	class ArithmeticInstruction //: public CasmRT
+    {
+    public:
+       static libnovel::CallableUnit* create( libcasm_ir::Value& value, libnovel::Module* module = 0 );
+    };
+
+	// class AddInstruction //: public CasmRT
     // {
     // public:
     //     static libnovel::CallableUnit* create( libcasm_ir::AddInstruction& value, libnovel::Module* module = 0 );
@@ -54,12 +61,11 @@ namespace libcasm_rt
     // public:
     //     static libnovel::CallableUnit* create( libcasm_ir::DivInstruction& value, libnovel::Module* module = 0 );
     // };
-	
-	template< class INSTR >
-	class ArithmeticInstruction //: public CasmRT
+
+	class EquInstruction //: public CasmRT
     {
     public:
-       static libnovel::CallableUnit* create( libcasm_ir::Value& value, libnovel::Module* module = 0 );
+        static libnovel::CallableUnit* create( libcasm_ir::Value& value, libnovel::Module* module = 0 );
     };
 	
 }

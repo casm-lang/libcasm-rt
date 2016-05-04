@@ -35,6 +35,15 @@ libnovel::CallableUnit* Instruction::create( libcasm_ir::Value& value, libnovel:
 	{
 		return ArithmeticInstruction< libnovel::DivSignedInstruction >::create( value, module );
 	}
+	else if( libcasm_ir::Value::isa< libcasm_ir::AndInstruction >( &value ) )
+	{
+		assert(0);
+		return 0;
+	}
+	else if( libcasm_ir::Value::isa< libcasm_ir::EquInstruction >( &value ) )
+	{
+		return EquInstruction::create( value, module );
+	}
     else
 	{
 		assert( !" unsupported/unimplemented instruction to create run-time implementation! " );
@@ -43,56 +52,51 @@ libnovel::CallableUnit* Instruction::create( libcasm_ir::Value& value, libnovel:
 	return 0;
 }
 
-
-// libnovel::CallableUnit* AddInstruction::create( libcasm_ir::Value& value, libnovel::Module* module )
-// {
-// 	return ArithmeticInstruction< libnovel::AddSignedInstruction >::create( value, module );
-// }
-
-// libnovel::CallableUnit* DivInstruction::create( libcasm_ir::Value& value, libnovel::Module* module )
-// {
-// 	return ArithmeticInstruction< libnovel::DivSignedInstruction >::create( value, module );
-// }
-
-
 template< class INSTR >
 libnovel::CallableUnit* ArithmeticInstruction< INSTR >::create( libcasm_ir::Value& value, libnovel::Module* module )
 {
-	assert( libcasm_ir::Value::isa< libcasm_ir::Instruction >( &value ) );
+	assert( libcasm_ir::Value::isa< libcasm_ir::BinaryInstruction >( &value ) );
+	libcasm_ir::BinaryInstruction* instr = (libcasm_ir::BinaryInstruction*)&value;
 	
-	static std::unordered_map< std::string, std::unordered_map< libnovel::Structure*, libnovel::CallableUnit* > > cache;
+	static std::unordered_map< std::string, libnovel::CallableUnit* > cache;
 	
-	libnovel::Structure* key = libcasm_rt::Type::create( value );
-	std::string key_name = std::string( &value.getName()[1] );
-	if( cache.count( key_name ) > 0 )
+	libnovel::Structure* ta = libcasm_rt::Type::create( *instr->getLHS() );
+	libnovel::Structure* tb = libcasm_rt::Type::create( *instr->getRHS() );
+	libnovel::Structure* tt = libcasm_rt::Type::create( *instr );
+	
+	std::string key = std::string
+	( "casm_rt__"
+	+ std::string( &value.getName()[1] )
+	+ "__"
+	+ std::string( ta->getName() )
+	+ "_"
+	+ std::string( tb->getName() )
+	+ "__"
+	+ std::string( tt->getName() )
+	);
+	
+	if( cache.count( key ) > 0 )
 	{
-		if( cache[ key_name ].count( key ) > 0 )
-		{
-			return cache[ key_name ][ key ];
-		}
+		return cache[ key ];
 	}
 	
-	const char* name = libstdhl::Allocator::string
-	( "casm_rt__instr_"
-	+ key_name
-	+ "_"
-	+ std::string( key->getName() )
-	);
+	const char* name = libstdhl::Allocator::string( key );
 	
 	libnovel::CallableUnit* obj = new libnovel::Intrinsic( name );
 	assert( obj );
-	cache[ key_name ][ key ] = obj;
+	cache[ key ] = obj;
 	if( module )
 	{
 		module->add( obj );
 	}
 	
-	libnovel::Reference* ra = obj->in(  "a", key->getType() );
-	libnovel::Reference* rb = obj->in(  "b", key->getType() );
-	libnovel::Reference* rt = obj->out( "t", key->getType() );
+	
+	libnovel::Reference* ra = obj->in(  "a", ta->getType() );
+	libnovel::Reference* rb = obj->in(  "b", tb->getType() );
+	libnovel::Reference* rt = obj->out( "t", tt->getType() );
 	
 	libnovel::Scope* scope = 0; //new libnovel::ParallelScope( obj );
-	if( strcmp( key_name.c_str(), "div" ) == 0 ) // TODO: EXPERIMENTIAL: DEMO ONLY!!!
+	if( strcmp( &value.getName()[1], "div" ) == 0 ) // TODO: EXPERIMENTIAL: DEMO ONLY!!!
 	{
 		scope = new libnovel::SequentialScope( obj );
 	}
@@ -126,6 +130,94 @@ libnovel::CallableUnit* ArithmeticInstruction< INSTR >::create( libcasm_ir::Valu
 	stmt_d->add( scd );
 
 	return obj;
+}
+
+
+
+// libnovel::CallableUnit* AddInstruction::create( libcasm_ir::Value& value, libnovel::Module* module )
+// {
+// 	return ArithmeticInstruction< libnovel::AddSignedInstruction >::create( value, module );
+// }
+
+// libnovel::CallableUnit* DivInstruction::create( libcasm_ir::Value& value, libnovel::Module* module )
+// {
+// 	return ArithmeticInstruction< libnovel::DivSignedInstruction >::create( value, module );
+// }
+
+libnovel::CallableUnit* EquInstruction::create( libcasm_ir::Value& value, libnovel::Module* module )
+{
+	assert( libcasm_ir::Value::isa< libcasm_ir::EquInstruction >( &value ) );
+	libcasm_ir::EquInstruction* instr = (libcasm_ir::EquInstruction*)&value;
+	
+	static std::unordered_map< std::string, libnovel::CallableUnit* > cache;
+	
+	libnovel::Structure* ta = libcasm_rt::Type::create( *instr->getLHS() );
+	libnovel::Structure* tb = libcasm_rt::Type::create( *instr->getRHS() );
+	libnovel::Structure* tt = libcasm_rt::Type::create( *instr );
+	
+	std::string key = std::string
+	( "casm_rt__"
+	+ std::string( &value.getName()[1] )
+	+ "_"
+	+ std::string( ta->getName() )
+	+ "_"
+	+ std::string( tb->getName() )
+	+ "__"
+	+ std::string( tt->getName() )
+	);
+	
+	if( cache.count( key ) > 0 )
+	{
+		return cache[ key ];
+	}
+	
+	const char* name = libstdhl::Allocator::string( key );
+	
+	libnovel::CallableUnit* obj = new libnovel::Intrinsic( name );
+	assert( obj );
+	cache[ key ] = obj;
+	if( module )
+	{
+		module->add( obj );
+	}
+	
+	libnovel::Reference* ra = obj->in(  "a", ta->getType() );
+	libnovel::Reference* rb = obj->in(  "b", tb->getType() );
+	libnovel::Reference* rt = obj->out( "t", tt->getType() );
+	
+	libnovel::Scope* scope = new libnovel::ParallelScope( obj );
+	
+	libnovel::Value* rav = new libnovel::ExtractInstruction( ra, ra->getStructure()->get(0) );
+	libnovel::Value* rad = new libnovel::ExtractInstruction( ra, ra->getStructure()->get(1) );
+	libnovel::Value* rbv = new libnovel::ExtractInstruction( rb, rb->getStructure()->get(0) );
+	libnovel::Value* rbd = new libnovel::ExtractInstruction( rb, rb->getStructure()->get(1) );
+		
+	libnovel::Value* lav  = new libnovel::LoadInstruction( rav );
+	libnovel::Value* lad  = new libnovel::LoadInstruction( rad );
+	libnovel::Value* lbv  = new libnovel::LoadInstruction( rbv );
+	libnovel::Value* lbd  = new libnovel::LoadInstruction( rbd );
+
+	
+	libnovel::Statement* stmt_d = new libnovel::TrivialStatement( scope );
+	libnovel::Value* def = libnovel::BitConstant::create( 1, 1 );
+	if( module )
+	{
+		module->add( def );
+	}
+	libnovel::Value* rtd = new libnovel::ExtractInstruction( rt, rt->getStructure()->get(1) );
+	libnovel::Value* scd = new libnovel::StoreInstruction( def, rtd );
+	stmt_d->add( scd );
+	
+	
+    // libnovel::Value* icd = new libnovel::AndInstruction( lad, lbd );
+    libnovel::Value* rtv = new libnovel::ExtractInstruction( rt, rt->getStructure()->get(0) );
+    // libnovel::Value* scv = new libnovel::StoreInstruction( icv, rtv );
+    libnovel::Value* scv = new libnovel::StoreInstruction( def, rtv ); // TODO: FIXME: PPA: INCORRECT IMPLEMENTATION !!! CONTINUE HERE !!!
+	libnovel::Statement* stmt_v = new libnovel::TrivialStatement( scope );
+    stmt_v->add( scv );
+	
+	
+	return obj;	
 }
 
 
