@@ -34,7 +34,7 @@ libnovel::CallableUnit* HashImplementation::create( void )
 		return obj;
 	}
 	
-	obj = new libnovel::Intrinsic( "casm_rt__hash" );
+	obj = new libnovel::Intrinsic( "casmrt_hash" );
 	assert( obj );
 	
 	libnovel::Value* v = obj->in( "value", &libnovel::TypeB64 );
@@ -72,7 +72,7 @@ libnovel::CallableUnit* UpdateImplementation::create( libcasm_ir::UpdateInstruct
 	}
 	
 	const char* name = libstdhl::Allocator::string
-	( "casm_rt__update_" + std::string( key->getName() )
+	( "casmrt_update_" + std::string( key->getName() )
 	);
 	
 	libnovel::CallableUnit* obj = new libnovel::Intrinsic( name );
@@ -163,7 +163,7 @@ libnovel::CallableUnit* LookupImplementation::create( libcasm_ir::LookupInstruct
 	}
 
 	const char* name = libstdhl::Allocator::string
-	( "casm_rt__lookup_" + std::string( key->getName() )
+	( "casmrt_lookup_" + std::string( key->getName() )
 	);
 		
 	libnovel::CallableUnit* obj = new libnovel::Intrinsic( name );
@@ -228,7 +228,7 @@ libnovel::Variable* FunctionState::create( libcasm_ir::Function& value )
 
 libnovel::CallableUnit* FunctionLocation::create( libcasm_ir::Function& value )
 {
-	std::string* name = new std::string( "casm_rt__location_" + std::string( value.getName() ));
+	std::string* name = new std::string( "casmrt_location_" + std::string( value.getName() ));
 	libnovel::Intrinsic* obj = new libnovel::Intrinsic( name->c_str() );
 	assert( obj );
     
@@ -277,7 +277,7 @@ libnovel::CallableUnit* ProgramRuleSignature::create( void )
 	static libnovel::CallableUnit* obj = 0;
 	if( not obj )
 	{
-		obj = new libnovel::Function( "casm_rt____rule_signature" );
+		obj = new libnovel::Function( "casmrt_signature_rule" );
 	    assert( obj );
 
 		obj->in( "refs", libcasm_rt::State::create()->getType() );

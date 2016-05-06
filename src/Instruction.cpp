@@ -65,13 +65,13 @@ libnovel::CallableUnit* ArithmeticInstruction< INSTR >::create( libcasm_ir::Valu
 	libnovel::Structure* tt = libcasm_rt::Type::create( *instr );
 	
 	std::string key = std::string
-	( "casm_rt__"
+	( "casmrt_"
 	+ std::string( &value.getName()[1] )
 	+ "__"
 	+ std::string( ta->getName() )
 	+ "_"
 	+ std::string( tb->getName() )
-	+ "__"
+	+ "_"
 	+ std::string( tt->getName() )
 	);
 	
@@ -156,13 +156,13 @@ libnovel::CallableUnit* EquInstruction::create( libcasm_ir::Value& value, libnov
 	libnovel::Structure* tt = libcasm_rt::Type::create( *instr );
 	
 	std::string key = std::string
-	( "casm_rt__"
+	( "casmrt_"
 	+ std::string( &value.getName()[1] )
 	+ "_"
 	+ std::string( ta->getName() )
 	+ "_"
 	+ std::string( tb->getName() )
-	+ "__"
+	+ "_"
 	+ std::string( tt->getName() )
 	);
 	
@@ -198,7 +198,7 @@ libnovel::CallableUnit* EquInstruction::create( libcasm_ir::Value& value, libnov
 	libnovel::Value* lad  = new libnovel::LoadInstruction( rad );
 	libnovel::Value* lbv  = new libnovel::LoadInstruction( rbv );
 	libnovel::Value* lbd  = new libnovel::LoadInstruction( rbd );
-
+	
 	
 	libnovel::Statement* stmt_d = new libnovel::TrivialStatement( scope );
 	libnovel::Value* def = libnovel::BitConstant::create( 1, 1 );
@@ -208,7 +208,7 @@ libnovel::CallableUnit* EquInstruction::create( libcasm_ir::Value& value, libnov
 	}
 	libnovel::Value* scd = new libnovel::StoreInstruction( def, rtd );
 	stmt_d->add( scd );
-
+	
 	
 	libnovel::Value* check = new libnovel::AndInstruction( lad, lbd );
 	libnovel::Statement* br = new libnovel::BranchStatement( scope );
