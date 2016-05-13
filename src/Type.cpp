@@ -182,6 +182,8 @@ libnovel::Memory* UpdateSet::create( void )
 	if( not type )
 	{
 		type = new libnovel::Memory( Update::create(), 31 );
+		assert( type );
+		type->getType()->bind( type );
 	}
 	return type;
 }
@@ -192,6 +194,8 @@ libnovel::Interconnect* State::create( void )
 	if( not type )
 	{
 		type = new libnovel::Interconnect();
+		assert( type );
+		type->getType()->bind( type );
 	}
 	return type;
 }

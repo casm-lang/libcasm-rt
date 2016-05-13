@@ -85,7 +85,6 @@ libnovel::CallableUnit* UpdateImplementation::create( libcasm_ir::UpdateInstruct
 
 	libnovel::Memory* uset_mem = libcasm_rt::UpdateSet::create();
 	
-	libnovel::Value* refs = obj->in( "refs", libcasm_rt::State::create()->getType() );
 	libnovel::Value* uset = obj->in( "uset", uset_mem->getType() );
 	libnovel::Value* loc  = obj->in( "loc", &libnovel::TypeId ); // ASSUMTION: PPA: addresses stay in the 48-bit range!
 	libnovel::Value* val  = obj->in( "value", key->getType() );
