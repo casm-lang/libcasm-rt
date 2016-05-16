@@ -67,7 +67,7 @@ libnovel::CallableUnit* ArithmeticInstruction< INSTR >::create( libcasm_ir::Valu
 	std::string key = std::string
 	( "casmrt_"
 	+ std::string( &value.getName()[1] )
-	+ "__"
+	+ "_"
 	+ std::string( ta->getName() )
 	+ "_"
 	+ std::string( tb->getName() )
