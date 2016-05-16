@@ -37,7 +37,7 @@ libnovel::CallableUnit* HashImplementation::create( void )
 	obj = new libnovel::Intrinsic( "casmrt_hash" );
 	assert( obj );
 	
-	libnovel::Value* v = obj->in( "value", &libnovel::TypeB64 );
+	libnovel::Value* v = obj->in( "value", &libnovel::TypeId  );
 	libnovel::Value* s = obj->in( "size",  &libnovel::TypeB16 );
 	libnovel::Value* r = obj->out( "res",  &libnovel::TypeB16 );
 	
