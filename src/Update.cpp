@@ -112,9 +112,10 @@ libnovel::CallableUnit* UpdateImplementation::create( libcasm_ir::UpdateInstruct
 	hash_call->add( size_bc );
 	hash_call->add( pos );
 	blk->add( hash_call );
+
+	libnovel::Instruction* pos_ = new libnovel::ZeroExtendInstruction( pos, &libnovel::TypeId );
 	
-	
-	libnovel::Instruction* el = new libnovel::ExtractInstruction( uset, pos );
+	libnovel::Instruction* el = new libnovel::ExtractInstruction( uset, pos_ );
 	libnovel::Structure* update_type = libcasm_rt::Update::create();
 	libnovel::Instruction* ca = new libnovel::CastInstruction( update_type, el );
 	
@@ -136,6 +137,12 @@ libnovel::CallableUnit* UpdateImplementation::create( libcasm_ir::UpdateInstruct
 	blk->add( s_bra );
 	libnovel::Instruction* s_loc = new libnovel::StoreInstruction( loc, u_loc );
 	blk->add( s_loc );
+
+	if( v_val->getType()->getBitsize() < u_val->getType()->getBitsize() )
+	{
+	    v_val = new libnovel::ZeroExtendInstruction( v_val, u_val->getType() );
+	}
+	
 	libnovel::Instruction* s_val = new libnovel::StoreInstruction( v_val, u_val );
 	blk->add( s_val );
 	libnovel::Instruction* s_def = new libnovel::StoreInstruction( v_def, u_def );
