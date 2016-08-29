@@ -3,7 +3,7 @@
 //  All rights reserved.
 //  
 //  Developed by: Philipp Paulweber
-//                https://github.com/ppaulweber/libcasm-rt
+//                https://github.com/casm-lang/libcasm-rt
 //  
 //  This file is part of libcasm-rt.
 //  
