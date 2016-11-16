@@ -42,8 +42,8 @@ CPPOBJECTS += obj/Type.o
 CPPOBJECTS += obj/Update.o
 
 INCLUDE += -I ./
-INCLUDE += -I ../
 
+INCLUDE += -I ../stdhl
 INCLUDE += -I ../casm-ir
 INCLUDE += -I ../novel
 
