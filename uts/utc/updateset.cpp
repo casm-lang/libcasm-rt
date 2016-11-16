@@ -154,7 +154,7 @@ TEST( updateset, scenario_fork_insert_fork_insert_merge_insert_merge )
 //  
 //  Local variables:
 //  mode: c++
-//  indent-tabs-mode: t
+//  indent-tabs-mode: nil
 //  c-basic-offset: 4
 //  tab-width: 4
 //  End:
