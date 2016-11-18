@@ -24,23 +24,21 @@
 #ifndef _LIB_CASMRT_H_
 #define _LIB_CASMRT_H_
 
-
 #include "src/Constant.h"
 #include "src/Instruction.h"
 #include "src/Type.h"
 #include "src/Update.h"
 
-
 namespace libcasm_rt
 {
-	class CasmRT
-	{
-	};	
+    class CasmRT
+    {
+    };
 }
 
 #endif /* _LIB_CASMRT_H_ */
 
-//  
+//
 //  Local variables:
 //  mode: c++
 //  indent-tabs-mode: nil
@@ -48,4 +46,4 @@ namespace libcasm_rt
 //  tab-width: 4
 //  End:
 //  vim:noexpandtab:sw=4:ts=4:
-//  
+//

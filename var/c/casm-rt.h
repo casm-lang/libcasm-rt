@@ -24,8 +24,8 @@
 #ifndef _LIB_CASM_RT_H_
 #define _LIB_CASM_RT_H_
 
-#include "stdll/c/stdll.h"
 #include "stdhl/c/type.h"
+#include "stdll/c/stdll.h"
 
 #include "bool.h"
 #include "int.h"
@@ -34,19 +34,16 @@
 #include "updateset.h"
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
-	
-	
 
-#ifdef __cplusplus   
+#ifdef __cplusplus
 }
 #endif
 
 #endif /* _LIB_CASM_RT_H_ */
 
-//  
+//
 //  Local variables:
 //  mode: c++
 //  indent-tabs-mode: nil
@@ -54,4 +51,4 @@ extern "C"
 //  tab-width: 4
 //  End:
 //  vim:noexpandtab:sw=4:ts=4:
-//  
+//

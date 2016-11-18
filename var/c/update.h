@@ -27,25 +27,25 @@
 #include "casm-rt.h"
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-    struct libcasm_rt_update
-    {
-        i64 value;
-        i1  isdef;
-    };
-    
-    libcasm_rt_update* libcasm_rt_update_new( stdll_mem* mem, u64 value, u1 defined );
-    
-#ifdef __cplusplus   
+struct libcasm_rt_update
+{
+    i64 value;
+    i1 isdef;
+};
+
+libcasm_rt_update* libcasm_rt_update_new(
+    stdll_mem* mem, u64 value, u1 defined );
+
+#ifdef __cplusplus
 }
 #endif
 
 #endif /* _LIB_CASM_RT_UPDATE_H_ */
 
-//  
+//
 //  Local variables:
 //  mode: c++
 //  indent-tabs-mode: nil
@@ -53,4 +53,4 @@ extern "C"
 //  tab-width: 4
 //  End:
 //  vim:noexpandtab:sw=4:ts=4:
-//  
+//

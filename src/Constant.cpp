@@ -25,29 +25,27 @@
 
 using namespace libcasm_rt;
 
-
 libnovel::Value* Constant::create( libnovel::Type& type )
 {
-	libnovel::Value* c = 0;
-	
-	if( type.getIDKind() == libnovel::Type::STRUCTURE )
-	{
-		libnovel::Value* b = type.getBound();
-		assert( b and libnovel::Value::isa< libnovel::Structure >( b ) );
-		libnovel::Structure* s = (libnovel::Structure*)b;
-		c = libnovel::StructureConstant::create( s );
-	}
-	else
-	{
-		assert( !"unsupported type to create constant found!" );
-	}
-	
-	assert( c );
-	return c;
+    libnovel::Value* c = 0;
+
+    if( type.getIDKind() == libnovel::Type::STRUCTURE )
+    {
+        libnovel::Value* b = type.getBound();
+        assert( b and libnovel::Value::isa< libnovel::Structure >( b ) );
+        libnovel::Structure* s = (libnovel::Structure*)b;
+        c = libnovel::StructureConstant::create( s );
+    }
+    else
+    {
+        assert( !"unsupported type to create constant found!" );
+    }
+
+    assert( c );
+    return c;
 }
 
-
-//  
+//
 //  Local variables:
 //  mode: c++
 //  indent-tabs-mode: nil
@@ -55,4 +53,4 @@ libnovel::Value* Constant::create( libnovel::Type& type )
 //  tab-width: 4
 //  End:
 //  vim:noexpandtab:sw=4:ts=4:
-//  
+//

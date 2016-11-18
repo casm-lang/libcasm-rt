@@ -21,9 +21,8 @@
 //  along with libcasm-rt. If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "gtest/gtest.h"
 #include "casm-rt.h"
-
+#include "gtest/gtest.h"
 
 static libcasm_rt_updateset* uset = 0;
 
@@ -31,127 +30,123 @@ static stdll_mem mem;
 
 TEST( updateset, create )
 {
-	
-	// create a 32 MB memory pool
-	ASSERT_EQ( 0, stdll_mem_new( &mem, 1024*1024*32 ) );
-	
-	// create a uset of 12345 start elements
-	ASSERT_NE( (void*)0, uset = libcasm_rt_updateset_new( &mem, 20/*12345*/ ) );	
-}
 
+    // create a 32 MB memory pool
+    ASSERT_EQ( 0, stdll_mem_new( &mem, 1024 * 1024 * 32 ) );
+
+    // create a uset of 12345 start elements
+    ASSERT_NE(
+        (void*)0, uset = libcasm_rt_updateset_new( &mem, 20 /*12345*/ ) );
+}
 
 TEST( updateset, insert )
 {
-	ASSERT_EQ( 0, libcasm_rt_updateset_insert( uset, 0xfeed, ~0xfeed ) );
-	ASSERT_EQ( 0, libcasm_rt_updateset_insert( uset, 0xdead, ~0xdead ) );
+    ASSERT_EQ( 0, libcasm_rt_updateset_insert( uset, 0xfeed, ~0xfeed ) );
+    ASSERT_EQ( 0, libcasm_rt_updateset_insert( uset, 0xdead, ~0xdead ) );
 
-	libcasm_rt_updateset_dump( uset );
+    libcasm_rt_updateset_dump( uset );
 }
 
 TEST( updateset, iterate )
 {
-	ASSERT_EQ( 0, libcasm_rt_updateset_insert( uset, 0xfeed, ~0xfeed ) );
-	ASSERT_EQ( 0, libcasm_rt_updateset_insert( uset, 0xdead, ~0xdead ) );
+    ASSERT_EQ( 0, libcasm_rt_updateset_insert( uset, 0xfeed, ~0xfeed ) );
+    ASSERT_EQ( 0, libcasm_rt_updateset_insert( uset, 0xdead, ~0xdead ) );
 
-	// libcasm_rt_updateset_iterator* it =
-	// 	libcasm_rt_updateset_get_iterator( uset );
+    // libcasm_rt_updateset_iterator* it =
+    // 	libcasm_rt_updateset_get_iterator( uset );
 
-	
-	// u8 libcasm_rt_updateset_iterator_next( libcasm_rt_updateset_iterator* iter, uint64_t* location, uint64_t* value );
+    // u8 libcasm_rt_updateset_iterator_next( libcasm_rt_updateset_iterator*
+    // iter, uint64_t* location, uint64_t* value );
 
-	
-	libcasm_rt_updateset_dump( uset );
+    libcasm_rt_updateset_dump( uset );
 }
 
 TEST( updateset, fork )
 {
-	ASSERT_EQ( 0, libcasm_rt_updateset_fork( uset ) );
+    ASSERT_EQ( 0, libcasm_rt_updateset_fork( uset ) );
 }
 
 TEST( updateset, insert2 )
 {
-	uint64_t c;
-	
-	for( c = 0; c < 5; c++ )
-	{
-		uint64_t loc = 0xbeef0000 + c;
-		
-		ASSERT_EQ( 0, libcasm_rt_updateset_insert( uset, loc, ~loc ) );
-	}
+    uint64_t c;
 
-	// libcasm_rt_updateset_dump( uset );
+    for( c = 0; c < 5; c++ )
+    {
+        uint64_t loc = 0xbeef0000 + c;
+
+        ASSERT_EQ( 0, libcasm_rt_updateset_insert( uset, loc, ~loc ) );
+    }
+
+    // libcasm_rt_updateset_dump( uset );
 }
 
 TEST( updateset, merge )
 {
-	ASSERT_EQ( 0, libcasm_rt_updateset_merge( uset ) );
-	
-	// libcasm_rt_updateset_dump( uset );
+    ASSERT_EQ( 0, libcasm_rt_updateset_merge( uset ) );
+
+    // libcasm_rt_updateset_dump( uset );
 }
 
 TEST( updateset, destroy )
 {
-	ASSERT_EQ( 0, libcasm_rt_updateset_del( uset ) );
+    ASSERT_EQ( 0, libcasm_rt_updateset_del( uset ) );
 }
 
 TEST( updateset, scenario_fork_insert_fork_insert_merge_insert_merge )
 {
-	uint64_t c;
-	uint64_t loc;
-	
-	ASSERT_NE( (void*)0, uset = libcasm_rt_updateset_new( &mem, 50 ) );	
+    uint64_t c;
+    uint64_t loc;
 
-	// printf( "pre-fork\n" );
-	// libcasm_rt_updateset_dump( uset );
+    ASSERT_NE( (void*)0, uset = libcasm_rt_updateset_new( &mem, 50 ) );
 
-	ASSERT_EQ( 0, libcasm_rt_updateset_fork( uset ) );
+    // printf( "pre-fork\n" );
+    // libcasm_rt_updateset_dump( uset );
 
-	for( c = 0; c < 2; c++ )
-	{
-		loc = 0xaaaa + c;
-		ASSERT_EQ( 0, libcasm_rt_updateset_insert( uset, loc, ~loc ) );
-	}
+    ASSERT_EQ( 0, libcasm_rt_updateset_fork( uset ) );
 
-	// printf( "fork+insert\n" );
-	// libcasm_rt_updateset_dump( uset );
+    for( c = 0; c < 2; c++ )
+    {
+        loc = 0xaaaa + c;
+        ASSERT_EQ( 0, libcasm_rt_updateset_insert( uset, loc, ~loc ) );
+    }
 
-	ASSERT_EQ( 0, libcasm_rt_updateset_fork( uset ) );
+    // printf( "fork+insert\n" );
+    // libcasm_rt_updateset_dump( uset );
 
-	for( c = 0; c < 2; c++ )
-	{
-		loc = 0xbbbb + c;
-		ASSERT_EQ( 0, libcasm_rt_updateset_insert( uset, loc, ~loc ) );
-	}
+    ASSERT_EQ( 0, libcasm_rt_updateset_fork( uset ) );
 
-	// printf( "fork+insert, pre-merge\n" );
-	// libcasm_rt_updateset_dump( uset );
+    for( c = 0; c < 2; c++ )
+    {
+        loc = 0xbbbb + c;
+        ASSERT_EQ( 0, libcasm_rt_updateset_insert( uset, loc, ~loc ) );
+    }
 
-	ASSERT_EQ( 0, libcasm_rt_updateset_merge( uset ) );
+    // printf( "fork+insert, pre-merge\n" );
+    // libcasm_rt_updateset_dump( uset );
 
-	// printf( "post-merge\n" );
-	// libcasm_rt_updateset_dump( uset );
+    ASSERT_EQ( 0, libcasm_rt_updateset_merge( uset ) );
 
-	for( c = 0; c < 2; c++ )
-	{
-		loc = 0xcccc + c;
-		ASSERT_EQ( 0, libcasm_rt_updateset_insert( uset, loc, ~loc ) );
-	}
+    // printf( "post-merge\n" );
+    // libcasm_rt_updateset_dump( uset );
 
-	// printf( "insert, pre-merge\n" );
-	// libcasm_rt_updateset_dump( uset );
-	
-	ASSERT_EQ( 0, libcasm_rt_updateset_merge( uset ) );
-	
-	// printf( "post-merge\n" );
-	// libcasm_rt_updateset_dump( uset );
+    for( c = 0; c < 2; c++ )
+    {
+        loc = 0xcccc + c;
+        ASSERT_EQ( 0, libcasm_rt_updateset_insert( uset, loc, ~loc ) );
+    }
 
-	ASSERT_EQ( 0, libcasm_rt_updateset_del( uset ) );
+    // printf( "insert, pre-merge\n" );
+    // libcasm_rt_updateset_dump( uset );
+
+    ASSERT_EQ( 0, libcasm_rt_updateset_merge( uset ) );
+
+    // printf( "post-merge\n" );
+    // libcasm_rt_updateset_dump( uset );
+
+    ASSERT_EQ( 0, libcasm_rt_updateset_del( uset ) );
 }
 
-
-
-
-//  
+//
 //  Local variables:
 //  mode: c++
 //  indent-tabs-mode: nil
@@ -159,4 +154,4 @@ TEST( updateset, scenario_fork_insert_fork_insert_merge_insert_merge )
 //  tab-width: 4
 //  End:
 //  vim:noexpandtab:sw=4:ts=4:
-//  
+//

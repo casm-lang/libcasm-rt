@@ -21,22 +21,20 @@
 //  along with libcasm-rt. If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "gtest/gtest.h"
 #include "casm-rt.h"
+#include "gtest/gtest.h"
 
-
-TEST( basic, true_witness  )
+TEST( basic, true_witness )
 {
     ASSERT_EQ( 0, 0 );
 }
 
-TEST( basic, false_witness  )
+TEST( basic, false_witness )
 {
     ASSERT_NE( 0, 1 );
 }
 
-
-//  
+//
 //  Local variables:
 //  mode: c++
 //  indent-tabs-mode: nil
@@ -44,4 +42,4 @@ TEST( basic, false_witness  )
 //  tab-width: 4
 //  End:
 //  vim:noexpandtab:sw=4:ts=4:
-//  
+//

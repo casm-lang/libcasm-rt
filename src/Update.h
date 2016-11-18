@@ -23,68 +23,69 @@
 
 /**
    @brief    TODO
-   
+
    TODO
 */
 
 #ifndef _LIB_CASMRT_UPDATE_H_
 #define _LIB_CASMRT_UPDATE_H_
 
-#include "libcasm-rt.h"
 #include "libcasm-ir.h"
+#include "libcasm-rt.h"
 #include "libnovel.h"
-
 
 namespace libcasm_rt
 {
     class HashImplementation //: public CasmRT
     {
-    public:
+      public:
         static libnovel::CallableUnit* create( void );
     };
-	
+
     class UpdateImplementation //: public CasmRT
     {
-    public:
-        static libnovel::CallableUnit* create( libcasm_ir::UpdateInstruction& value, libnovel::Module* module = 0 );
+      public:
+        static libnovel::CallableUnit* create(
+            libcasm_ir::UpdateInstruction& value,
+            libnovel::Module* module = 0 );
     };
-	
+
     class LookupImplementation //: public CasmRT
     {
-    public:
-        static libnovel::CallableUnit* create( libcasm_ir::LookupInstruction& value, libnovel::Module* module = 0 );
+      public:
+        static libnovel::CallableUnit* create(
+            libcasm_ir::LookupInstruction& value,
+            libnovel::Module* module = 0 );
     };
-	
-	class FunctionState
+
+    class FunctionState
     {
-    public:
+      public:
         static libnovel::Variable* create( libcasm_ir::Function& value );
     };
 
-	class FunctionLocation
+    class FunctionLocation
     {
-    public:
+      public:
         static libnovel::CallableUnit* create( libcasm_ir::Function& value );
     };
-		
-	class ProgramFunctionState
+
+    class ProgramFunctionState
     {
-    public:
+      public:
         static libnovel::Variable* create( libnovel::Variable* value = 0 );
     };
 
-	class ProgramRuleSignature
+    class ProgramRuleSignature
     {
-    public:
+      public:
         static libnovel::CallableUnit* create( void );
     };
-	
 }
 
 #endif /* _LIB_CASMRT_UPDATE_H_ */
 
-
-//  
+//
 //  Local variables:
 //  mode: c++
 //  indent-tabs-mode: nil
@@ -92,4 +93,4 @@ namespace libcasm_rt
 //  tab-width: 4
 //  End:
 //  vim:noexpandtab:sw=4:ts=4:
-//  
+//

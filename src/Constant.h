@@ -23,31 +23,29 @@
 
 /**
    @brief    TODO
-   
+
    TODO
 */
 
 #ifndef _LIB_CASMRT_CONSTANT_H_
 #define _LIB_CASMRT_CONSTANT_H_
 
-#include "libcasm-rt.h"
 #include "libcasm-ir.h"
+#include "libcasm-rt.h"
 #include "libnovel.h"
-
 
 namespace libcasm_rt
 {
-	class Constant //: public CasmRT
-	{
-	public:
-		static libnovel::Value* create( libnovel::Type& type );
-	};
+    class Constant //: public CasmRT
+    {
+      public:
+        static libnovel::Value* create( libnovel::Type& type );
+    };
 }
 
 #endif /* _LIB_CASMRT_CONSTANT_H_ */
 
-
-//  
+//
 //  Local variables:
 //  mode: c++
 //  indent-tabs-mode: nil
@@ -55,4 +53,4 @@ namespace libcasm_rt
 //  tab-width: 4
 //  End:
 //  vim:noexpandtab:sw=4:ts=4:
-//  
+//

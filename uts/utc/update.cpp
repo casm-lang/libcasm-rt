@@ -21,35 +21,32 @@
 //  along with libcasm-rt. If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "gtest/gtest.h"
 #include "casm-rt.h"
+#include "gtest/gtest.h"
 
 static stdll_mem mem;
 
-
 TEST( update, prolog )
 {
-	// create a 32 MB memory pool
-	ASSERT_EQ( 0, stdll_mem_new( &mem, 1024*1024*32 ) );
+    // create a 32 MB memory pool
+    ASSERT_EQ( 0, stdll_mem_new( &mem, 1024 * 1024 * 32 ) );
 }
 
 TEST( update, new )
 {
-	libcasm_rt_update* u = 0;
-	
-	ASSERT_NE( (void*)0, u = libcasm_rt_update_new( &mem, 123, 1 ) );
-	ASSERT_EQ( u->value, 123 );	
-	ASSERT_EQ( u->isdef, 1 );
+    libcasm_rt_update* u = 0;
+
+    ASSERT_NE( (void*)0, u = libcasm_rt_update_new( &mem, 123, 1 ) );
+    ASSERT_EQ( u->value, 123 );
+    ASSERT_EQ( u->isdef, 1 );
 }
 
 TEST( update, epilog )
 {
-	ASSERT_EQ( 0, stdll_mem_del( &mem ) );	
+    ASSERT_EQ( 0, stdll_mem_del( &mem ) );
 }
 
-
-
-//  
+//
 //  Local variables:
 //  mode: c++
 //  indent-tabs-mode: nil
@@ -57,4 +54,4 @@ TEST( update, epilog )
 //  tab-width: 4
 //  End:
 //  vim:noexpandtab:sw=4:ts=4:
-//  
+//

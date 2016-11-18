@@ -27,39 +27,39 @@
 #include "casm-rt.h"
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-	struct libcasm_rt_updateset;
+struct libcasm_rt_updateset;
 
-	libcasm_rt_updateset* libcasm_rt_updateset_new( stdll_mem* mem, uint32_t size );
+libcasm_rt_updateset* libcasm_rt_updateset_new( stdll_mem* mem, uint32_t size );
 
-	u8 libcasm_rt_updateset_del( libcasm_rt_updateset* uset );
+u8 libcasm_rt_updateset_del( libcasm_rt_updateset* uset );
 
-	u8 libcasm_rt_updateset_insert( libcasm_rt_updateset* uset, uint64_t location, uint64_t value );
+u8 libcasm_rt_updateset_insert(
+    libcasm_rt_updateset* uset, uint64_t location, uint64_t value );
 
-	u8 libcasm_rt_updateset_fork( libcasm_rt_updateset* uset );
+u8 libcasm_rt_updateset_fork( libcasm_rt_updateset* uset );
 
-	u8 libcasm_rt_updateset_merge( libcasm_rt_updateset* uset );
+u8 libcasm_rt_updateset_merge( libcasm_rt_updateset* uset );
 
-	u8 libcasm_rt_updateset_dump( libcasm_rt_updateset* uset );
+u8 libcasm_rt_updateset_dump( libcasm_rt_updateset* uset );
 
+struct libcasm_rt_updateset_iterator;
 
-	struct libcasm_rt_updateset_iterator;
-	
-	libcasm_rt_updateset_iterator* libcasm_rt_updateset_get_iterator( libcasm_rt_updateset* uset );
+libcasm_rt_updateset_iterator* libcasm_rt_updateset_get_iterator(
+    libcasm_rt_updateset* uset );
 
-	u8 libcasm_rt_updateset_iterator_next( libcasm_rt_updateset_iterator* iter, uint64_t* location, uint64_t* value );
+u8 libcasm_rt_updateset_iterator_next(
+    libcasm_rt_updateset_iterator* iter, uint64_t* location, uint64_t* value );
 
-	
-#ifdef __cplusplus   
+#ifdef __cplusplus
 }
 #endif
 
 #endif /* _LIB_CASM_RT_UPDATESET_H_ */
 
-//  
+//
 //  Local variables:
 //  mode: c++
 //  indent-tabs-mode: nil
@@ -67,4 +67,4 @@ extern "C"
 //  tab-width: 4
 //  End:
 //  vim:noexpandtab:sw=4:ts=4:
-//  
+//

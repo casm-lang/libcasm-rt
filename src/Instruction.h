@@ -23,57 +23,59 @@
 
 /**
    @brief    TODO
-   
+
    TODO
 */
 
 #ifndef _LIB_CASMRT_INSTRUCTION_H_
 #define _LIB_CASMRT_INSTRUCTION_H_
 
-#include "libcasm-rt.h"
 #include "libcasm-ir.h"
+#include "libcasm-rt.h"
 #include "libnovel.h"
-
 
 namespace libcasm_rt
 {
     class Instruction //: public CasmRT
     {
-    public:
-        static libnovel::CallableUnit* create( libcasm_ir::Value& value, libnovel::Module* module = 0 );
-    };
-	
-	template< class INSTR >
-	class ArithmeticInstruction //: public CasmRT
-    {
-    public:
-       static libnovel::CallableUnit* create( libcasm_ir::Value& value, libnovel::Module* module = 0 );
+      public:
+        static libnovel::CallableUnit* create(
+            libcasm_ir::Value& value, libnovel::Module* module = 0 );
     };
 
-	// class AddInstruction //: public CasmRT
+    template < class INSTR >
+    class ArithmeticInstruction //: public CasmRT
+    {
+      public:
+        static libnovel::CallableUnit* create(
+            libcasm_ir::Value& value, libnovel::Module* module = 0 );
+    };
+
+    // class AddInstruction //: public CasmRT
     // {
     // public:
-    //     static libnovel::CallableUnit* create( libcasm_ir::AddInstruction& value, libnovel::Module* module = 0 );
+    //     static libnovel::CallableUnit* create( libcasm_ir::AddInstruction&
+    //     value, libnovel::Module* module = 0 );
     // };
 
-	// class DivInstruction //: public CasmRT
+    // class DivInstruction //: public CasmRT
     // {
     // public:
-    //     static libnovel::CallableUnit* create( libcasm_ir::DivInstruction& value, libnovel::Module* module = 0 );
+    //     static libnovel::CallableUnit* create( libcasm_ir::DivInstruction&
+    //     value, libnovel::Module* module = 0 );
     // };
 
-	class EquInstruction //: public CasmRT
+    class EquInstruction //: public CasmRT
     {
-    public:
-        static libnovel::CallableUnit* create( libcasm_ir::Value& value, libnovel::Module* module = 0 );
+      public:
+        static libnovel::CallableUnit* create(
+            libcasm_ir::Value& value, libnovel::Module* module = 0 );
     };
-	
 }
 
 #endif /* _LIB_CASMRT_INSTRUCTION_H_ */
 
-
-//  
+//
 //  Local variables:
 //  mode: c++
 //  indent-tabs-mode: nil
@@ -81,4 +83,4 @@ namespace libcasm_rt
 //  tab-width: 4
 //  End:
 //  vim:noexpandtab:sw=4:ts=4:
-//  
+//

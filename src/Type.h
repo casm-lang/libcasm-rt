@@ -23,80 +23,71 @@
 
 /**
    @brief    TODO
-   
+
    TODO
 */
 
 #ifndef _LIB_CASMRT_TYPE_H_
 #define _LIB_CASMRT_TYPE_H_
 
-#include "libcasm-rt.h"
 #include "libcasm-ir.h"
+#include "libcasm-rt.h"
 #include "libnovel.h"
-
 
 namespace libcasm_rt
 {
-	class Type //: public CasmRT
-	{
-	public:
-		static libnovel::Structure* create( libcasm_ir::Value& value );
-	};
-	
-	
-	class Boolean : public Type
-	{
-    public:
-		static libnovel::Structure* create( void );
-	};
-	
-	class Integer : public Type
-	{
-    public:
-		static libnovel::Structure* create( void );
-	};
+    class Type //: public CasmRT
+    {
+      public:
+        static libnovel::Structure* create( libcasm_ir::Value& value );
+    };
 
-	class String : public Type
-	{
-    public:
-		static libnovel::Structure* create( libcasm_ir::StringConstant& value );
-	};
-	
-	class RulePtr : public Type
-	{
-    public:
-		static libnovel::Structure* create( void );
-	};
+    class Boolean : public Type
+    {
+      public:
+        static libnovel::Structure* create( void );
+    };
 
+    class Integer : public Type
+    {
+      public:
+        static libnovel::Structure* create( void );
+    };
 
+    class String : public Type
+    {
+      public:
+        static libnovel::Structure* create( libcasm_ir::StringConstant& value );
+    };
 
+    class RulePtr : public Type
+    {
+      public:
+        static libnovel::Structure* create( void );
+    };
 
+    class Update : public Type
+    {
+      public:
+        static libnovel::Structure* create( void );
+    };
 
+    class UpdateSet : public Type
+    {
+      public:
+        static libnovel::Memory* create( void );
+    };
 
-	class Update : public Type
-	{
-    public:
-		static libnovel::Structure* create( void );
-	};
-	
-	
-	class UpdateSet : public Type
-	{
-    public:
-		static libnovel::Memory* create( void );
-	};
-	
-	class State : public Type
-	{
-    public:
-		static libnovel::Interconnect* create( void );
-	};
+    class State : public Type
+    {
+      public:
+        static libnovel::Interconnect* create( void );
+    };
 }
 
 #endif /* _LIB_CASMRT_TYPE_H_ */
 
-
-//  
+//
 //  Local variables:
 //  mode: c++
 //  indent-tabs-mode: nil
@@ -104,4 +95,4 @@ namespace libcasm_rt
 //  tab-width: 4
 //  End:
 //  vim:noexpandtab:sw=4:ts=4:
-//  
+//
