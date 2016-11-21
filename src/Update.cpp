@@ -25,49 +25,49 @@
 
 using namespace libcasm_rt;
 
-libnovel::CallableUnit* HashImplementation::create( void )
+libcsel_ir::CallableUnit* HashImplementation::create( void )
 {
-    static libnovel::CallableUnit* obj = 0;
+    static libcsel_ir::CallableUnit* obj = 0;
     if( obj )
     {
         return obj;
     }
 
-    obj = new libnovel::Intrinsic( "casmrt_hash" );
+    obj = new libcsel_ir::Intrinsic( "casmrt_hash" );
     assert( obj );
 
-    libnovel::Value* v = obj->in( "value", &libnovel::TypeId );
-    libnovel::Value* s = obj->in( "size", &libnovel::TypeB16 );
-    libnovel::Value* r = obj->out( "res", &libnovel::TypeB16 );
+    libcsel_ir::Value* v = obj->in( "value", &libcsel_ir::TypeId );
+    libcsel_ir::Value* s = obj->in( "size", &libcsel_ir::TypeB16 );
+    libcsel_ir::Value* r = obj->out( "res", &libcsel_ir::TypeB16 );
 
-    libnovel::SequentialScope* scope = new libnovel::SequentialScope( obj );
-    libnovel::TrivialStatement* blk = new libnovel::TrivialStatement( scope );
+    libcsel_ir::SequentialScope* scope = new libcsel_ir::SequentialScope( obj );
+    libcsel_ir::TrivialStatement* blk = new libcsel_ir::TrivialStatement( scope );
 
-    // libnovel::StreamInstruction* output = new libnovel::StreamInstruction(
-    // libnovel::StreamInstruction::OUTPUT );
+    // libcsel_ir::StreamInstruction* output = new libcsel_ir::StreamInstruction(
+    // libcsel_ir::StreamInstruction::OUTPUT );
     // assert( output );
-    // output->add( libnovel::StringConstant::create( "hash" ) );
-    // output->add( &libnovel::StringConstant::LF );
+    // output->add( libcsel_ir::StringConstant::create( "hash" ) );
+    // output->add( &libcsel_ir::StringConstant::LF );
     // blk->add( output );
 
-    libnovel::Instruction* s_
-        = new libnovel::ZeroExtendInstruction( s, v->getType() );
-    libnovel::Instruction* p_ = new libnovel::ModUnsignedInstruction( v, s_ );
-    libnovel::Instruction* t_
-        = new libnovel::TruncationInstruction( p_, r->getType() );
-    libnovel::Instruction* r_ = new libnovel::StoreInstruction( t_, r );
+    libcsel_ir::Instruction* s_
+        = new libcsel_ir::ZeroExtendInstruction( s, v->getType() );
+    libcsel_ir::Instruction* p_ = new libcsel_ir::ModUnsignedInstruction( v, s_ );
+    libcsel_ir::Instruction* t_
+        = new libcsel_ir::TruncationInstruction( p_, r->getType() );
+    libcsel_ir::Instruction* r_ = new libcsel_ir::StoreInstruction( t_, r );
     blk->add( r_ );
 
     return obj;
 }
 
-libnovel::CallableUnit* UpdateImplementation::create(
-    libcasm_ir::UpdateInstruction& value, libnovel::Module* module )
+libcsel_ir::CallableUnit* UpdateImplementation::create(
+    libcasm_ir::UpdateInstruction& value, libcsel_ir::Module* module )
 {
-    static std::unordered_map< libnovel::Structure*, libnovel::CallableUnit* >
+    static std::unordered_map< libcsel_ir::Structure*, libcsel_ir::CallableUnit* >
         cache;
 
-    libnovel::Structure* key = libcasm_rt::Type::create( *( value.getRHS() ) );
+    libcsel_ir::Structure* key = libcasm_rt::Type::create( *( value.getRHS() ) );
     if( cache.count( key ) > 0 )
     {
         return cache[ key ];
@@ -76,7 +76,7 @@ libnovel::CallableUnit* UpdateImplementation::create(
     const char* name = libstdhl::Allocator::string(
         "casmrt_update_" + std::string( key->getName() ) );
 
-    libnovel::CallableUnit* obj = new libnovel::Intrinsic( name );
+    libcsel_ir::CallableUnit* obj = new libcsel_ir::Intrinsic( name );
     assert( obj );
     cache[ key ] = obj;
     if( module )
@@ -84,95 +84,95 @@ libnovel::CallableUnit* UpdateImplementation::create(
         module->add( obj );
     }
 
-    libnovel::Memory* uset_mem = libcasm_rt::UpdateSet::create();
+    libcsel_ir::Memory* uset_mem = libcasm_rt::UpdateSet::create();
 
-    libnovel::Value* uset = obj->in( "uset", uset_mem->getType() );
-    libnovel::Value* loc
-        = obj->in( "loc", &libnovel::TypeId ); // ASSUMTION: PPA: addresses stay
+    libcsel_ir::Value* uset = obj->in( "uset", uset_mem->getType() );
+    libcsel_ir::Value* loc
+        = obj->in( "loc", &libcsel_ir::TypeId ); // ASSUMTION: PPA: addresses stay
                                                // in the 48-bit range!
-    libnovel::Value* val = obj->in( "value", key->getType() );
+    libcsel_ir::Value* val = obj->in( "value", key->getType() );
 
-    libnovel::SequentialScope* scope = new libnovel::SequentialScope( obj );
-    libnovel::TrivialStatement* blk = new libnovel::TrivialStatement( scope );
-    // libnovel::StreamInstruction* output = new libnovel::StreamInstruction(
-    // libnovel::StreamInstruction::OUTPUT );
+    libcsel_ir::SequentialScope* scope = new libcsel_ir::SequentialScope( obj );
+    libcsel_ir::TrivialStatement* blk = new libcsel_ir::TrivialStatement( scope );
+    // libcsel_ir::StreamInstruction* output = new libcsel_ir::StreamInstruction(
+    // libcsel_ir::StreamInstruction::OUTPUT );
     // assert( output );
-    // output->add( libnovel::StringConstant::create( "update" ) );
-    // output->add( &libnovel::StringConstant::LF );
+    // output->add( libcsel_ir::StringConstant::create( "update" ) );
+    // output->add( &libcsel_ir::StringConstant::LF );
     // blk->add( output );
 
-    libnovel::CallableUnit* hash = HashImplementation::create();
-    libnovel::Instruction* hash_call = new libnovel::CallInstruction( hash );
+    libcsel_ir::CallableUnit* hash = HashImplementation::create();
+    libcsel_ir::Instruction* hash_call = new libcsel_ir::CallInstruction( hash );
 
     u16 size = hash->getReference( "size" )->getType()->getBitsize();
-    libnovel::Value* size_bc
-        = libnovel::BitConstant::create( uset_mem->getSize(), size );
+    libcsel_ir::Value* size_bc
+        = libcsel_ir::BitConstant::create( uset_mem->getSize(), size );
     if( module )
     {
         module->add( size_bc );
     }
 
-    libnovel::Instruction* pos = new libnovel::AllocInstruction(
+    libcsel_ir::Instruction* pos = new libcsel_ir::AllocInstruction(
         hash->getReference( "res" )->getType() );
     hash_call->add( loc );
     hash_call->add( size_bc );
     hash_call->add( pos );
     blk->add( hash_call );
 
-    libnovel::Instruction* pos_
-        = new libnovel::ZeroExtendInstruction( pos, &libnovel::TypeId );
+    libcsel_ir::Instruction* pos_
+        = new libcsel_ir::ZeroExtendInstruction( pos, &libcsel_ir::TypeId );
 
-    libnovel::Instruction* el = new libnovel::ExtractInstruction( uset, pos_ );
-    libnovel::Structure* update_type = libcasm_rt::Update::create();
-    libnovel::Instruction* ca
-        = new libnovel::CastInstruction( update_type, el );
+    libcsel_ir::Instruction* el = new libcsel_ir::ExtractInstruction( uset, pos_ );
+    libcsel_ir::Structure* update_type = libcasm_rt::Update::create();
+    libcsel_ir::Instruction* ca
+        = new libcsel_ir::CastInstruction( update_type, el );
 
-    libnovel::Instruction* u_bra
-        = new libnovel::ExtractInstruction( ca, update_type->get( 0 ) );
-    libnovel::Instruction* u_loc
-        = new libnovel::ExtractInstruction( ca, update_type->get( 1 ) );
-    libnovel::Instruction* u_val
-        = new libnovel::ExtractInstruction( ca, update_type->get( 2 ) );
-    libnovel::Instruction* u_def
-        = new libnovel::ExtractInstruction( ca, update_type->get( 3 ) );
+    libcsel_ir::Instruction* u_bra
+        = new libcsel_ir::ExtractInstruction( ca, update_type->get( 0 ) );
+    libcsel_ir::Instruction* u_loc
+        = new libcsel_ir::ExtractInstruction( ca, update_type->get( 1 ) );
+    libcsel_ir::Instruction* u_val
+        = new libcsel_ir::ExtractInstruction( ca, update_type->get( 2 ) );
+    libcsel_ir::Instruction* u_def
+        = new libcsel_ir::ExtractInstruction( ca, update_type->get( 3 ) );
 
-    libnovel::Instruction* v_val
-        = new libnovel::ExtractInstruction( val, key->get( 0 ) );
-    libnovel::Instruction* v_def
-        = new libnovel::ExtractInstruction( val, key->get( 1 ) );
+    libcsel_ir::Instruction* v_val
+        = new libcsel_ir::ExtractInstruction( val, key->get( 0 ) );
+    libcsel_ir::Instruction* v_def
+        = new libcsel_ir::ExtractInstruction( val, key->get( 1 ) );
 
-    libnovel::Value* u_c = libnovel::BitConstant::create( 1, 1 );
+    libcsel_ir::Value* u_c = libcsel_ir::BitConstant::create( 1, 1 );
     if( module )
     {
         module->add( u_c );
     }
-    libnovel::Instruction* s_bra = new libnovel::StoreInstruction( u_c, u_bra );
+    libcsel_ir::Instruction* s_bra = new libcsel_ir::StoreInstruction( u_c, u_bra );
     blk->add( s_bra );
-    libnovel::Instruction* s_loc = new libnovel::StoreInstruction( loc, u_loc );
+    libcsel_ir::Instruction* s_loc = new libcsel_ir::StoreInstruction( loc, u_loc );
     blk->add( s_loc );
 
     if( v_val->getType()->getBitsize() < u_val->getType()->getBitsize() )
     {
-        v_val = new libnovel::ZeroExtendInstruction( v_val, u_val->getType() );
+        v_val = new libcsel_ir::ZeroExtendInstruction( v_val, u_val->getType() );
     }
 
-    libnovel::Instruction* s_val
-        = new libnovel::StoreInstruction( v_val, u_val );
+    libcsel_ir::Instruction* s_val
+        = new libcsel_ir::StoreInstruction( v_val, u_val );
     blk->add( s_val );
-    libnovel::Instruction* s_def
-        = new libnovel::StoreInstruction( v_def, u_def );
+    libcsel_ir::Instruction* s_def
+        = new libcsel_ir::StoreInstruction( v_def, u_def );
     blk->add( s_def );
 
     return obj;
 }
 
-libnovel::CallableUnit* LookupImplementation::create(
-    libcasm_ir::LookupInstruction& value, libnovel::Module* module )
+libcsel_ir::CallableUnit* LookupImplementation::create(
+    libcasm_ir::LookupInstruction& value, libcsel_ir::Module* module )
 {
-    static std::unordered_map< libnovel::Structure*, libnovel::CallableUnit* >
+    static std::unordered_map< libcsel_ir::Structure*, libcsel_ir::CallableUnit* >
         cache;
 
-    libnovel::Structure* key = libcasm_rt::Type::create( *( value.get() ) );
+    libcsel_ir::Structure* key = libcasm_rt::Type::create( *( value.get() ) );
     if( cache.count( key ) > 0 )
     {
         return cache[ key ];
@@ -181,7 +181,7 @@ libnovel::CallableUnit* LookupImplementation::create(
     const char* name = libstdhl::Allocator::string(
         "casmrt_lookup_" + std::string( key->getName() ) );
 
-    libnovel::CallableUnit* obj = new libnovel::Intrinsic( name );
+    libcsel_ir::CallableUnit* obj = new libcsel_ir::Intrinsic( name );
     assert( obj );
     cache[ key ] = obj;
     if( module )
@@ -189,48 +189,48 @@ libnovel::CallableUnit* LookupImplementation::create(
         module->add( obj );
     }
 
-    libnovel::Value* refs
+    libcsel_ir::Value* refs
         = obj->in( "refs", libcasm_rt::State::create()->getType() );
-    /*libnovel::Value* uset = */ obj->in(
+    /*libcsel_ir::Value* uset = */ obj->in(
         "uset", libcasm_rt::UpdateSet::create()->getType() );
-    libnovel::Value* loc
-        = obj->in( "loc", &libnovel::TypeId ); // ASSUMTION: PPA: addresses stay
+    libcsel_ir::Value* loc
+        = obj->in( "loc", &libcsel_ir::TypeId ); // ASSUMTION: PPA: addresses stay
                                                // in the 48-bit range!
-    libnovel::Value* val = obj->out( "value", key->getType() );
+    libcsel_ir::Value* val = obj->out( "value", key->getType() );
 
-    libnovel::SequentialScope* scope = new libnovel::SequentialScope( obj );
-    libnovel::TrivialStatement* blk = new libnovel::TrivialStatement( scope );
+    libcsel_ir::SequentialScope* scope = new libcsel_ir::SequentialScope( obj );
+    libcsel_ir::TrivialStatement* blk = new libcsel_ir::TrivialStatement( scope );
 
-    // libnovel::StreamInstruction* output = new libnovel::StreamInstruction(
-    // libnovel::StreamInstruction::OUTPUT );
+    // libcsel_ir::StreamInstruction* output = new libcsel_ir::StreamInstruction(
+    // libcsel_ir::StreamInstruction::OUTPUT );
     // assert( output );
-    // output->add( libnovel::StringConstant::create( "lookup" ) );
-    // output->add( &libnovel::StringConstant::LF );
+    // output->add( libcsel_ir::StringConstant::create( "lookup" ) );
+    // output->add( &libcsel_ir::StringConstant::LF );
     // blk->add( output );
 
     // PPA: EXPERIMENTAL: needs more attention in the future, because we only
     // support parallel only for now!!!
-    libnovel::Instruction* el = new libnovel::ExtractInstruction( refs, loc );
-    libnovel::Instruction* ca
-        = new libnovel::CastInstruction( libcasm_rt::Integer::create(), el );
-    libnovel::Instruction* ld = new libnovel::LoadInstruction( ca );
-    libnovel::Instruction* st = new libnovel::StoreInstruction( ld, val );
+    libcsel_ir::Instruction* el = new libcsel_ir::ExtractInstruction( refs, loc );
+    libcsel_ir::Instruction* ca
+        = new libcsel_ir::CastInstruction( libcasm_rt::Integer::create(), el );
+    libcsel_ir::Instruction* ld = new libcsel_ir::LoadInstruction( ca );
+    libcsel_ir::Instruction* st = new libcsel_ir::StoreInstruction( ld, val );
     blk->add( st );
 
     return obj;
 }
 
-libnovel::Variable* FunctionState::create( libcasm_ir::Function& value )
+libcsel_ir::Variable* FunctionState::create( libcasm_ir::Function& value )
 {
-    static std::unordered_map< libcasm_ir::Function*, libnovel::Variable* >
+    static std::unordered_map< libcasm_ir::Function*, libcsel_ir::Variable* >
         cache;
     if( cache.count( &value ) > 0 )
     {
         return cache[&value ];
     }
 
-    libnovel::Structure* ty = Type::create( value );
-    libnovel::Variable* obj = new libnovel::Variable( ty->getType(),
+    libcsel_ir::Structure* ty = Type::create( value );
+    libcsel_ir::Variable* obj = new libcsel_ir::Variable( ty->getType(),
         libcasm_rt::Constant::create( *ty->getType() ),
         libstdhl::Allocator::string( value.getName() ) );
     assert( obj );
@@ -244,40 +244,40 @@ libnovel::Variable* FunctionState::create( libcasm_ir::Function& value )
     return obj;
 }
 
-libnovel::CallableUnit* FunctionLocation::create( libcasm_ir::Function& value )
+libcsel_ir::CallableUnit* FunctionLocation::create( libcasm_ir::Function& value )
 {
     std::string* name = new std::string(
         "casmrt_location_" + std::string( value.getName() ) );
-    libnovel::Intrinsic* obj = new libnovel::Intrinsic( name->c_str() );
+    libcsel_ir::Intrinsic* obj = new libcsel_ir::Intrinsic( name->c_str() );
     assert( obj );
 
-    libnovel::SequentialScope* scope = new libnovel::SequentialScope();
+    libcsel_ir::SequentialScope* scope = new libcsel_ir::SequentialScope();
     assert( scope );
     obj->setContext( scope );
 
-    libnovel::TrivialStatement* stmt = new libnovel::TrivialStatement( scope );
-    libnovel::IdInstruction* id
-        = new libnovel::IdInstruction( FunctionState::create( value ) );
+    libcsel_ir::TrivialStatement* stmt = new libcsel_ir::TrivialStatement( scope );
+    libcsel_ir::IdInstruction* id
+        = new libcsel_ir::IdInstruction( FunctionState::create( value ) );
     assert( id );
 
     // output parameter for intrinsic!
-    libnovel::Reference* loc = new libnovel::Reference( "location",
+    libcsel_ir::Reference* loc = new libcsel_ir::Reference( "location",
         id->getType() // ASSUMTION: PPA: addresses stay in the 48-bit range!
         ,
-        obj, libnovel::Reference::OUTPUT );
+        obj, libcsel_ir::Reference::OUTPUT );
     assert( loc );
 
-    libnovel::StoreInstruction* store
-        = new libnovel::StoreInstruction( id, loc );
+    libcsel_ir::StoreInstruction* store
+        = new libcsel_ir::StoreInstruction( id, loc );
     assert( store );
     stmt->add( store );
 
     return obj;
 }
 
-libnovel::Variable* ProgramFunctionState::create( libnovel::Variable* value )
+libcsel_ir::Variable* ProgramFunctionState::create( libcsel_ir::Variable* value )
 {
-    static libnovel::Variable* obj = 0;
+    static libcsel_ir::Variable* obj = 0;
 
     if( not obj )
     {
@@ -289,12 +289,12 @@ libnovel::Variable* ProgramFunctionState::create( libnovel::Variable* value )
     return obj;
 }
 
-libnovel::CallableUnit* ProgramRuleSignature::create( void )
+libcsel_ir::CallableUnit* ProgramRuleSignature::create( void )
 {
-    static libnovel::CallableUnit* obj = 0;
+    static libcsel_ir::CallableUnit* obj = 0;
     if( not obj )
     {
-        obj = new libnovel::Function( "casmrt_signature_rule" );
+        obj = new libcsel_ir::Function( "casmrt_signature_rule" );
         assert( obj );
 
         obj->in( "refs", libcasm_rt::State::create()->getType() );

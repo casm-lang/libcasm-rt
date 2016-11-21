@@ -32,14 +32,14 @@
 
 #include "libcasm-ir.h"
 #include "libcasm-rt.h"
-#include "libnovel.h"
+#include "libcsel-ir.h"
 
 namespace libcasm_rt
 {
     class Constant //: public CasmRT
     {
       public:
-        static libnovel::Value* create( libnovel::Type& type );
+        static libcsel_ir::Value* create( libcsel_ir::Type& type );
     };
 }
 

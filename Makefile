@@ -21,43 +21,104 @@
 #   along with libcasm-rt. If not, see <http://www.gnu.org/licenses/>.
 #
 
-AR=ar
+.PHONY:
 
-CC=clang
-CCFLAG += -std=c11
-CCFLAG += -g -O0
-CCFLAG += -Wall
+default: debug
 
-CPP=clang
-CPPFLAG += -std=c++11
-CPPFLAG += -g -O0
-CPPFLAG += -Wall
-#CPPFLAG += -Wextra
+help:
+	@echo "TODO"
 
-TARGET += libcasm-rt.a
+REPO = libcasm-rt
 
-CPPOBJECTS += obj/Constant.o
-CPPOBJECTS += obj/Instruction.o
-CPPOBJECTS += obj/Type.o
-CPPOBJECTS += obj/Update.o
+TARGET = $(REPO).a
 
-INCLUDE += -I ./
-
-INCLUDE += -I ../stdhl
-INCLUDE += -I ../casm-ir
-INCLUDE += -I ../novel
+TEST_TARGET = test-$(REPO)
 
 
-default: obj $(TARGET)
+CP  = $(shell find src -name '*.cpp' | cut -d'.' -f1)
+CO  = $(CP:%=obj/%.o)
 
-obj:
-	mkdir -p obj
+CI += -I ./
+CI += -I ./src
+CI += -I ./src/analyze
+CI += -I ./src/transform
 
-obj/%.o: src/%.cpp
-	@echo "CPP " $<
-	@$(CPP) $(CPPFLAG) $(INCLUDE) -c $< -o $@
+CI += -I ../stdhl
+CI += -I ../pass
+CI += -I ../casm-ir
+CI += -I ../csel-ir
 
-$(TARGET): $(CPPOBJECTS)
+CL  =
+
+CC  =
+CF  =
+
+  %-gcc: CC = gcc
+%-clang: CC = clang
+
+  debug-%: CF += -O0 -g
+release-%: CF += -O3 -DNDEBUG
+
+linux%:  CF += -Wall -std=c++11
+linux%:  XF += -Wall -std=c11
+linux3%: CF += -m32
+linux6%: CF += -m64
+
+
+build: config $(TARGET)
+check: build $(TEST_TARGET)
+
+linux32-build: build
+linux64-build: build
+
+linux32-check: check
+linux64-check: check
+
+
+  debug-build-linux32-gcc:   linux32-build
+  debug-check-linux32-gcc:   linux32-check
+release-build-linux32-gcc:   linux32-build
+release-check-linux32-gcc:   linux32-check
+
+  debug-build-linux64-gcc:   linux64-build
+  debug-check-linux64-gcc:   linux64-check
+release-build-linux64-gcc:   linux64-build
+release-check-linux64-gcc:   linux64-check
+
+  debug-build-linux32-clang: linux32-build
+  debug-check-linux32-clang: linux32-check
+release-build-linux32-clang: linux32-build
+release-check-linux32-clang: linux32-check
+
+  debug-build-linux64-clang: linux64-build
+  debug-check-linux64-clang: linux64-check
+release-build-linux64-clang: linux64-build
+release-check-linux64-clang: linux64-check
+
+
+  debug:   debug-build-linux64-clang
+release: clean release-build-linux64-clang
+
+test:           debug-check-linux64-clang
+test-release: release-check-linux64-clang
+
+
+config: CFG=CC="$(CC)" CF="$(CF)"
+config:
+	@echo "CFG  $(CFG)"
+
+
+obj/%.o: %.cpp
+	@mkdir -p `dirname $@`
+	@echo "C++ " $<
+	@$(CC) $(CF) $(CI) -c $< -o $@
+
+obj/%.o: %.c
+	@mkdir -p `dirname $@`
+	@echo "C   " $<
+	@$(CC) $(CF) $(CI) -c $< -o $@
+
+$(TARGET): $(CO) $(CL)
 	@echo "AR  " $@
 	@$(AR) rsc $@ $(filter %.o,$^)
 	@ranlib $@
@@ -67,153 +128,38 @@ clean:
 	@rm -rf obj
 	@echo "RM  " $(TARGET)
 	@rm -f $(TARGET)
+	@echo "RM  " $(TEST_TARGET)
+	@rm -f $(TEST_TARGET)
 
 
+#TEST_TARGET = $(TARGET:%.a=%-test.a)
 
-# 
-# AR=ar
-# 
-# CC=clang
-# CCFLAG += -std=c11
-# CCFLAG += -g -O0
-# CCFLAG += -Wall
-# 
-# CPP=clang
-# CPPFLAG += -std=c++11
-# CPPFLAG += -g -O0
-# CPPFLAG += -Wall
-# #CPPFLAG += -Wextra
-# 
-# # TARGET += libcasm-rt.a
-# # CPPOBJECTS += obj/Backend.o
-# # CPPOBJECTS += obj/LLCodeBackend.o
-# # INCLUDE += -I ../
-# # INCLUDE += -I ../casm-ir/src/
-# 
-# LLSRC += llvm/type.ll
-# LLSRC += llvm/bool.ll
-# LLSRC += llvm/int.ll
-# LLSRC += llvm/str.ll
-# LLSRC += llvm/updateset.ll
-# LLSRC += llvm/update.ll
-# LLSRC += llvm/rule.ll
-# 
-# STDLL_DIR   = ../stdll
-# GTEST_DIR   = ../gtest
-# GTEST_OBJ   = uts/obj
-# 
-# .PHONY: include llvm uts
-# 
-# default: help
-# # default: obj $(TARGET)
-# 
-# # obj:
-# # 	mkdir -p obj
-# 
-# # obj/%.o: src/%.cpp
-# # 	@echo "CPP " $<
-# # 	@$(CPP) $(CPPFLAG) $(INCLUDE) -c $< -o $@
-# 
-# # $(TARGET): $(CPPOBJECTS)
-# # 	@echo "AR  " $@
-# # 	@$(AR) rsc $@ $(filter %.o,$^)
-# # 	@ranlib $@
-# 
-# clean:
-# #	@echo "RM  " obj
-# #	@rm -rf obj
-# #	@echo "RM  " $(TARGET)
-# #	@rm -f $(TARGET)
-# 	@rm -f casm-rt*.bc
-# 	@rm -f casm-rt*.ll
-# 	@rm -f casm-rt*.ir
-# #@rm -f $(GTEST_OBJ)/*
-# 
-# 
-# help:
-# 	@echo "usage: make <OPTION>"
-# 	@echo
-# 	@echo "OPTION: help       prints this help message"
-# 	@echo "        clean      removes all generated object files"
-# 	@echo "        llvm       link all llvm IR files to a llvm single"
-# 	@echo "                   byte-code object file"
-# 	@echo "        test       run the unit test suite"
-# 
-# # c11: obj libcasm-rt.c11.a
-# 
-# # libcasm-rt.c11.a: obj/bool.o
-# # 	@echo "AR  " $@
-# # 	@$(AR) rsc $@ $(filter %.o,$^)
-# # 	@ranlib $@
-# # 	@$(CC) $(CCFLAG) -o obj/main $@
-# 
-# # obj/%.o: c11/%.c
-# # 	@echo "CC  " $<
-# # 	@$(CC) $(CCFLAG) $(INCLUDE) -c $< -o $@
-# # 	@$(CC) $(CCFLAG) -S $(INCLUDE) -c $< -o $@.s
-# # 	@$(CC) -std=c11 -O3 -S $(INCLUDE) -c $< -o $@.O3.s
-# 
-# 
-# 
-# 
-# llvm: casm-rt
-# 
-# casm-rt: $(STDLL_DIR)/stdll.ll $(LLSRC)
-# 	cat $(STDLL_DIR)/stdll.ir $(LLSRC) > $@.ir
-# 	llvm-link $@.ir -S -o $@.ll
-# 	opt $@.ll -o $@.bc
-# 
-# #	llvm-link llvm/*.ll -S -o $@.ll
-# #	opt $@.ll -o $@.bc
-# #	grep -r $@.ll -e "attributes" > $@.ir
-# #	grep -r $@.ll -e "declare" >> $@.ir
-# #	grep -r $@.ll -e "type" >> $@.ir
-# #	grep -r $@.ll -e "define linkonce_odr" | \
-# #		sed "s/define linkonce_odr/declare/g" | \
-# #		sed "s/{//g" >> $@.ir
-# 
-# stdll: $(STDLL_DIR)/stdll.bc
-# 
-# $(STDLL_DIR)/stdll.ll:
-# 	$(MAKE) llvm -C $(STDLL_DIR)
-# 
-# test: llvm $(GTEST_OBJ) $(GTEST_OBJ)/gtest
-# 	@echo "===--- UNIT TEST SUITE ---==="
-# 	./$(GTEST_OBJ)/gtest
-# 
-# GTEST_FLAGS  = -Wall 
-# GTEST_FLAGS += -Wextra 
-# GTEST_FLAGS += -I ${GTEST_DIR} 
-# GTEST_FLAGS += -I $(GTEST_DIR)/include 
-# GTEST_FLAGS += -I c
-# GTEST_FLAGS += -I ../
-# 
-# GTEST_CPP  = $(wildcard uts/utc/*.cpp)
-# GTEST_CPP += $(GTEST_DIR)/src/gtest-all.cc
-# GTEST_CPP += $(GTEST_DIR)/src/gtest_main.cc
-# 
-# GTEST_OBJS = $(addprefix $(GTEST_OBJ)/,$(notdir \
-# 		$(patsubst %.cc,%.ll,\
-# 		$(patsubst %.cpp,%.ll,$(GTEST_CPP)))))
-# 
-# GTEST_LL  = casm-rt.ll
-# 
-# $(GTEST_OBJ):
-# 	@mkdir -p uts/obj
-# 
-# $(GTEST_OBJ)/gtest: $(GTEST_OBJS) $(GTEST_LL)
-# 	llvm-link $(GTEST_OBJS) $(GTEST_LL) > $@.ll
-# 	llc -O3 $@.ll -o $@.s
-# 	clang -lstdc++ -pthread $@.s -o $@ 
-# 
-# $(GTEST_OBJ)/%.ll: uts/utc/%.cpp
-# 	clang $(GTEST_FLAGS) -emit-llvm -S $< -o $@
-# 
-# $(GTEST_OBJ)/%.ll: $(GTEST_DIR)/src/%.cc
-# 	clang $(GTEST_FLAGS) -emit-llvm -S $< -o $@
-# 
-# 
+TF   = $(shell find uts -name '*.cpp' | cut -d'.' -f1)
+TO = $(TF:%=obj/%.o)
 
+TI  = -I ../gtest/googletest/include
+TI += -I ../gtest/googletest
 
+TL  = -lstdc++
+TL += -lm
+TL += -lpthread
 
+obj/uts/%.o: uts/%.cpp
+	@mkdir -p `dirname $@`
+	@echo "C++ " $<
+	@$(CC) $(CF) $(TI) $(CI) -c $< -o $@
 
+$(TEST_TARGET): $(TO) $(CO) $(TARGET)
+	@echo "LD " $@
+	@$(CC) \
+	  $(CF) \
+	  $(TI) \
+	  $(CI) \
+	  $(TL) \
+	  -o $@ \
+	  $(TO) \
+	  $(TARGET) \
+	  ../gtest/googletest/src/gtest-all.cc \
+	  ../gtest/googletest/src/gtest_main.cc 
+	@echo "RUN " $@
+	@./$@

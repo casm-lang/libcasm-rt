@@ -25,16 +25,16 @@
 
 using namespace libcasm_rt;
 
-libnovel::Value* Constant::create( libnovel::Type& type )
+libcsel_ir::Value* Constant::create( libcsel_ir::Type& type )
 {
-    libnovel::Value* c = 0;
+    libcsel_ir::Value* c = 0;
 
-    if( type.getIDKind() == libnovel::Type::STRUCTURE )
+    if( type.getIDKind() == libcsel_ir::Type::STRUCTURE )
     {
-        libnovel::Value* b = type.getBound();
-        assert( b and libnovel::Value::isa< libnovel::Structure >( b ) );
-        libnovel::Structure* s = (libnovel::Structure*)b;
-        c = libnovel::StructureConstant::create( s );
+        libcsel_ir::Value* b = type.getBound();
+        assert( b and libcsel_ir::Value::isa< libcsel_ir::Structure >( b ) );
+        libcsel_ir::Structure* s = (libcsel_ir::Structure*)b;
+        c = libcsel_ir::StructureConstant::create( s );
     }
     else
     {

@@ -32,54 +32,54 @@
 
 #include "libcasm-ir.h"
 #include "libcasm-rt.h"
-#include "libnovel.h"
+#include "libcsel-ir.h"
 
 namespace libcasm_rt
 {
     class HashImplementation //: public CasmRT
     {
       public:
-        static libnovel::CallableUnit* create( void );
+        static libcsel_ir::CallableUnit* create( void );
     };
 
     class UpdateImplementation //: public CasmRT
     {
       public:
-        static libnovel::CallableUnit* create(
+        static libcsel_ir::CallableUnit* create(
             libcasm_ir::UpdateInstruction& value,
-            libnovel::Module* module = 0 );
+            libcsel_ir::Module* module = 0 );
     };
 
     class LookupImplementation //: public CasmRT
     {
       public:
-        static libnovel::CallableUnit* create(
+        static libcsel_ir::CallableUnit* create(
             libcasm_ir::LookupInstruction& value,
-            libnovel::Module* module = 0 );
+            libcsel_ir::Module* module = 0 );
     };
 
     class FunctionState
     {
       public:
-        static libnovel::Variable* create( libcasm_ir::Function& value );
+        static libcsel_ir::Variable* create( libcasm_ir::Function& value );
     };
 
     class FunctionLocation
     {
       public:
-        static libnovel::CallableUnit* create( libcasm_ir::Function& value );
+        static libcsel_ir::CallableUnit* create( libcasm_ir::Function& value );
     };
 
     class ProgramFunctionState
     {
       public:
-        static libnovel::Variable* create( libnovel::Variable* value = 0 );
+        static libcsel_ir::Variable* create( libcsel_ir::Variable* value = 0 );
     };
 
     class ProgramRuleSignature
     {
       public:
-        static libnovel::CallableUnit* create( void );
+        static libcsel_ir::CallableUnit* create( void );
     };
 }
 

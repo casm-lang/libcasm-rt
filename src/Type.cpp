@@ -25,7 +25,7 @@
 
 using namespace libcasm_rt;
 
-libnovel::Structure* Type::create( libcasm_ir::Value& value )
+libcsel_ir::Structure* Type::create( libcasm_ir::Value& value )
 {
     libcasm_ir::Type* type = value.getType();
     assert( type and " invalid type pointer! " );
@@ -56,52 +56,52 @@ libnovel::Structure* Type::create( libcasm_ir::Value& value )
 struct type_factory_argument
 {
     const char* name;
-    libnovel::Type* type;
+    libcsel_ir::Type* type;
 };
 
-static libnovel::Structure* type_factory( const std::string& name,
+static libcsel_ir::Structure* type_factory( const std::string& name,
     const std::vector< struct type_factory_argument >& args )
 {
-    libnovel::Structure* type = new libnovel::Structure(
+    libcsel_ir::Structure* type = new libcsel_ir::Structure(
         libstdhl::Allocator::string( name.c_str() ) );
     assert( type );
     type->getType()->bind( type );
 
     for( u32 c = 0; c < args.size(); c++ )
     {
-        libnovel::Structure* arg
-            = new libnovel::Structure( args[ c ].name, args[ c ].type, type );
+        libcsel_ir::Structure* arg
+            = new libcsel_ir::Structure( args[ c ].name, args[ c ].type, type );
         assert( arg );
     }
 
     return type;
 }
 
-libnovel::Structure* Boolean::create( void )
+libcsel_ir::Structure* Boolean::create( void )
 {
-    static libnovel::Structure* type = 0;
+    static libcsel_ir::Structure* type = 0;
     if( not type )
     {
-        type = type_factory( "Boolean", { { "value", &libnovel::TypeB1 },
-                                            { "isdef", &libnovel::TypeB1 } } );
+        type = type_factory( "Boolean", { { "value", &libcsel_ir::TypeB1 },
+                                            { "isdef", &libcsel_ir::TypeB1 } } );
     }
     return type;
 }
 
-libnovel::Structure* Integer::create( void )
+libcsel_ir::Structure* Integer::create( void )
 {
-    static libnovel::Structure* type = 0;
+    static libcsel_ir::Structure* type = 0;
     if( not type )
     {
-        type = type_factory( "Integer", { { "value", &libnovel::TypeB64 },
-                                            { "isdef", &libnovel::TypeB1 } } );
+        type = type_factory( "Integer", { { "value", &libcsel_ir::TypeB64 },
+                                            { "isdef", &libcsel_ir::TypeB1 } } );
     }
     return type;
 }
 
-libnovel::Structure* String::create( libcasm_ir::StringConstant& value )
+libcsel_ir::Structure* String::create( libcasm_ir::StringConstant& value )
 {
-    static std::unordered_map< i16, libnovel::Structure* > cache;
+    static std::unordered_map< i16, libcsel_ir::Structure* > cache;
 
     i16 length = 0;
     if( value.getValue() )
@@ -114,58 +114,58 @@ libnovel::Structure* String::create( libcasm_ir::StringConstant& value )
         return cache[ length ];
     }
 
-    libnovel::Structure* type = type_factory(
+    libcsel_ir::Structure* type = type_factory(
         libstdhl::Allocator::string(
             std::string( "String" + std::to_string( length ) ) ),
-        { { "value", new libnovel::Type( libnovel::Type::STRING, length,
-                         libnovel::Type::STATE::LOCKED ) },
-            { "isdef", &libnovel::TypeB1 } } );
+        { { "value", new libcsel_ir::Type( libcsel_ir::Type::STRING, length,
+                         libcsel_ir::Type::STATE::LOCKED ) },
+            { "isdef", &libcsel_ir::TypeB1 } } );
 
     return type;
 }
 
-libnovel::Structure* RulePtr::create( void )
+libcsel_ir::Structure* RulePtr::create( void )
 {
-    static libnovel::Structure* type = 0;
+    static libcsel_ir::Structure* type = 0;
     if( not type )
     {
-        type = type_factory( "RulePtr", { { "value", &libnovel::TypeId },
-                                            { "isdef", &libnovel::TypeB1 } } );
+        type = type_factory( "RulePtr", { { "value", &libcsel_ir::TypeId },
+                                            { "isdef", &libcsel_ir::TypeB1 } } );
     }
     return type;
 }
 
-libnovel::Structure* Update::create( void )
+libcsel_ir::Structure* Update::create( void )
 {
-    static libnovel::Structure* type = 0;
+    static libcsel_ir::Structure* type = 0;
     if( not type )
     {
-        type = type_factory( "Update", { { "branded", &libnovel::TypeB1 },
-                                           { "location", &libnovel::TypeId },
-                                           { "value", &libnovel::TypeB64 },
-                                           { "isdef", &libnovel::TypeB1 } } );
+        type = type_factory( "Update", { { "branded", &libcsel_ir::TypeB1 },
+                                           { "location", &libcsel_ir::TypeId },
+                                           { "value", &libcsel_ir::TypeB64 },
+                                           { "isdef", &libcsel_ir::TypeB1 } } );
     }
     return type;
 }
 
-libnovel::Memory* UpdateSet::create( void )
+libcsel_ir::Memory* UpdateSet::create( void )
 {
-    static libnovel::Memory* type = 0;
+    static libcsel_ir::Memory* type = 0;
     if( not type )
     {
-        type = new libnovel::Memory( Update::create(), 31 );
+        type = new libcsel_ir::Memory( Update::create(), 31 );
         assert( type );
         type->getType()->bind( type );
     }
     return type;
 }
 
-libnovel::Interconnect* State::create( void )
+libcsel_ir::Interconnect* State::create( void )
 {
-    static libnovel::Interconnect* type = 0;
+    static libcsel_ir::Interconnect* type = 0;
     if( not type )
     {
-        type = new libnovel::Interconnect();
+        type = new libcsel_ir::Interconnect();
         assert( type );
         type->getType()->bind( type );
     }

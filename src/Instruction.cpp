@@ -25,17 +25,17 @@
 
 using namespace libcasm_rt;
 
-libnovel::CallableUnit* Instruction::create(
-    libcasm_ir::Value& value, libnovel::Module* module )
+libcsel_ir::CallableUnit* Instruction::create(
+    libcasm_ir::Value& value, libcsel_ir::Module* module )
 {
     if( libcasm_ir::Value::isa< libcasm_ir::AddInstruction >( &value ) )
     {
-        return ArithmeticInstruction< libnovel::AddSignedInstruction >::create(
+        return ArithmeticInstruction< libcsel_ir::AddSignedInstruction >::create(
             value, module );
     }
     else if( libcasm_ir::Value::isa< libcasm_ir::DivInstruction >( &value ) )
     {
-        return ArithmeticInstruction< libnovel::DivSignedInstruction >::create(
+        return ArithmeticInstruction< libcsel_ir::DivSignedInstruction >::create(
             value, module );
     }
     else if( libcasm_ir::Value::isa< libcasm_ir::AndInstruction >( &value ) )
@@ -56,18 +56,18 @@ libnovel::CallableUnit* Instruction::create(
 }
 
 template < class INSTR >
-libnovel::CallableUnit* ArithmeticInstruction< INSTR >::create(
-    libcasm_ir::Value& value, libnovel::Module* module )
+libcsel_ir::CallableUnit* ArithmeticInstruction< INSTR >::create(
+    libcasm_ir::Value& value, libcsel_ir::Module* module )
 {
     assert( libcasm_ir::Value::isa< libcasm_ir::BinaryInstruction >( &value ) );
     libcasm_ir::BinaryInstruction* instr
         = (libcasm_ir::BinaryInstruction*)&value;
 
-    static std::unordered_map< std::string, libnovel::CallableUnit* > cache;
+    static std::unordered_map< std::string, libcsel_ir::CallableUnit* > cache;
 
-    libnovel::Structure* ta = libcasm_rt::Type::create( *instr->getLHS() );
-    libnovel::Structure* tb = libcasm_rt::Type::create( *instr->getRHS() );
-    libnovel::Structure* tt = libcasm_rt::Type::create( *instr );
+    libcsel_ir::Structure* ta = libcasm_rt::Type::create( *instr->getLHS() );
+    libcsel_ir::Structure* tb = libcasm_rt::Type::create( *instr->getRHS() );
+    libcsel_ir::Structure* tt = libcasm_rt::Type::create( *instr );
 
     std::string key
         = std::string( "casmrt_" + std::string( &value.getName()[ 1 ] ) + "_"
@@ -84,7 +84,7 @@ libnovel::CallableUnit* ArithmeticInstruction< INSTR >::create(
 
     const char* name = libstdhl::Allocator::string( key );
 
-    libnovel::CallableUnit* obj = new libnovel::Intrinsic( name );
+    libcsel_ir::CallableUnit* obj = new libcsel_ir::Intrinsic( name );
     assert( obj );
     cache[ key ] = obj;
     if( module )
@@ -92,79 +92,79 @@ libnovel::CallableUnit* ArithmeticInstruction< INSTR >::create(
         module->add( obj );
     }
 
-    libnovel::Reference* ra = obj->in( "a", ta->getType() );
-    libnovel::Reference* rb = obj->in( "b", tb->getType() );
-    libnovel::Reference* rt = obj->out( "t", tt->getType() );
+    libcsel_ir::Reference* ra = obj->in( "a", ta->getType() );
+    libcsel_ir::Reference* rb = obj->in( "b", tb->getType() );
+    libcsel_ir::Reference* rt = obj->out( "t", tt->getType() );
 
-    libnovel::Scope* scope = 0; // new libnovel::ParallelScope( obj );
+    libcsel_ir::Scope* scope = 0; // new libcsel_ir::ParallelScope( obj );
     if( strcmp( &value.getName()[ 1 ], "div" )
         == 0 ) // TODO: EXPERIMENTIAL: DEMO ONLY!!!
     {
-        scope = new libnovel::SequentialScope( obj );
+        scope = new libcsel_ir::SequentialScope( obj );
     }
     else
     {
-        scope = new libnovel::ParallelScope( obj );
+        scope = new libcsel_ir::ParallelScope( obj );
     }
 
-    libnovel::Value* rav
-        = new libnovel::ExtractInstruction( ra, ra->getStructure()->get( 0 ) );
-    libnovel::Value* rad
-        = new libnovel::ExtractInstruction( ra, ra->getStructure()->get( 1 ) );
-    libnovel::Value* rbv
-        = new libnovel::ExtractInstruction( rb, rb->getStructure()->get( 0 ) );
-    libnovel::Value* rbd
-        = new libnovel::ExtractInstruction( rb, rb->getStructure()->get( 1 ) );
+    libcsel_ir::Value* rav
+        = new libcsel_ir::ExtractInstruction( ra, ra->getStructure()->get( 0 ) );
+    libcsel_ir::Value* rad
+        = new libcsel_ir::ExtractInstruction( ra, ra->getStructure()->get( 1 ) );
+    libcsel_ir::Value* rbv
+        = new libcsel_ir::ExtractInstruction( rb, rb->getStructure()->get( 0 ) );
+    libcsel_ir::Value* rbd
+        = new libcsel_ir::ExtractInstruction( rb, rb->getStructure()->get( 1 ) );
 
-    libnovel::Value* lav = new libnovel::LoadInstruction( rav );
-    libnovel::Value* lad = new libnovel::LoadInstruction( rad );
-    libnovel::Value* lbv = new libnovel::LoadInstruction( rbv );
-    libnovel::Value* lbd = new libnovel::LoadInstruction( rbd );
+    libcsel_ir::Value* lav = new libcsel_ir::LoadInstruction( rav );
+    libcsel_ir::Value* lad = new libcsel_ir::LoadInstruction( rad );
+    libcsel_ir::Value* lbv = new libcsel_ir::LoadInstruction( rbv );
+    libcsel_ir::Value* lbd = new libcsel_ir::LoadInstruction( rbd );
 
-    libnovel::Value* icv = new INSTR( lav, lbv );
-    libnovel::Value* icd = new libnovel::AndInstruction( lad, lbd );
+    libcsel_ir::Value* icv = new INSTR( lav, lbv );
+    libcsel_ir::Value* icd = new libcsel_ir::AndInstruction( lad, lbd );
 
-    libnovel::Value* rtv
-        = new libnovel::ExtractInstruction( rt, rt->getStructure()->get( 0 ) );
-    libnovel::Value* rtd
-        = new libnovel::ExtractInstruction( rt, rt->getStructure()->get( 1 ) );
+    libcsel_ir::Value* rtv
+        = new libcsel_ir::ExtractInstruction( rt, rt->getStructure()->get( 0 ) );
+    libcsel_ir::Value* rtd
+        = new libcsel_ir::ExtractInstruction( rt, rt->getStructure()->get( 1 ) );
 
-    libnovel::Value* scv = new libnovel::StoreInstruction( icv, rtv );
-    libnovel::Value* scd = new libnovel::StoreInstruction( icd, rtd );
+    libcsel_ir::Value* scv = new libcsel_ir::StoreInstruction( icv, rtv );
+    libcsel_ir::Value* scd = new libcsel_ir::StoreInstruction( icd, rtd );
 
-    libnovel::Statement* stmt_v = new libnovel::TrivialStatement( scope );
-    libnovel::Statement* stmt_d = new libnovel::TrivialStatement( scope );
+    libcsel_ir::Statement* stmt_v = new libcsel_ir::TrivialStatement( scope );
+    libcsel_ir::Statement* stmt_d = new libcsel_ir::TrivialStatement( scope );
     stmt_v->add( scv );
     stmt_d->add( scd );
 
     return obj;
 }
 
-// libnovel::CallableUnit* AddInstruction::create( libcasm_ir::Value& value,
-// libnovel::Module* module )
+// libcsel_ir::CallableUnit* AddInstruction::create( libcasm_ir::Value& value,
+// libcsel_ir::Module* module )
 // {
-// 	return ArithmeticInstruction< libnovel::AddSignedInstruction >::create(
+// 	return ArithmeticInstruction< libcsel_ir::AddSignedInstruction >::create(
 // value, module );
 // }
 
-// libnovel::CallableUnit* DivInstruction::create( libcasm_ir::Value& value,
-// libnovel::Module* module )
+// libcsel_ir::CallableUnit* DivInstruction::create( libcasm_ir::Value& value,
+// libcsel_ir::Module* module )
 // {
-// 	return ArithmeticInstruction< libnovel::DivSignedInstruction >::create(
+// 	return ArithmeticInstruction< libcsel_ir::DivSignedInstruction >::create(
 // value, module );
 // }
 
-libnovel::CallableUnit* EquInstruction::create(
-    libcasm_ir::Value& value, libnovel::Module* module )
+libcsel_ir::CallableUnit* EquInstruction::create(
+    libcasm_ir::Value& value, libcsel_ir::Module* module )
 {
     assert( libcasm_ir::Value::isa< libcasm_ir::EquInstruction >( &value ) );
     libcasm_ir::EquInstruction* instr = (libcasm_ir::EquInstruction*)&value;
 
-    static std::unordered_map< std::string, libnovel::CallableUnit* > cache;
+    static std::unordered_map< std::string, libcsel_ir::CallableUnit* > cache;
 
-    libnovel::Structure* ta = libcasm_rt::Type::create( *instr->getLHS() );
-    libnovel::Structure* tb = libcasm_rt::Type::create( *instr->getRHS() );
-    libnovel::Structure* tt = libcasm_rt::Type::create( *instr );
+    libcsel_ir::Structure* ta = libcasm_rt::Type::create( *instr->getLHS() );
+    libcsel_ir::Structure* tb = libcasm_rt::Type::create( *instr->getRHS() );
+    libcsel_ir::Structure* tt = libcasm_rt::Type::create( *instr );
 
     std::string key
         = std::string( "casmrt_" + std::string( &value.getName()[ 1 ] ) + "_"
@@ -181,7 +181,7 @@ libnovel::CallableUnit* EquInstruction::create(
 
     const char* name = libstdhl::Allocator::string( key );
 
-    libnovel::CallableUnit* obj = new libnovel::Intrinsic( name );
+    libcsel_ir::CallableUnit* obj = new libcsel_ir::Intrinsic( name );
     assert( obj );
     cache[ key ] = obj;
     if( module )
@@ -189,57 +189,57 @@ libnovel::CallableUnit* EquInstruction::create(
         module->add( obj );
     }
 
-    libnovel::Reference* ra = obj->in( "a", ta->getType() );
-    libnovel::Reference* rb = obj->in( "b", tb->getType() );
-    libnovel::Reference* rt = obj->out( "t", tt->getType() );
+    libcsel_ir::Reference* ra = obj->in( "a", ta->getType() );
+    libcsel_ir::Reference* rb = obj->in( "b", tb->getType() );
+    libcsel_ir::Reference* rt = obj->out( "t", tt->getType() );
 
-    libnovel::Scope* scope = new libnovel::ParallelScope( obj );
+    libcsel_ir::Scope* scope = new libcsel_ir::ParallelScope( obj );
 
-    libnovel::Value* rav
-        = new libnovel::ExtractInstruction( ra, ra->getStructure()->get( 0 ) );
-    libnovel::Value* rad
-        = new libnovel::ExtractInstruction( ra, ra->getStructure()->get( 1 ) );
-    libnovel::Value* rbv
-        = new libnovel::ExtractInstruction( rb, rb->getStructure()->get( 0 ) );
-    libnovel::Value* rbd
-        = new libnovel::ExtractInstruction( rb, rb->getStructure()->get( 1 ) );
-    libnovel::Value* rtv
-        = new libnovel::ExtractInstruction( rt, rt->getStructure()->get( 0 ) );
-    libnovel::Value* rtd
-        = new libnovel::ExtractInstruction( rt, rt->getStructure()->get( 1 ) );
+    libcsel_ir::Value* rav
+        = new libcsel_ir::ExtractInstruction( ra, ra->getStructure()->get( 0 ) );
+    libcsel_ir::Value* rad
+        = new libcsel_ir::ExtractInstruction( ra, ra->getStructure()->get( 1 ) );
+    libcsel_ir::Value* rbv
+        = new libcsel_ir::ExtractInstruction( rb, rb->getStructure()->get( 0 ) );
+    libcsel_ir::Value* rbd
+        = new libcsel_ir::ExtractInstruction( rb, rb->getStructure()->get( 1 ) );
+    libcsel_ir::Value* rtv
+        = new libcsel_ir::ExtractInstruction( rt, rt->getStructure()->get( 0 ) );
+    libcsel_ir::Value* rtd
+        = new libcsel_ir::ExtractInstruction( rt, rt->getStructure()->get( 1 ) );
 
-    libnovel::Value* lav = new libnovel::LoadInstruction( rav );
-    libnovel::Value* lad = new libnovel::LoadInstruction( rad );
-    libnovel::Value* lbv = new libnovel::LoadInstruction( rbv );
-    libnovel::Value* lbd = new libnovel::LoadInstruction( rbd );
+    libcsel_ir::Value* lav = new libcsel_ir::LoadInstruction( rav );
+    libcsel_ir::Value* lad = new libcsel_ir::LoadInstruction( rad );
+    libcsel_ir::Value* lbv = new libcsel_ir::LoadInstruction( rbv );
+    libcsel_ir::Value* lbd = new libcsel_ir::LoadInstruction( rbd );
 
-    libnovel::Statement* stmt_d = new libnovel::TrivialStatement( scope );
-    libnovel::Value* def = libnovel::BitConstant::create( 1, 1 );
+    libcsel_ir::Statement* stmt_d = new libcsel_ir::TrivialStatement( scope );
+    libcsel_ir::Value* def = libcsel_ir::BitConstant::create( 1, 1 );
     if( module )
     {
         module->add( def );
     }
-    libnovel::Value* scd = new libnovel::StoreInstruction( def, rtd );
+    libcsel_ir::Value* scd = new libcsel_ir::StoreInstruction( def, rtd );
     stmt_d->add( scd );
 
-    libnovel::Value* check = new libnovel::AndInstruction( lad, lbd );
-    libnovel::Statement* br = new libnovel::BranchStatement( scope );
+    libcsel_ir::Value* check = new libcsel_ir::AndInstruction( lad, lbd );
+    libcsel_ir::Statement* br = new libcsel_ir::BranchStatement( scope );
     br->add( rtv );
     br->add( check );
 
-    libnovel::Scope* br_true = new libnovel::ParallelScope();
+    libcsel_ir::Scope* br_true = new libcsel_ir::ParallelScope();
     br->addScope( br_true );
-    libnovel::Value* equ_v = new libnovel::EquUnsignedInstruction( lav, lbv );
-    libnovel::Value* equ_s = new libnovel::StoreInstruction( equ_v, rtv );
-    libnovel::Statement* st_true = new libnovel::TrivialStatement( br_true );
+    libcsel_ir::Value* equ_v = new libcsel_ir::EquUnsignedInstruction( lav, lbv );
+    libcsel_ir::Value* equ_s = new libcsel_ir::StoreInstruction( equ_v, rtv );
+    libcsel_ir::Statement* st_true = new libcsel_ir::TrivialStatement( br_true );
     st_true->add( equ_s );
 
-    libnovel::Scope* br_false = new libnovel::ParallelScope();
+    libcsel_ir::Scope* br_false = new libcsel_ir::ParallelScope();
     br->addScope( br_false );
-    libnovel::Value* equ_x = new libnovel::XorInstruction( lad, lbd );
-    libnovel::Value* equ_y = new libnovel::NotInstruction( equ_x );
-    libnovel::Value* equ_u = new libnovel::StoreInstruction( equ_y, rtv );
-    libnovel::Statement* st_false = new libnovel::TrivialStatement( br_false );
+    libcsel_ir::Value* equ_x = new libcsel_ir::XorInstruction( lad, lbd );
+    libcsel_ir::Value* equ_y = new libcsel_ir::NotInstruction( equ_x );
+    libcsel_ir::Value* equ_u = new libcsel_ir::StoreInstruction( equ_y, rtv );
+    libcsel_ir::Statement* st_false = new libcsel_ir::TrivialStatement( br_false );
     st_false->add( equ_u );
 
     return obj;

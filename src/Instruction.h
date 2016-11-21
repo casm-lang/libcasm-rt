@@ -32,44 +32,44 @@
 
 #include "libcasm-ir.h"
 #include "libcasm-rt.h"
-#include "libnovel.h"
+#include "libcsel-ir.h"
 
 namespace libcasm_rt
 {
     class Instruction //: public CasmRT
     {
       public:
-        static libnovel::CallableUnit* create(
-            libcasm_ir::Value& value, libnovel::Module* module = 0 );
+        static libcsel_ir::CallableUnit* create(
+            libcasm_ir::Value& value, libcsel_ir::Module* module = 0 );
     };
 
     template < class INSTR >
     class ArithmeticInstruction //: public CasmRT
     {
       public:
-        static libnovel::CallableUnit* create(
-            libcasm_ir::Value& value, libnovel::Module* module = 0 );
+        static libcsel_ir::CallableUnit* create(
+            libcasm_ir::Value& value, libcsel_ir::Module* module = 0 );
     };
 
     // class AddInstruction //: public CasmRT
     // {
     // public:
-    //     static libnovel::CallableUnit* create( libcasm_ir::AddInstruction&
-    //     value, libnovel::Module* module = 0 );
+    //     static libcsel_ir::CallableUnit* create( libcasm_ir::AddInstruction&
+    //     value, libcsel_ir::Module* module = 0 );
     // };
 
     // class DivInstruction //: public CasmRT
     // {
     // public:
-    //     static libnovel::CallableUnit* create( libcasm_ir::DivInstruction&
-    //     value, libnovel::Module* module = 0 );
+    //     static libcsel_ir::CallableUnit* create( libcasm_ir::DivInstruction&
+    //     value, libcsel_ir::Module* module = 0 );
     // };
 
     class EquInstruction //: public CasmRT
     {
       public:
-        static libnovel::CallableUnit* create(
-            libcasm_ir::Value& value, libnovel::Module* module = 0 );
+        static libcsel_ir::CallableUnit* create(
+            libcasm_ir::Value& value, libcsel_ir::Module* module = 0 );
     };
 }
 

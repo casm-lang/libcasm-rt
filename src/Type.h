@@ -32,56 +32,56 @@
 
 #include "libcasm-ir.h"
 #include "libcasm-rt.h"
-#include "libnovel.h"
+#include "libcsel-ir.h"
 
 namespace libcasm_rt
 {
     class Type //: public CasmRT
     {
       public:
-        static libnovel::Structure* create( libcasm_ir::Value& value );
+        static libcsel_ir::Structure* create( libcasm_ir::Value& value );
     };
 
     class Boolean : public Type
     {
       public:
-        static libnovel::Structure* create( void );
+        static libcsel_ir::Structure* create( void );
     };
 
     class Integer : public Type
     {
       public:
-        static libnovel::Structure* create( void );
+        static libcsel_ir::Structure* create( void );
     };
 
     class String : public Type
     {
       public:
-        static libnovel::Structure* create( libcasm_ir::StringConstant& value );
+        static libcsel_ir::Structure* create( libcasm_ir::StringConstant& value );
     };
 
     class RulePtr : public Type
     {
       public:
-        static libnovel::Structure* create( void );
+        static libcsel_ir::Structure* create( void );
     };
 
     class Update : public Type
     {
       public:
-        static libnovel::Structure* create( void );
+        static libcsel_ir::Structure* create( void );
     };
 
     class UpdateSet : public Type
     {
       public:
-        static libnovel::Memory* create( void );
+        static libcsel_ir::Memory* create( void );
     };
 
     class State : public Type
     {
       public:
-        static libnovel::Interconnect* create( void );
+        static libcsel_ir::Interconnect* create( void );
     };
 }
 
