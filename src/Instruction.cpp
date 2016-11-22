@@ -30,13 +30,13 @@ libcsel_ir::CallableUnit* Instruction::create(
 {
     if( libcasm_ir::Value::isa< libcasm_ir::AddInstruction >( &value ) )
     {
-        return ArithmeticInstruction< libcsel_ir::AddSignedInstruction >::create(
-            value, module );
+        return ArithmeticInstruction< libcsel_ir::AddSignedInstruction >::
+            create( value, module );
     }
     else if( libcasm_ir::Value::isa< libcasm_ir::DivInstruction >( &value ) )
     {
-        return ArithmeticInstruction< libcsel_ir::DivSignedInstruction >::create(
-            value, module );
+        return ArithmeticInstruction< libcsel_ir::DivSignedInstruction >::
+            create( value, module );
     }
     else if( libcasm_ir::Value::isa< libcasm_ir::AndInstruction >( &value ) )
     {
@@ -107,14 +107,14 @@ libcsel_ir::CallableUnit* ArithmeticInstruction< INSTR >::create(
         scope = new libcsel_ir::ParallelScope( obj );
     }
 
-    libcsel_ir::Value* rav
-        = new libcsel_ir::ExtractInstruction( ra, ra->getStructure()->get( 0 ) );
-    libcsel_ir::Value* rad
-        = new libcsel_ir::ExtractInstruction( ra, ra->getStructure()->get( 1 ) );
-    libcsel_ir::Value* rbv
-        = new libcsel_ir::ExtractInstruction( rb, rb->getStructure()->get( 0 ) );
-    libcsel_ir::Value* rbd
-        = new libcsel_ir::ExtractInstruction( rb, rb->getStructure()->get( 1 ) );
+    libcsel_ir::Value* rav = new libcsel_ir::ExtractInstruction(
+        ra, ra->getStructure()->get( 0 ) );
+    libcsel_ir::Value* rad = new libcsel_ir::ExtractInstruction(
+        ra, ra->getStructure()->get( 1 ) );
+    libcsel_ir::Value* rbv = new libcsel_ir::ExtractInstruction(
+        rb, rb->getStructure()->get( 0 ) );
+    libcsel_ir::Value* rbd = new libcsel_ir::ExtractInstruction(
+        rb, rb->getStructure()->get( 1 ) );
 
     libcsel_ir::Value* lav = new libcsel_ir::LoadInstruction( rav );
     libcsel_ir::Value* lad = new libcsel_ir::LoadInstruction( rad );
@@ -124,10 +124,10 @@ libcsel_ir::CallableUnit* ArithmeticInstruction< INSTR >::create(
     libcsel_ir::Value* icv = new INSTR( lav, lbv );
     libcsel_ir::Value* icd = new libcsel_ir::AndInstruction( lad, lbd );
 
-    libcsel_ir::Value* rtv
-        = new libcsel_ir::ExtractInstruction( rt, rt->getStructure()->get( 0 ) );
-    libcsel_ir::Value* rtd
-        = new libcsel_ir::ExtractInstruction( rt, rt->getStructure()->get( 1 ) );
+    libcsel_ir::Value* rtv = new libcsel_ir::ExtractInstruction(
+        rt, rt->getStructure()->get( 0 ) );
+    libcsel_ir::Value* rtd = new libcsel_ir::ExtractInstruction(
+        rt, rt->getStructure()->get( 1 ) );
 
     libcsel_ir::Value* scv = new libcsel_ir::StoreInstruction( icv, rtv );
     libcsel_ir::Value* scd = new libcsel_ir::StoreInstruction( icd, rtd );
@@ -195,18 +195,18 @@ libcsel_ir::CallableUnit* EquInstruction::create(
 
     libcsel_ir::Scope* scope = new libcsel_ir::ParallelScope( obj );
 
-    libcsel_ir::Value* rav
-        = new libcsel_ir::ExtractInstruction( ra, ra->getStructure()->get( 0 ) );
-    libcsel_ir::Value* rad
-        = new libcsel_ir::ExtractInstruction( ra, ra->getStructure()->get( 1 ) );
-    libcsel_ir::Value* rbv
-        = new libcsel_ir::ExtractInstruction( rb, rb->getStructure()->get( 0 ) );
-    libcsel_ir::Value* rbd
-        = new libcsel_ir::ExtractInstruction( rb, rb->getStructure()->get( 1 ) );
-    libcsel_ir::Value* rtv
-        = new libcsel_ir::ExtractInstruction( rt, rt->getStructure()->get( 0 ) );
-    libcsel_ir::Value* rtd
-        = new libcsel_ir::ExtractInstruction( rt, rt->getStructure()->get( 1 ) );
+    libcsel_ir::Value* rav = new libcsel_ir::ExtractInstruction(
+        ra, ra->getStructure()->get( 0 ) );
+    libcsel_ir::Value* rad = new libcsel_ir::ExtractInstruction(
+        ra, ra->getStructure()->get( 1 ) );
+    libcsel_ir::Value* rbv = new libcsel_ir::ExtractInstruction(
+        rb, rb->getStructure()->get( 0 ) );
+    libcsel_ir::Value* rbd = new libcsel_ir::ExtractInstruction(
+        rb, rb->getStructure()->get( 1 ) );
+    libcsel_ir::Value* rtv = new libcsel_ir::ExtractInstruction(
+        rt, rt->getStructure()->get( 0 ) );
+    libcsel_ir::Value* rtd = new libcsel_ir::ExtractInstruction(
+        rt, rt->getStructure()->get( 1 ) );
 
     libcsel_ir::Value* lav = new libcsel_ir::LoadInstruction( rav );
     libcsel_ir::Value* lad = new libcsel_ir::LoadInstruction( rad );
@@ -229,9 +229,11 @@ libcsel_ir::CallableUnit* EquInstruction::create(
 
     libcsel_ir::Scope* br_true = new libcsel_ir::ParallelScope();
     br->addScope( br_true );
-    libcsel_ir::Value* equ_v = new libcsel_ir::EquUnsignedInstruction( lav, lbv );
+    libcsel_ir::Value* equ_v
+        = new libcsel_ir::EquUnsignedInstruction( lav, lbv );
     libcsel_ir::Value* equ_s = new libcsel_ir::StoreInstruction( equ_v, rtv );
-    libcsel_ir::Statement* st_true = new libcsel_ir::TrivialStatement( br_true );
+    libcsel_ir::Statement* st_true
+        = new libcsel_ir::TrivialStatement( br_true );
     st_true->add( equ_s );
 
     libcsel_ir::Scope* br_false = new libcsel_ir::ParallelScope();
@@ -239,7 +241,8 @@ libcsel_ir::CallableUnit* EquInstruction::create(
     libcsel_ir::Value* equ_x = new libcsel_ir::XorInstruction( lad, lbd );
     libcsel_ir::Value* equ_y = new libcsel_ir::NotInstruction( equ_x );
     libcsel_ir::Value* equ_u = new libcsel_ir::StoreInstruction( equ_y, rtv );
-    libcsel_ir::Statement* st_false = new libcsel_ir::TrivialStatement( br_false );
+    libcsel_ir::Statement* st_false
+        = new libcsel_ir::TrivialStatement( br_false );
     st_false->add( equ_u );
 
     return obj;

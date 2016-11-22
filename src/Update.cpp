@@ -41,9 +41,11 @@ libcsel_ir::CallableUnit* HashImplementation::create( void )
     libcsel_ir::Value* r = obj->out( "res", &libcsel_ir::TypeB16 );
 
     libcsel_ir::SequentialScope* scope = new libcsel_ir::SequentialScope( obj );
-    libcsel_ir::TrivialStatement* blk = new libcsel_ir::TrivialStatement( scope );
+    libcsel_ir::TrivialStatement* blk
+        = new libcsel_ir::TrivialStatement( scope );
 
-    // libcsel_ir::StreamInstruction* output = new libcsel_ir::StreamInstruction(
+    // libcsel_ir::StreamInstruction* output = new
+    // libcsel_ir::StreamInstruction(
     // libcsel_ir::StreamInstruction::OUTPUT );
     // assert( output );
     // output->add( libcsel_ir::StringConstant::create( "hash" ) );
@@ -52,7 +54,8 @@ libcsel_ir::CallableUnit* HashImplementation::create( void )
 
     libcsel_ir::Instruction* s_
         = new libcsel_ir::ZeroExtendInstruction( s, v->getType() );
-    libcsel_ir::Instruction* p_ = new libcsel_ir::ModUnsignedInstruction( v, s_ );
+    libcsel_ir::Instruction* p_
+        = new libcsel_ir::ModUnsignedInstruction( v, s_ );
     libcsel_ir::Instruction* t_
         = new libcsel_ir::TruncationInstruction( p_, r->getType() );
     libcsel_ir::Instruction* r_ = new libcsel_ir::StoreInstruction( t_, r );
@@ -64,10 +67,12 @@ libcsel_ir::CallableUnit* HashImplementation::create( void )
 libcsel_ir::CallableUnit* UpdateImplementation::create(
     libcasm_ir::UpdateInstruction& value, libcsel_ir::Module* module )
 {
-    static std::unordered_map< libcsel_ir::Structure*, libcsel_ir::CallableUnit* >
+    static std::unordered_map< libcsel_ir::Structure*,
+        libcsel_ir::CallableUnit* >
         cache;
 
-    libcsel_ir::Structure* key = libcasm_rt::Type::create( *( value.getRHS() ) );
+    libcsel_ir::Structure* key
+        = libcasm_rt::Type::create( *( value.getRHS() ) );
     if( cache.count( key ) > 0 )
     {
         return cache[ key ];
@@ -87,14 +92,16 @@ libcsel_ir::CallableUnit* UpdateImplementation::create(
     libcsel_ir::Memory* uset_mem = libcasm_rt::UpdateSet::create();
 
     libcsel_ir::Value* uset = obj->in( "uset", uset_mem->getType() );
-    libcsel_ir::Value* loc
-        = obj->in( "loc", &libcsel_ir::TypeId ); // ASSUMTION: PPA: addresses stay
-                                               // in the 48-bit range!
+    libcsel_ir::Value* loc = obj->in(
+        "loc", &libcsel_ir::TypeId ); // ASSUMTION: PPA: addresses stay
+                                      // in the 48-bit range!
     libcsel_ir::Value* val = obj->in( "value", key->getType() );
 
     libcsel_ir::SequentialScope* scope = new libcsel_ir::SequentialScope( obj );
-    libcsel_ir::TrivialStatement* blk = new libcsel_ir::TrivialStatement( scope );
-    // libcsel_ir::StreamInstruction* output = new libcsel_ir::StreamInstruction(
+    libcsel_ir::TrivialStatement* blk
+        = new libcsel_ir::TrivialStatement( scope );
+    // libcsel_ir::StreamInstruction* output = new
+    // libcsel_ir::StreamInstruction(
     // libcsel_ir::StreamInstruction::OUTPUT );
     // assert( output );
     // output->add( libcsel_ir::StringConstant::create( "update" ) );
@@ -102,7 +109,8 @@ libcsel_ir::CallableUnit* UpdateImplementation::create(
     // blk->add( output );
 
     libcsel_ir::CallableUnit* hash = HashImplementation::create();
-    libcsel_ir::Instruction* hash_call = new libcsel_ir::CallInstruction( hash );
+    libcsel_ir::Instruction* hash_call
+        = new libcsel_ir::CallInstruction( hash );
 
     u16 size = hash->getReference( "size" )->getType()->getBitsize();
     libcsel_ir::Value* size_bc
@@ -122,7 +130,8 @@ libcsel_ir::CallableUnit* UpdateImplementation::create(
     libcsel_ir::Instruction* pos_
         = new libcsel_ir::ZeroExtendInstruction( pos, &libcsel_ir::TypeId );
 
-    libcsel_ir::Instruction* el = new libcsel_ir::ExtractInstruction( uset, pos_ );
+    libcsel_ir::Instruction* el
+        = new libcsel_ir::ExtractInstruction( uset, pos_ );
     libcsel_ir::Structure* update_type = libcasm_rt::Update::create();
     libcsel_ir::Instruction* ca
         = new libcsel_ir::CastInstruction( update_type, el );
@@ -146,14 +155,17 @@ libcsel_ir::CallableUnit* UpdateImplementation::create(
     {
         module->add( u_c );
     }
-    libcsel_ir::Instruction* s_bra = new libcsel_ir::StoreInstruction( u_c, u_bra );
+    libcsel_ir::Instruction* s_bra
+        = new libcsel_ir::StoreInstruction( u_c, u_bra );
     blk->add( s_bra );
-    libcsel_ir::Instruction* s_loc = new libcsel_ir::StoreInstruction( loc, u_loc );
+    libcsel_ir::Instruction* s_loc
+        = new libcsel_ir::StoreInstruction( loc, u_loc );
     blk->add( s_loc );
 
     if( v_val->getType()->getBitsize() < u_val->getType()->getBitsize() )
     {
-        v_val = new libcsel_ir::ZeroExtendInstruction( v_val, u_val->getType() );
+        v_val
+            = new libcsel_ir::ZeroExtendInstruction( v_val, u_val->getType() );
     }
 
     libcsel_ir::Instruction* s_val
@@ -169,7 +181,8 @@ libcsel_ir::CallableUnit* UpdateImplementation::create(
 libcsel_ir::CallableUnit* LookupImplementation::create(
     libcasm_ir::LookupInstruction& value, libcsel_ir::Module* module )
 {
-    static std::unordered_map< libcsel_ir::Structure*, libcsel_ir::CallableUnit* >
+    static std::unordered_map< libcsel_ir::Structure*,
+        libcsel_ir::CallableUnit* >
         cache;
 
     libcsel_ir::Structure* key = libcasm_rt::Type::create( *( value.get() ) );
@@ -193,15 +206,17 @@ libcsel_ir::CallableUnit* LookupImplementation::create(
         = obj->in( "refs", libcasm_rt::State::create()->getType() );
     /*libcsel_ir::Value* uset = */ obj->in(
         "uset", libcasm_rt::UpdateSet::create()->getType() );
-    libcsel_ir::Value* loc
-        = obj->in( "loc", &libcsel_ir::TypeId ); // ASSUMTION: PPA: addresses stay
-                                               // in the 48-bit range!
+    libcsel_ir::Value* loc = obj->in(
+        "loc", &libcsel_ir::TypeId ); // ASSUMTION: PPA: addresses stay
+                                      // in the 48-bit range!
     libcsel_ir::Value* val = obj->out( "value", key->getType() );
 
     libcsel_ir::SequentialScope* scope = new libcsel_ir::SequentialScope( obj );
-    libcsel_ir::TrivialStatement* blk = new libcsel_ir::TrivialStatement( scope );
+    libcsel_ir::TrivialStatement* blk
+        = new libcsel_ir::TrivialStatement( scope );
 
-    // libcsel_ir::StreamInstruction* output = new libcsel_ir::StreamInstruction(
+    // libcsel_ir::StreamInstruction* output = new
+    // libcsel_ir::StreamInstruction(
     // libcsel_ir::StreamInstruction::OUTPUT );
     // assert( output );
     // output->add( libcsel_ir::StringConstant::create( "lookup" ) );
@@ -210,7 +225,8 @@ libcsel_ir::CallableUnit* LookupImplementation::create(
 
     // PPA: EXPERIMENTAL: needs more attention in the future, because we only
     // support parallel only for now!!!
-    libcsel_ir::Instruction* el = new libcsel_ir::ExtractInstruction( refs, loc );
+    libcsel_ir::Instruction* el
+        = new libcsel_ir::ExtractInstruction( refs, loc );
     libcsel_ir::Instruction* ca
         = new libcsel_ir::CastInstruction( libcasm_rt::Integer::create(), el );
     libcsel_ir::Instruction* ld = new libcsel_ir::LoadInstruction( ca );
@@ -244,7 +260,8 @@ libcsel_ir::Variable* FunctionState::create( libcasm_ir::Function& value )
     return obj;
 }
 
-libcsel_ir::CallableUnit* FunctionLocation::create( libcasm_ir::Function& value )
+libcsel_ir::CallableUnit* FunctionLocation::create(
+    libcasm_ir::Function& value )
 {
     std::string* name = new std::string(
         "casmrt_location_" + std::string( value.getName() ) );
@@ -255,7 +272,8 @@ libcsel_ir::CallableUnit* FunctionLocation::create( libcasm_ir::Function& value 
     assert( scope );
     obj->setContext( scope );
 
-    libcsel_ir::TrivialStatement* stmt = new libcsel_ir::TrivialStatement( scope );
+    libcsel_ir::TrivialStatement* stmt
+        = new libcsel_ir::TrivialStatement( scope );
     libcsel_ir::IdInstruction* id
         = new libcsel_ir::IdInstruction( FunctionState::create( value ) );
     assert( id );
@@ -275,7 +293,8 @@ libcsel_ir::CallableUnit* FunctionLocation::create( libcasm_ir::Function& value 
     return obj;
 }
 
-libcsel_ir::Variable* ProgramFunctionState::create( libcsel_ir::Variable* value )
+libcsel_ir::Variable* ProgramFunctionState::create(
+    libcsel_ir::Variable* value )
 {
     static libcsel_ir::Variable* obj = 0;
 

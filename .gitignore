@@ -1,7 +1,4 @@
 .attic
-uts/obj
-obj/*
-casm-rt.bc
-casm-rt.ll
-casm-rt.ir
-libcasm-rt.a
+obj
+lib*.a
+test*

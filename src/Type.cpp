@@ -82,8 +82,9 @@ libcsel_ir::Structure* Boolean::create( void )
     static libcsel_ir::Structure* type = 0;
     if( not type )
     {
-        type = type_factory( "Boolean", { { "value", &libcsel_ir::TypeB1 },
-                                            { "isdef", &libcsel_ir::TypeB1 } } );
+        type
+            = type_factory( "Boolean", { { "value", &libcsel_ir::TypeB1 },
+                                           { "isdef", &libcsel_ir::TypeB1 } } );
     }
     return type;
 }
@@ -93,8 +94,9 @@ libcsel_ir::Structure* Integer::create( void )
     static libcsel_ir::Structure* type = 0;
     if( not type )
     {
-        type = type_factory( "Integer", { { "value", &libcsel_ir::TypeB64 },
-                                            { "isdef", &libcsel_ir::TypeB1 } } );
+        type
+            = type_factory( "Integer", { { "value", &libcsel_ir::TypeB64 },
+                                           { "isdef", &libcsel_ir::TypeB1 } } );
     }
     return type;
 }
@@ -129,8 +131,9 @@ libcsel_ir::Structure* RulePtr::create( void )
     static libcsel_ir::Structure* type = 0;
     if( not type )
     {
-        type = type_factory( "RulePtr", { { "value", &libcsel_ir::TypeId },
-                                            { "isdef", &libcsel_ir::TypeB1 } } );
+        type
+            = type_factory( "RulePtr", { { "value", &libcsel_ir::TypeId },
+                                           { "isdef", &libcsel_ir::TypeB1 } } );
     }
     return type;
 }

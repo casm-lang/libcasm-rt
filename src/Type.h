@@ -57,7 +57,8 @@ namespace libcasm_rt
     class String : public Type
     {
       public:
-        static libcsel_ir::Structure* create( libcasm_ir::StringConstant& value );
+        static libcsel_ir::Structure* create(
+            libcasm_ir::StringConstant& value );
     };
 
     class RulePtr : public Type
