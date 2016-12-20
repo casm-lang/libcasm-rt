@@ -60,13 +60,18 @@ libcsel_ir::CallableUnit* ArithmeticInstruction< INSTR >::create(
     libcasm_ir::Value& value, libcsel_ir::Module* module )
 {
     assert( libcasm_ir::Value::isa< libcasm_ir::BinaryInstruction >( &value ) );
-    libcasm_ir::BinaryInstruction* instr
-        = (libcasm_ir::BinaryInstruction*)&value;
+    assert(
+        libcasm_ir::Value::isa< libcasm_ir::ArithmeticInstruction >( &value ) );
+
+    libcasm_ir::ArithmeticInstruction* instr
+        = (libcasm_ir::ArithmeticInstruction*)&value;
 
     static std::unordered_map< std::string, libcsel_ir::CallableUnit* > cache;
 
-    libcsel_ir::Structure* ta = libcasm_rt::Type::create( *instr->getLHS() );
-    libcsel_ir::Structure* tb = libcasm_rt::Type::create( *instr->getRHS() );
+    libcsel_ir::Structure* ta
+        = libcasm_rt::Type::create( *instr->getValue( 0 ) );
+    libcsel_ir::Structure* tb
+        = libcasm_rt::Type::create( *instr->getValue( 1 ) );
     libcsel_ir::Structure* tt = libcasm_rt::Type::create( *instr );
 
     std::string key
