@@ -27,7 +27,7 @@ using namespace libcasm_rt;
 
 libcsel_ir::Structure* Type::create( libcasm_ir::Value& value )
 {
-    libcasm_ir::Type* type = value.getType();
+    libcasm_ir::Type* type = value.getType()->getResult();
     assert( type and " invalid type pointer! " );
 
     libcasm_ir::Type::ID tid = type->getID();
