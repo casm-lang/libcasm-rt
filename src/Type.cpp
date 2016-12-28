@@ -30,19 +30,17 @@ libcsel_ir::Structure* Type::create( libcasm_ir::Value& value )
     libcasm_ir::Type* type = value.getType();
     assert( type and " invalid type pointer! " );
 
-    assert( type->getSubTypes().size() == 0 ); // PPA: LIMITATION for now!
+    libcasm_ir::Type::ID tid = type->getID();
 
-    u64 tid = type->getResultType()->getID();
-
-    if( tid == libcasm_ir::BooleanType.getID() )
+    if( tid == libcasm_ir::Type::getBoolean()->getID() )
     {
         return Boolean::create();
     }
-    else if( tid == libcasm_ir::IntegerType.getID() )
+    else if( tid == libcasm_ir::Type::getInteger()->getID() )
     {
         return Integer::create();
     }
-    else if( tid == libcasm_ir::RulePointerType.getID() )
+    else if( tid == libcasm_ir::Type::getRuleReference()->getID() )
     {
         return RulePtr::create();
     }
