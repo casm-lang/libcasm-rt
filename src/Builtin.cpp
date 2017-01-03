@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2014-2016 CASM Organization
+//  Copyright (c) 2014-2017 CASM Organization
 //  All rights reserved.
 //
 //  Developed by: Philipp Paulweber
@@ -25,44 +25,44 @@
 
 using namespace libcasm_rt;
 
-
 libcsel_ir::CallableUnit* AsBooleanBuiltin::create(
     libcasm_ir::Value& value, libcsel_ir::Module* module )
 {
     assert( libcasm_ir::Value::isa< libcasm_ir::AsBooleanBuiltin >( &value ) );
-    libcasm_ir::AsBooleanBuiltin& instr = static_cast< libcasm_ir::AsBooleanBuiltin& >( value );
-    
+    libcasm_ir::AsBooleanBuiltin& instr
+        = static_cast< libcasm_ir::AsBooleanBuiltin& >( value );
+
     static std::unordered_map< std::string, libcsel_ir::CallableUnit* > cache;
-    
+
     // libcsel_ir::Structure* ta = libcasm_rt::Type::create( *instr->getLHS() );
     // libcsel_ir::Structure* tb = libcasm_rt::Type::create( *instr->getRHS() );
     // libcsel_ir::Structure* tt = libcasm_rt::Type::create( *instr );
-    
-    std::string key
-        = std::string( "casmrt_" + std::string( value.getName() ) + "_TODO_ARGS" );
-                       // + std::string( ta->getName() )
-                       // + "_"
-                       // + std::string( tb->getName() )
-                       // + "_"
-                       // + std::string( tt->getName() ) );
+
+    std::string key = std::string(
+        "casmrt_" + std::string( value.getName() ) + "_TODO_ARGS" );
+    // + std::string( ta->getName() )
+    // + "_"
+    // + std::string( tb->getName() )
+    // + "_"
+    // + std::string( tt->getName() ) );
 
     if( cache.count( key ) > 0 )
     {
         return cache[ key ];
     }
-    
+
     const char* name = libstdhl::Allocator::string( key );
 
     libcsel_ir::CallableUnit* obj = new libcsel_ir::Intrinsic( name );
     assert( obj );
-    
+
     cache[ key ] = obj;
 
     if( module )
     {
         module->add( obj );
     }
-    
+
     libcsel_ir::Scope* scope = new libcsel_ir::ParallelScope( obj );
 
     libcsel_ir::Statement* stmt_d = new libcsel_ir::TrivialStatement( scope );
@@ -71,8 +71,8 @@ libcsel_ir::CallableUnit* AsBooleanBuiltin::create(
     {
         module->add( def );
     }
-    
+
     stmt_d->add( new libcsel_ir::NopInstruction() );
-    
+
     return obj;
 }
