@@ -21,20 +21,30 @@
 //  along with libcasm-rt. If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef _LIB_CASMRT_H_
-#define _LIB_CASMRT_H_
+/**
+   @brief    TODO
 
-#include "src/Constant.h"
-#include "src/Instruction.h"
-#include "src/Type.h"
-#include "src/Update.h"
-#include "src/Builtin.h"
+   TODO
+*/
+
+#ifndef _LIB_CASMRT_BUILTIN_H_
+#define _LIB_CASMRT_BUILTIN_H_
+
+#include "../casm-ir/src/Builtin.h"
+#include "CasmRT.h"
+#include "libcsel-ir.h"
 
 namespace libcasm_rt
 {
+    class AsBooleanBuiltin : public CasmRT
+    {
+      public:
+        static libcsel_ir::CallableUnit* create(
+            libcasm_ir::Value& value, libcsel_ir::Module* module = 0 );
+    };
 }
 
-#endif /* _LIB_CASMRT_H_ */
+#endif /* _LIB_CASMRT_BUILTIN_H_ */
 
 //
 //  Local variables:

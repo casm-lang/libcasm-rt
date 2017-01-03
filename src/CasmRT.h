@@ -21,20 +21,17 @@
 //  along with libcasm-rt. If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef _LIB_CASMRT_H_
-#define _LIB_CASMRT_H_
-
-#include "src/Constant.h"
-#include "src/Instruction.h"
-#include "src/Type.h"
-#include "src/Update.h"
-#include "src/Builtin.h"
+#ifndef _LIB_CASMRT_CASMRT_H_
+#define _LIB_CASMRT_CASMRT_H_
 
 namespace libcasm_rt
 {
+    class CasmRT
+    {
+    };
 }
 
-#endif /* _LIB_CASMRT_H_ */
+#endif /* _LIB_CASMRT_CASMRT_H_ */
 
 //
 //  Local variables:
