@@ -28,7 +28,7 @@ using namespace libcasm_rt;
 libcsel_ir::CallableUnit* AsBooleanBuiltin::create(
     libcasm_ir::Value& value, libcsel_ir::Module* module )
 {
-    assert( libcasm_ir::Value::isa< libcasm_ir::AsBooleanBuiltin >( &value ) );
+    assert( libcasm_ir::isa< libcasm_ir::AsBooleanBuiltin >( &value ) );
     libcasm_ir::AsBooleanBuiltin& instr
         = static_cast< libcasm_ir::AsBooleanBuiltin& >( value );
 

@@ -28,22 +28,22 @@ using namespace libcasm_rt;
 libcsel_ir::CallableUnit* Instruction::create(
     libcasm_ir::Value& value, libcsel_ir::Module* module )
 {
-    if( libcasm_ir::Value::isa< libcasm_ir::AddInstruction >( &value ) )
+    if( libcasm_ir::isa< libcasm_ir::AddInstruction >( &value ) )
     {
         return ArithmeticInstruction< libcsel_ir::AddSignedInstruction >::
             create( value, module );
     }
-    else if( libcasm_ir::Value::isa< libcasm_ir::DivInstruction >( &value ) )
+    else if( libcasm_ir::isa< libcasm_ir::DivInstruction >( &value ) )
     {
         return ArithmeticInstruction< libcsel_ir::DivSignedInstruction >::
             create( value, module );
     }
-    else if( libcasm_ir::Value::isa< libcasm_ir::AndInstruction >( &value ) )
+    else if( libcasm_ir::isa< libcasm_ir::AndInstruction >( &value ) )
     {
         assert( 0 );
         return 0;
     }
-    else if( libcasm_ir::Value::isa< libcasm_ir::EquInstruction >( &value ) )
+    else if( libcasm_ir::isa< libcasm_ir::EquInstruction >( &value ) )
     {
         return EquInstruction::create( value, module );
     }
@@ -59,9 +59,8 @@ template < class INSTR >
 libcsel_ir::CallableUnit* ArithmeticInstruction< INSTR >::create(
     libcasm_ir::Value& value, libcsel_ir::Module* module )
 {
-    assert( libcasm_ir::Value::isa< libcasm_ir::BinaryInstruction >( &value ) );
-    assert(
-        libcasm_ir::Value::isa< libcasm_ir::ArithmeticInstruction >( &value ) );
+    assert( libcasm_ir::isa< libcasm_ir::BinaryInstruction >( &value ) );
+    assert( libcasm_ir::isa< libcasm_ir::ArithmeticInstruction >( &value ) );
 
     libcasm_ir::ArithmeticInstruction* instr
         = (libcasm_ir::ArithmeticInstruction*)&value;
@@ -162,7 +161,7 @@ libcsel_ir::CallableUnit* ArithmeticInstruction< INSTR >::create(
 libcsel_ir::CallableUnit* EquInstruction::create(
     libcasm_ir::Value& value, libcsel_ir::Module* module )
 {
-    assert( libcasm_ir::Value::isa< libcasm_ir::EquInstruction >( &value ) );
+    assert( libcasm_ir::isa< libcasm_ir::EquInstruction >( &value ) );
     libcasm_ir::EquInstruction* instr = (libcasm_ir::EquInstruction*)&value;
 
     static std::unordered_map< std::string, libcsel_ir::CallableUnit* > cache;
