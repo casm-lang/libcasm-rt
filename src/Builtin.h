@@ -30,18 +30,34 @@
 #ifndef _LIB_CASMRT_BUILTIN_H_
 #define _LIB_CASMRT_BUILTIN_H_
 
-#include "../casm-ir/src/Builtin.h"
 #include "CasmRT.h"
-#include "libcsel-ir.h"
+
+namespace libcsel_ir
+{
+    class Module;
+    class CallableUnit;
+}
+
+namespace libcasm_ir
+{
+    class Value;
+}
 
 namespace libcasm_rt
 {
-    class AsBooleanBuiltin : public CasmRT
+    class Builtin : public CasmRT
     {
       public:
-        static libcsel_ir::CallableUnit* create(
-            libcasm_ir::Value& value, libcsel_ir::Module* module = 0 );
+        static libcsel_ir::CallableUnit* getAsBoolean(
+            libcasm_ir::Value& value, libcsel_ir::Module* context = 0 );
     };
+    
+    // class AsBooleanBuiltin : public CasmRT
+    // {
+    //   public:
+    //     static libcsel_ir::CallableUnit* create(
+    //         libcasm_ir::Value& value, libcsel_ir::Module* context = 0 );
+    // };
 }
 
 #endif /* _LIB_CASMRT_BUILTIN_H_ */

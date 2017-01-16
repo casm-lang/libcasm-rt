@@ -25,153 +25,163 @@
 
 using namespace libcasm_rt;
 
+static libcsel_ir::Type* get( libcasm_ir::Type* type )
+{
+    assert( !" PPA TODO!!! " );
+    return 0;
+}
+
+
+
+
+
 libcsel_ir::Structure* Type::create( libcasm_ir::Value& value )
 {
-    libcasm_ir::Type* type = value.getType()->getResult();
-    assert( type and " invalid type pointer! " );
+    // libcasm_ir::Type* type = value.getType()->getResult();
+    // assert( type and " invalid type pointer! " );
 
-    libcasm_ir::Type::ID tid = type->getID();
+    // libcasm_ir::Type::ID tid = type->getID();
 
-    if( tid == libcasm_ir::Type::getBoolean()->getID() )
-    {
-        return Boolean::create();
-    }
-    else if( tid == libcasm_ir::Type::getInteger()->getID() )
-    {
-        return Integer::create();
-    }
-    else if( tid == libcasm_ir::Type::getRuleReference()->getID() )
-    {
-        return RulePtr::create();
-    }
-    else
+    // if( tid == libcasm_ir::Type::getBoolean()->getID() )
+    // {
+    //     return Boolean::create();
+    // }
+    // else if( tid == libcasm_ir::Type::getInteger()->getID() )
+    // {
+    //     return Integer::create();
+    // }
+    // else if( tid == libcasm_ir::Type::getRuleReference()->getID() )
+    // {
+    //     return RulePtr::create();
+    // }
+    // else
     {
         assert( !" unsupported/unimplemented type id! " );
         return 0;
     }
 }
 
-struct type_factory_argument
-{
-    const char* name;
-    libcsel_ir::Type* type;
-};
+// struct type_factory_argument
+// {
+//     const char* name;
+//     libcsel_ir::Type* type;
+// };
 
-static libcsel_ir::Structure* type_factory( const std::string& name,
-    const std::vector< struct type_factory_argument >& args )
-{
-    libcsel_ir::Structure* type = new libcsel_ir::Structure(
-        libstdhl::Allocator::string( name.c_str() ) );
-    assert( type );
-    type->getType()->bind( type );
+// static libcsel_ir::Structure* type_factory( const std::string& name,
+//     const std::vector< struct type_factory_argument >& args )
+// {
+//     libcsel_ir::Structure* type = new libcsel_ir::Structure(
+//         libstdhl::Allocator::string( name.c_str() ) );
+//     assert( type );
+//     type->getType()->bind( type );
 
-    for( u32 c = 0; c < args.size(); c++ )
-    {
-        libcsel_ir::Structure* arg
-            = new libcsel_ir::Structure( args[ c ].name, args[ c ].type, type );
-        assert( arg );
-    }
+//     for( u32 c = 0; c < args.size(); c++ )
+//     {
+//         libcsel_ir::Structure* arg
+//             = new libcsel_ir::Structure( args[ c ].name, args[ c ].type, type );
+//         assert( arg );
+//     }
 
-    return type;
-}
+//     return type;
+// }
 
-libcsel_ir::Structure* Boolean::create( void )
-{
-    static libcsel_ir::Structure* type = 0;
-    if( not type )
-    {
-        type
-            = type_factory( "Boolean", { { "value", &libcsel_ir::TypeB1 },
-                                           { "isdef", &libcsel_ir::TypeB1 } } );
-    }
-    return type;
-}
+// libcsel_ir::Structure* Boolean::create( void )
+// {
+//     static libcsel_ir::Structure* type = 0;
+//     if( not type )
+//     {
+//         type
+//             = type_factory( "Boolean", { { "value", &libcsel_ir::TypeB1 },
+//                                            { "isdef", &libcsel_ir::TypeB1 } } );
+//     }
+//     return type;
+// }
 
-libcsel_ir::Structure* Integer::create( void )
-{
-    static libcsel_ir::Structure* type = 0;
-    if( not type )
-    {
-        type
-            = type_factory( "Integer", { { "value", &libcsel_ir::TypeB64 },
-                                           { "isdef", &libcsel_ir::TypeB1 } } );
-    }
-    return type;
-}
+// libcsel_ir::Structure* Integer::create( void )
+// {
+//     static libcsel_ir::Structure* type = 0;
+//     if( not type )
+//     {
+//         type
+//             = type_factory( "Integer", { { "value", &libcsel_ir::TypeB64 },
+//                                            { "isdef", &libcsel_ir::TypeB1 } } );
+//     }
+//     return type;
+// }
 
-libcsel_ir::Structure* String::create( libcasm_ir::StringConstant& value )
-{
-    static std::unordered_map< i16, libcsel_ir::Structure* > cache;
+// libcsel_ir::Structure* String::create( libcasm_ir::StringConstant& value )
+// {
+//     static std::unordered_map< i16, libcsel_ir::Structure* > cache;
 
-    i16 length = 0;
-    if( value.getValue() )
-    {
-        length = strlen( value.getValue() );
-    }
+//     i16 length = 0;
+//     if( value.getValue() )
+//     {
+//         length = strlen( value.getValue() );
+//     }
 
-    if( cache.count( length ) > 0 )
-    {
-        return cache[ length ];
-    }
+//     if( cache.count( length ) > 0 )
+//     {
+//         return cache[ length ];
+//     }
 
-    libcsel_ir::Structure* type = type_factory(
-        libstdhl::Allocator::string(
-            std::string( "String" + std::to_string( length ) ) ),
-        { { "value", new libcsel_ir::Type( libcsel_ir::Type::STRING, length,
-                         libcsel_ir::Type::STATE::LOCKED ) },
-            { "isdef", &libcsel_ir::TypeB1 } } );
+//     libcsel_ir::Structure* type = type_factory(
+//         libstdhl::Allocator::string(
+//             std::string( "String" + std::to_string( length ) ) ),
+//         { { "value", new libcsel_ir::Type( libcsel_ir::Type::STRING, length,
+//                          libcsel_ir::Type::STATE::LOCKED ) },
+//             { "isdef", &libcsel_ir::TypeB1 } } );
 
-    return type;
-}
+//     return type;
+// }
 
-libcsel_ir::Structure* RulePtr::create( void )
-{
-    static libcsel_ir::Structure* type = 0;
-    if( not type )
-    {
-        type
-            = type_factory( "RulePtr", { { "value", &libcsel_ir::TypeId },
-                                           { "isdef", &libcsel_ir::TypeB1 } } );
-    }
-    return type;
-}
+// libcsel_ir::Structure* RulePtr::create( void )
+// {
+//     static libcsel_ir::Structure* type = 0;
+//     if( not type )
+//     {
+//         type
+//             = type_factory( "RulePtr", { { "value", &libcsel_ir::TypeId },
+//                                            { "isdef", &libcsel_ir::TypeB1 } } );
+//     }
+//     return type;
+// }
 
-libcsel_ir::Structure* Update::create( void )
-{
-    static libcsel_ir::Structure* type = 0;
-    if( not type )
-    {
-        type = type_factory( "Update", { { "branded", &libcsel_ir::TypeB1 },
-                                           { "location", &libcsel_ir::TypeId },
-                                           { "value", &libcsel_ir::TypeB64 },
-                                           { "isdef", &libcsel_ir::TypeB1 } } );
-    }
-    return type;
-}
+// libcsel_ir::Structure* Update::create( void )
+// {
+//     static libcsel_ir::Structure* type = 0;
+//     if( not type )
+//     {
+//         type = type_factory( "Update", { { "branded", &libcsel_ir::TypeB1 },
+//                                            { "location", &libcsel_ir::TypeId },
+//                                            { "value", &libcsel_ir::TypeB64 },
+//                                            { "isdef", &libcsel_ir::TypeB1 } } );
+//     }
+//     return type;
+// }
 
-libcsel_ir::Memory* UpdateSet::create( void )
-{
-    static libcsel_ir::Memory* type = 0;
-    if( not type )
-    {
-        type = new libcsel_ir::Memory( Update::create(), 31 );
-        assert( type );
-        type->getType()->bind( type );
-    }
-    return type;
-}
+// libcsel_ir::Memory* UpdateSet::create( void )
+// {
+//     static libcsel_ir::Memory* type = 0;
+//     if( not type )
+//     {
+//         type = new libcsel_ir::Memory( Update::create(), 31 );
+//         assert( type );
+//         type->getType()->bind( type );
+//     }
+//     return type;
+// }
 
-libcsel_ir::Interconnect* State::create( void )
-{
-    static libcsel_ir::Interconnect* type = 0;
-    if( not type )
-    {
-        type = new libcsel_ir::Interconnect();
-        assert( type );
-        type->getType()->bind( type );
-    }
-    return type;
-}
+// libcsel_ir::Interconnect* State::create( void )
+// {
+//     static libcsel_ir::Interconnect* type = 0;
+//     if( not type )
+//     {
+//         type = new libcsel_ir::Interconnect();
+//         assert( type );
+//         type->getType()->bind( type );
+//     }
+//     return type;
+// }
 
 /*
 

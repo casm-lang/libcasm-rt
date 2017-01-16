@@ -29,17 +29,17 @@ libcsel_ir::Value* Constant::create( libcsel_ir::Type& type )
 {
     libcsel_ir::Value* c = 0;
 
-    if( type.getIDKind() == libcsel_ir::Type::STRUCTURE )
-    {
-        libcsel_ir::Value* b = type.getBound();
-        assert( b and libcsel_ir::Value::isa< libcsel_ir::Structure >( b ) );
-        libcsel_ir::Structure* s = (libcsel_ir::Structure*)b;
-        c = libcsel_ir::StructureConstant::create( s );
-    }
-    else
-    {
-        assert( !"unsupported type to create constant found!" );
-    }
+    // if( type.getIDKind() == libcsel_ir::Type::STRUCTURE )
+    // {
+    //     libcsel_ir::Value* b = type.getBound();
+    //     assert( b and libcsel_ir::Value::isa< libcsel_ir::Structure >( b ) );
+    //     libcsel_ir::Structure* s = (libcsel_ir::Structure*)b;
+    //     c = libcsel_ir::StructureConstant::create( s );
+    // }
+    // else
+    // {
+    //     assert( !"unsupported type to create constant found!" );
+    // }
 
     assert( c );
     return c;

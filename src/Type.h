@@ -39,7 +39,10 @@ namespace libcasm_rt
     class Type //: public CasmRT
     {
       public:
-        static libcsel_ir::Structure* create( libcasm_ir::Value& value );
+        static libcsel_ir::Type* get( libcasm_ir::Type* type );
+
+        
+        /*OLD!!!*/static libcsel_ir::Structure* create( libcasm_ir::Value& value );
     };
 
     class Boolean : public Type
