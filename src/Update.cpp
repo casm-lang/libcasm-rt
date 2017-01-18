@@ -40,7 +40,8 @@ using namespace libcasm_rt;
 //     libcsel_ir::Value* s = obj->in( "size", &libcsel_ir::TypeB16 );
 //     libcsel_ir::Value* r = obj->out( "res", &libcsel_ir::TypeB16 );
 
-//     libcsel_ir::SequentialScope* scope = new libcsel_ir::SequentialScope( obj );
+//     libcsel_ir::SequentialScope* scope = new libcsel_ir::SequentialScope( obj
+//     );
 //     libcsel_ir::TrivialStatement* blk
 //         = new libcsel_ir::TrivialStatement( scope );
 
@@ -97,7 +98,8 @@ using namespace libcasm_rt;
 //                                       // in the 48-bit range!
 //     libcsel_ir::Value* val = obj->in( "value", key->getType() );
 
-//     libcsel_ir::SequentialScope* scope = new libcsel_ir::SequentialScope( obj );
+//     libcsel_ir::SequentialScope* scope = new libcsel_ir::SequentialScope( obj
+//     );
 //     libcsel_ir::TrivialStatement* blk
 //         = new libcsel_ir::TrivialStatement( scope );
 //     // libcsel_ir::StreamInstruction* output = new
@@ -165,7 +167,8 @@ using namespace libcasm_rt;
 //     if( v_val->getType()->getBitsize() < u_val->getType()->getBitsize() )
 //     {
 //         v_val
-//             = new libcsel_ir::ZeroExtendInstruction( v_val, u_val->getType() );
+//             = new libcsel_ir::ZeroExtendInstruction( v_val, u_val->getType()
+//             );
 //     }
 
 //     libcsel_ir::Instruction* s_val
@@ -185,7 +188,8 @@ using namespace libcasm_rt;
 //         libcsel_ir::CallableUnit* >
 //         cache;
 
-//     libcsel_ir::Structure* key = libcasm_rt::Type::create( *( value.get() ) );
+//     libcsel_ir::Structure* key = libcasm_rt::Type::create( *( value.get() )
+//     );
 //     if( cache.count( key ) > 0 )
 //     {
 //         return cache[ key ];
@@ -211,7 +215,8 @@ using namespace libcasm_rt;
 //                                       // in the 48-bit range!
 //     libcsel_ir::Value* val = obj->out( "value", key->getType() );
 
-//     libcsel_ir::SequentialScope* scope = new libcsel_ir::SequentialScope( obj );
+//     libcsel_ir::SequentialScope* scope = new libcsel_ir::SequentialScope( obj
+//     );
 //     libcsel_ir::TrivialStatement* blk
 //         = new libcsel_ir::TrivialStatement( scope );
 
@@ -228,9 +233,11 @@ using namespace libcasm_rt;
 //     libcsel_ir::Instruction* el
 //         = new libcsel_ir::ExtractInstruction( refs, loc );
 //     libcsel_ir::Instruction* ca
-//         = new libcsel_ir::CastInstruction( libcasm_rt::Integer::create(), el );
+//         = new libcsel_ir::CastInstruction( libcasm_rt::Integer::create(), el
+//         );
 //     libcsel_ir::Instruction* ld = new libcsel_ir::LoadInstruction( ca );
-//     libcsel_ir::Instruction* st = new libcsel_ir::StoreInstruction( ld, val );
+//     libcsel_ir::Instruction* st = new libcsel_ir::StoreInstruction( ld, val
+//     );
 //     blk->add( st );
 
 //     return obj;

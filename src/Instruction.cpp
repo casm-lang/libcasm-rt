@@ -65,7 +65,8 @@ libcsel_ir::CallableUnit* Instruction::create(
 //     libcasm_ir::ArithmeticInstruction* instr
 //         = (libcasm_ir::ArithmeticInstruction*)&value;
 
-//     static std::unordered_map< std::string, libcsel_ir::CallableUnit* > cache;
+//     static std::unordered_map< std::string, libcsel_ir::CallableUnit* >
+//     cache;
 
 //     libcsel_ir::Structure* ta
 //         = libcasm_rt::Type::create( *instr->getValue( 0 ) );
@@ -136,25 +137,31 @@ libcsel_ir::CallableUnit* Instruction::create(
 //     libcsel_ir::Value* scv = new libcsel_ir::StoreInstruction( icv, rtv );
 //     libcsel_ir::Value* scd = new libcsel_ir::StoreInstruction( icd, rtd );
 
-//     libcsel_ir::Statement* stmt_v = new libcsel_ir::TrivialStatement( scope );
-//     libcsel_ir::Statement* stmt_d = new libcsel_ir::TrivialStatement( scope );
+//     libcsel_ir::Statement* stmt_v = new libcsel_ir::TrivialStatement( scope
+//     );
+//     libcsel_ir::Statement* stmt_d = new libcsel_ir::TrivialStatement( scope
+//     );
 //     stmt_v->add( scv );
 //     stmt_d->add( scd );
 
 //     return obj;
 // }
 
-// // libcsel_ir::CallableUnit* AddInstruction::create( libcasm_ir::Value& value,
+// // libcsel_ir::CallableUnit* AddInstruction::create( libcasm_ir::Value&
+// value,
 // // libcsel_ir::Module* module )
 // // {
-// // 	return ArithmeticInstruction< libcsel_ir::AddSignedInstruction >::create(
+// // 	return ArithmeticInstruction< libcsel_ir::AddSignedInstruction
+// >::create(
 // // value, module );
 // // }
 
-// // libcsel_ir::CallableUnit* DivInstruction::create( libcasm_ir::Value& value,
+// // libcsel_ir::CallableUnit* DivInstruction::create( libcasm_ir::Value&
+// value,
 // // libcsel_ir::Module* module )
 // // {
-// // 	return ArithmeticInstruction< libcsel_ir::DivSignedInstruction >::create(
+// // 	return ArithmeticInstruction< libcsel_ir::DivSignedInstruction
+// >::create(
 // // value, module );
 // // }
 
@@ -164,7 +171,8 @@ libcsel_ir::CallableUnit* Instruction::create(
 //     assert( libcasm_ir::isa< libcasm_ir::EquInstruction >( &value ) );
 //     libcasm_ir::EquInstruction* instr = (libcasm_ir::EquInstruction*)&value;
 
-//     static std::unordered_map< std::string, libcsel_ir::CallableUnit* > cache;
+//     static std::unordered_map< std::string, libcsel_ir::CallableUnit* >
+//     cache;
 
 //     libcsel_ir::Structure* ta = libcasm_rt::Type::create( *instr->getLHS() );
 //     libcsel_ir::Structure* tb = libcasm_rt::Type::create( *instr->getRHS() );
@@ -217,7 +225,8 @@ libcsel_ir::CallableUnit* Instruction::create(
 //     libcsel_ir::Value* lbv = new libcsel_ir::LoadInstruction( rbv );
 //     libcsel_ir::Value* lbd = new libcsel_ir::LoadInstruction( rbd );
 
-//     libcsel_ir::Statement* stmt_d = new libcsel_ir::TrivialStatement( scope );
+//     libcsel_ir::Statement* stmt_d = new libcsel_ir::TrivialStatement( scope
+//     );
 //     libcsel_ir::Value* def = libcsel_ir::BitConstant::create( 1, 1 );
 //     if( module )
 //     {
@@ -235,7 +244,8 @@ libcsel_ir::CallableUnit* Instruction::create(
 //     br->addScope( br_true );
 //     libcsel_ir::Value* equ_v
 //         = new libcsel_ir::EquUnsignedInstruction( lav, lbv );
-//     libcsel_ir::Value* equ_s = new libcsel_ir::StoreInstruction( equ_v, rtv );
+//     libcsel_ir::Value* equ_s = new libcsel_ir::StoreInstruction( equ_v, rtv
+//     );
 //     libcsel_ir::Statement* st_true
 //         = new libcsel_ir::TrivialStatement( br_true );
 //     st_true->add( equ_s );
@@ -244,14 +254,14 @@ libcsel_ir::CallableUnit* Instruction::create(
 //     br->addScope( br_false );
 //     libcsel_ir::Value* equ_x = new libcsel_ir::XorInstruction( lad, lbd );
 //     libcsel_ir::Value* equ_y = new libcsel_ir::NotInstruction( equ_x );
-//     libcsel_ir::Value* equ_u = new libcsel_ir::StoreInstruction( equ_y, rtv );
+//     libcsel_ir::Value* equ_u = new libcsel_ir::StoreInstruction( equ_y, rtv
+//     );
 //     libcsel_ir::Statement* st_false
 //         = new libcsel_ir::TrivialStatement( br_false );
 //     st_false->add( equ_u );
 
 //     return obj;
 // }
-
 
 //
 //  Local variables:

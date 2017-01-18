@@ -22,28 +22,68 @@
 //
 
 #include "Constant.h"
+#include "Type.h"
+
+#include "../stdhl/cpp/Default.h"
+#include "../stdhl/cpp/Log.h"
+
+#include "../casm-ir/src/Constant.h"
+
+#include "../csel-ir/src/Constant.h"
 
 using namespace libcasm_rt;
 
-libcsel_ir::Value* Constant::create( libcsel_ir::Type& type )
+libcsel_ir::Value& Constant::get( libcasm_ir::Value& value )
 {
-    libcsel_ir::Value* c = 0;
+    assert( libcasm_ir::isa< libcasm_ir::Constant >( value ) );
 
-    // if( type.getIDKind() == libcsel_ir::Type::STRUCTURE )
-    // {
-    //     libcsel_ir::Value* b = type.getBound();
-    //     assert( b and libcsel_ir::Value::isa< libcsel_ir::Structure >( b ) );
-    //     libcsel_ir::Structure* s = (libcsel_ir::Structure*)b;
-    //     c = libcsel_ir::StructureConstant::create( s );
-    // }
-    // else
-    // {
-    //     assert( !"unsupported type to create constant found!" );
-    // }
+    switch( value.getValueID() )
+    {
+        case libcasm_ir::Value::INTEGER_CONSTANT:
+        {
+            libcasm_ir::IntegerConstant& ir_cv
+                = libcasm_ir::cast< libcasm_ir::IntegerConstant >( value );
 
-    assert( c );
-    return c;
+            libcsel_ir::Type& el_ty = libcasm_rt::Type::get( *value.getType() );
+
+            return *libcsel_ir::Constant::getStructure( &el_ty,
+                { libcsel_ir::Constant::getBit(
+                      el_ty.getResults()[ 0 ], ir_cv.getValue() ),
+                    libcsel_ir::Constant::getBit(
+                        el_ty.getResults()[ 1 ], ir_cv.isDefined() ) } );
+        }
+        default:
+            break;
+    }
+
+    libstdhl::Log::error(
+        " unimplemented constant transformation for '%s' with type '%s'",
+        value.getName(), value.getType()->getDescription() );
+
+    assert( 0 );
+    return *libcsel_ir::Constant::NIL();
 }
+
+// libcsel_ir::Value* Constant::create( libcsel_ir::Type& type )
+// {
+//     libcsel_ir::Value* c = 0;
+
+//     // if( type.getIDKind() == libcsel_ir::Type::STRUCTURE )
+//     // {
+//     //     libcsel_ir::Value* b = type.getBound();
+//     //     assert( b and libcsel_ir::Value::isa< libcsel_ir::Structure >( b )
+//     );
+//     //     libcsel_ir::Structure* s = (libcsel_ir::Structure*)b;
+//     //     c = libcsel_ir::StructureConstant::create( s );
+//     // }
+//     // else
+//     // {
+//     //     assert( !"unsupported type to create constant found!" );
+//     // }
+
+//     assert( c );
+//     return c;
+// }
 
 //
 //  Local variables:

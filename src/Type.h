@@ -30,63 +30,79 @@
 #ifndef _LIB_CASMRT_TYPE_H_
 #define _LIB_CASMRT_TYPE_H_
 
-#include "libcasm-ir.h"
-#include "libcasm-rt.h"
-#include "libcsel-ir.h"
+// #include "libcasm-ir.h"
+// #include "libcasm-rt.h"
+// #include "libcsel-ir.h"
+
+#include "CasmRT.h"
+
+namespace libcasm_ir
+{
+    class Type;
+}
+
+namespace libcsel_ir
+{
+    class Type;
+}
 
 namespace libcasm_rt
 {
-    class Type //: public CasmRT
+    class Type : public CasmRT
     {
       public:
-        static libcsel_ir::Type* get( libcasm_ir::Type* type );
+        static libcsel_ir::Type& get( libcasm_ir::Type& type );
 
-        
-        /*OLD!!!*/static libcsel_ir::Structure* create( libcasm_ir::Value& value );
+        // /*OLD!!!*/static libcsel_ir::Structure* create( libcasm_ir::Value&
+        // value );
+
+      private:
+        template < typename T >
+        static libcsel_ir::Type* get( libcasm_ir::Type* result );
     };
 
-    class Boolean : public Type
-    {
-      public:
-        static libcsel_ir::Structure* create( void );
-    };
+    // class Boolean : public Type
+    // {
+    //   public:
+    //     static libcsel_ir::Structure* create( void );
+    // };
 
-    class Integer : public Type
-    {
-      public:
-        static libcsel_ir::Structure* create( void );
-    };
+    // class Integer : public Type
+    // {
+    //   public:
+    //     static libcsel_ir::Structure* create( void );
+    // };
 
-    class String : public Type
-    {
-      public:
-        static libcsel_ir::Structure* create(
-            libcasm_ir::StringConstant& value );
-    };
+    // class String : public Type
+    // {
+    //   public:
+    //     static libcsel_ir::Structure* create(
+    //         libcasm_ir::StringConstant& value );
+    // };
 
-    class RulePtr : public Type
-    {
-      public:
-        static libcsel_ir::Structure* create( void );
-    };
+    // class RulePtr : public Type
+    // {
+    //   public:
+    //     static libcsel_ir::Structure* create( void );
+    // };
 
-    class Update : public Type
-    {
-      public:
-        static libcsel_ir::Structure* create( void );
-    };
+    // class Update : public Type
+    // {
+    //   public:
+    //     static libcsel_ir::Structure* create( void );
+    // };
 
-    class UpdateSet : public Type
-    {
-      public:
-        static libcsel_ir::Memory* create( void );
-    };
+    // class UpdateSet : public Type
+    // {
+    //   public:
+    //     static libcsel_ir::Memory* create( void );
+    // };
 
-    class State : public Type
-    {
-      public:
-        static libcsel_ir::Interconnect* create( void );
-    };
+    // class State : public Type
+    // {
+    //   public:
+    //     static libcsel_ir::Interconnect* create( void );
+    // };
 }
 
 #endif /* _LIB_CASMRT_TYPE_H_ */

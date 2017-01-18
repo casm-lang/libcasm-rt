@@ -22,20 +22,73 @@
 //
 
 #include "Builtin.h"
+#include "Type.h"
 
-// #include "../casm-ir/src/Builtin.h"
+#include "../stdhl/cpp/Default.h"
+#include "../stdhl/cpp/Log.h"
+
+#include "../casm-ir/src/Builtin.h"
+#include "../casm-ir/src/Type.h"
+
+#include "../csel-ir/src/CallableUnit.h"
+#include "../csel-ir/src/Instruction.h"
+#include "../csel-ir/src/Intrinsic.h"
+#include "../csel-ir/src/Reference.h"
+#include "../csel-ir/src/Scope.h"
+#include "../csel-ir/src/Statement.h"
+
 // #include "CasmRT.h"
 // #include "libcsel-ir.h"
 
 using namespace libcasm_rt;
 
-static libcsel_ir::CallableUnit* getAsBoolean(
-            libcasm_ir::Value& value, libcsel_ir::Module* context = 0 )
+libcsel_ir::CallableUnit& Builtin::getAsBoolean(
+    libcasm_ir::Value& value, libcsel_ir::Module* context )
 {
-    return 0;
+    static std::unordered_map< std::string, libcsel_ir::CallableUnit* > cache;
+
+    libstdhl::Log::info( "%s: %s %s aka. %s", __FUNCTION__, value.getName(),
+        value.getType()->getDescription(), value.getType()->getName() );
+
+    std::string key = "";
+    key += value.getName();
+    key += " ";
+    key += value.getType()->getName();
+
+    auto result = cache.find( key );
+    if( result != cache.end() )
+    {
+        return *result->second;
+    }
+
+    libcasm_ir::Type& ir_ty = *value.getType();
+    assert( ir_ty.isRelation() and ir_ty.getArguments().size() == 1 );
+
+    libcsel_ir::Type& el_ty = libcasm_rt::Type::get( ir_ty );
+    assert( el_ty.isRelation() and el_ty.getArguments().size() == 1
+            and el_ty.getResults().size() == 1 );
+
+    libcasm_ir::AsBooleanBuiltin& instr
+        = libcasm_ir::cast< libcasm_ir::AsBooleanBuiltin >( value );
+
+    libcsel_ir::CallableUnit* el = new libcsel_ir::Intrinsic(
+        instr.getLabel(), &el_ty ); // PPA: TODO: add 'el' to context
+    assert( el );
+
+    libcsel_ir::Reference* from
+        = new libcsel_ir::Reference( "from", el_ty.getArguments()[ 0 ], el );
+
+    libcsel_ir::Reference* to = new libcsel_ir::Reference(
+        "to", el_ty.getResults()[ 0 ], el, libcsel_ir::Reference::OUTPUT );
+
+    libcsel_ir::Scope* scope = new libcsel_ir::ParallelScope( el );
+    libcsel_ir::Statement* s0 = new libcsel_ir::TrivialStatement( scope );
+    s0->add( new libcsel_ir::NopInstruction() );
+
+    cache[ key ] = el;
+
+    return *el;
 }
-
-
 
 // libcsel_ir::CallableUnit* AsBooleanBuiltin::create(
 //     libcasm_ir::Value& value, libcsel_ir::Module* module )
@@ -44,7 +97,8 @@ static libcsel_ir::CallableUnit* getAsBoolean(
 //     libcasm_ir::AsBooleanBuiltin& instr
 //         = static_cast< libcasm_ir::AsBooleanBuiltin& >( value );
 
-//     static std::unordered_map< std::string, libcsel_ir::CallableUnit* > cache;
+//     static std::unordered_map< std::string, libcsel_ir::CallableUnit* >
+//     cache;
 
 //     libcsel_ir::Structure* ta = libcasm_rt::Type::create( *instr->getLHS() );
 //     libcsel_ir::Structure* tb = libcasm_rt::Type::create( *instr->getRHS() );
@@ -77,7 +131,8 @@ static libcsel_ir::CallableUnit* getAsBoolean(
 
 //     libcsel_ir::Scope* scope = new libcsel_ir::ParallelScope( obj );
 
-//     libcsel_ir::Statement* stmt_d = new libcsel_ir::TrivialStatement( scope );
+//     libcsel_ir::Statement* stmt_d = new libcsel_ir::TrivialStatement( scope
+//     );
 //     libcsel_ir::Value* def = libcsel_ir::BitConstant::create( 1, 1 );
 //     if( module )
 //     {

@@ -23,6 +23,10 @@
 
 #include "gtest/gtest.h"
 
+#include "libstdhlcpp.h"
+
 TEST( libcasm_rt, example )
 {
+    libstdhl::Log::DefaultSource = libstdhl::Log::Source(
+        []( void* arg ) -> const char* { return "libcasm_rt"; } );
 }

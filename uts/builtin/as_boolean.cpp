@@ -21,46 +21,23 @@
 //  along with libcasm-rt. If not, see <http://www.gnu.org/licenses/>.
 //
 
-/**
-   @brief    TODO
+#include "gtest/gtest.h"
 
-   TODO
-*/
+#include "libcasm-ir.h"
+#include "libcasm-rt.h"
 
-#ifndef _LIB_CASMRT_CONSTANT_H_
-#define _LIB_CASMRT_CONSTANT_H_
-
-#include "CasmRT.h"
-
-namespace libcasm_ir
+TEST( libcasm_rt__builtin, as_boolean )
 {
-    class Value;
+    libcasm_ir::Value* a = libcasm_ir::Constant::getInteger( 0 );
+
+    libcasm_ir::Value* b = libcasm_ir::Builtin::getAsBuiltin(
+        libcasm_ir::Type::getRelation( libcasm_ir::Type::getBoolean(),
+            { libcasm_ir::Type::getInteger() } ) );
+
+    libcsel_ir::CallableUnit& c = libcasm_rt::Builtin::getAsBoolean( *b );
+
+    // c.addParameter( , true );
+    // c.addParameter( )
+
+    //    libcsel_rt::CallableUnit::compile( c );
 }
-
-namespace libcsel_ir
-{
-    class Value;
-}
-
-namespace libcasm_rt
-{
-    class Constant : public CasmRT
-    {
-      public:
-        static libcsel_ir::Value& get( libcasm_ir::Value& value );
-
-        // static libcsel_ir::Value* create( libcsel_ir::Type& type );
-    };
-}
-
-#endif /* _LIB_CASMRT_CONSTANT_H_ */
-
-//
-//  Local variables:
-//  mode: c++
-//  indent-tabs-mode: nil
-//  c-basic-offset: 4
-//  tab-width: 4
-//  End:
-//  vim:noexpandtab:sw=4:ts=4:
-//

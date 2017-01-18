@@ -23,43 +23,104 @@
 
 #include "Type.h"
 
+#include "../stdhl/cpp/Default.h"
+#include "../stdhl/cpp/Log.h"
+
+#include "../casm-ir/src/Type.h"
+#include "../csel-ir/src/Type.h"
+
 using namespace libcasm_rt;
 
-static libcsel_ir::Type* get( libcasm_ir::Type* type )
+libcsel_ir::Type& Type::get( libcasm_ir::Type& type )
 {
-    assert( !" PPA TODO!!! " );
-    return 0;
-}
-
-
-
-
-
-libcsel_ir::Structure* Type::create( libcasm_ir::Value& value )
-{
-    // libcasm_ir::Type* type = value.getType()->getResult();
-    // assert( type and " invalid type pointer! " );
-
-    // libcasm_ir::Type::ID tid = type->getID();
-
-    // if( tid == libcasm_ir::Type::getBoolean()->getID() )
-    // {
-    //     return Boolean::create();
-    // }
-    // else if( tid == libcasm_ir::Type::getInteger()->getID() )
-    // {
-    //     return Integer::create();
-    // }
-    // else if( tid == libcasm_ir::Type::getRuleReference()->getID() )
-    // {
-    //     return RulePtr::create();
-    // }
-    // else
+    switch( type.getID() )
     {
-        assert( !" unsupported/unimplemented type id! " );
-        return 0;
+        case libcasm_ir::Type::BOOLEAN:
+        {
+            return *libcsel_ir::Type::getStructure( {
+                { libcsel_ir::Type::getBit( 1 ), "value" },
+                { libcsel_ir::Type::getBit( 1 ), "isdef" },
+            } );
+        }
+        case libcasm_ir::Type::INTEGER:
+        {
+            return *libcsel_ir::Type::getStructure( {
+                { libcsel_ir::Type::getBit( 64 ), "value" },
+                { libcsel_ir::Type::getBit( 1 ), "isdef" },
+            } );
+        }
+        case libcasm_ir::Type::BIT:
+        {
+            libcasm_ir::BitType& bit_ty
+                = static_cast< libcasm_ir::BitType& >( type );
+
+            return *libcsel_ir::Type::getStructure( {
+                { libcsel_ir::Type::getBit( bit_ty.getSize() ), "value" },
+                { libcsel_ir::Type::getBit( 1 ), "isdef" },
+            } );
+        }
+        case libcasm_ir::Type::RELATION:
+        {
+            std::vector< libcsel_ir::Type* > tmp;
+
+            for( auto argument : type.getArguments() )
+            {
+                assert( argument );
+                tmp.push_back( &get( *argument ) );
+            }
+
+            assert( type.getResult() );
+            return *libcsel_ir::Type::getRelation(
+                { &get( *type.getResult() ) }, tmp );
+        }
+        // fall through!
+        case libcasm_ir::Type::_BOTTOM_:
+        case libcasm_ir::Type::_TOP_:
+        case libcasm_ir::Type::LABEL:
+        {
+            libstdhl::Log::error( " unsupported type transformation for '%s'",
+                type.getDescription() );
+            assert( 0 );
+        }
     }
+
+    libstdhl::Log::error(
+        " unimplemented type transformation for '%s'", type.getDescription() );
+    assert( 0 );
+
+    return *libcsel_ir::Type::getLabel();
 }
+
+template < typename T >
+libcsel_ir::Type* Type::get( libcasm_ir::Type* result )
+{
+}
+
+// libcsel_ir::Structure* Type::create( libcasm_ir::Value& value )
+// {
+//     // libcasm_ir::Type* type = value.getType()->getResult();
+//     // assert( type and " invalid type pointer! " );
+
+//     // libcasm_ir::Type::ID tid = type->getID();
+
+//     // if( tid == libcasm_ir::Type::getBoolean()->getID() )
+//     // {
+//     //     return Boolean::create();
+//     // }
+//     // else if( tid == libcasm_ir::Type::getInteger()->getID() )
+//     // {
+//     //     return Integer::create();
+//     // }
+//     // else if( tid == libcasm_ir::Type::getRuleReference()->getID() )
+//     // {
+//     //     return RulePtr::create();
+//     // }
+//     // else
+//     {
+//         assert( !" unsupported/unimplemented type id! " );
+//         return 0;
+//     }
+// }
 
 // struct type_factory_argument
 // {
@@ -78,7 +139,8 @@ libcsel_ir::Structure* Type::create( libcasm_ir::Value& value )
 //     for( u32 c = 0; c < args.size(); c++ )
 //     {
 //         libcsel_ir::Structure* arg
-//             = new libcsel_ir::Structure( args[ c ].name, args[ c ].type, type );
+//             = new libcsel_ir::Structure( args[ c ].name, args[ c ].type, type
+//             );
 //         assert( arg );
 //     }
 
@@ -92,7 +154,8 @@ libcsel_ir::Structure* Type::create( libcasm_ir::Value& value )
 //     {
 //         type
 //             = type_factory( "Boolean", { { "value", &libcsel_ir::TypeB1 },
-//                                            { "isdef", &libcsel_ir::TypeB1 } } );
+//                                            { "isdef", &libcsel_ir::TypeB1 } }
+//                                            );
 //     }
 //     return type;
 // }
@@ -104,7 +167,8 @@ libcsel_ir::Structure* Type::create( libcasm_ir::Value& value )
 //     {
 //         type
 //             = type_factory( "Integer", { { "value", &libcsel_ir::TypeB64 },
-//                                            { "isdef", &libcsel_ir::TypeB1 } } );
+//                                            { "isdef", &libcsel_ir::TypeB1 } }
+//                                            );
 //     }
 //     return type;
 // }
@@ -141,7 +205,8 @@ libcsel_ir::Structure* Type::create( libcasm_ir::Value& value )
 //     {
 //         type
 //             = type_factory( "RulePtr", { { "value", &libcsel_ir::TypeId },
-//                                            { "isdef", &libcsel_ir::TypeB1 } } );
+//                                            { "isdef", &libcsel_ir::TypeB1 } }
+//                                            );
 //     }
 //     return type;
 // }
@@ -152,9 +217,11 @@ libcsel_ir::Structure* Type::create( libcasm_ir::Value& value )
 //     if( not type )
 //     {
 //         type = type_factory( "Update", { { "branded", &libcsel_ir::TypeB1 },
-//                                            { "location", &libcsel_ir::TypeId },
+//                                            { "location", &libcsel_ir::TypeId
+//                                            },
 //                                            { "value", &libcsel_ir::TypeB64 },
-//                                            { "isdef", &libcsel_ir::TypeB1 } } );
+//                                            { "isdef", &libcsel_ir::TypeB1 } }
+//                                            );
 //     }
 //     return type;
 // }

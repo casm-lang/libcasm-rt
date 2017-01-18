@@ -34,6 +34,7 @@ foreach( DEPENDENCY
     pass
     casm-ir
     csel-ir
+    csel-rt
     )
   if( NOT TARGET ${DEPENDENCY} )
     add_subdirectory( ${LIBS}/${DEPENDENCY} lib/${DEPENDENCY} )
@@ -59,6 +60,7 @@ include_directories(
   ${LIBS}/pass
   ${LIBS}/casm-ir
   ${LIBS}/csel-ir
+  ${LIBS}/csel-rt
 )
 
 
@@ -91,6 +93,7 @@ target_link_libraries( ${TARGET}-check
   pass
   casm-ir
   csel-ir
+  csel-rt
 )
 
 

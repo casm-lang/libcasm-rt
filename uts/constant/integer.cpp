@@ -23,6 +23,15 @@
 
 #include "gtest/gtest.h"
 
-TEST( libcasm_rt__subject, example )
+#include "libcasm-ir.h"
+#include "libcasm-rt.h"
+#include "libcsel-ir.h"
+
+TEST( libcasm_rt__constant, integer )
 {
+    libcasm_ir::Value* ir_cv = libcasm_ir::Constant::getInteger( 5 );
+    libcsel_ir::Value& el_cv = libcasm_rt::Constant::get( *ir_cv );
+
+    ASSERT_TRUE( el_cv.getType()->isStructure() );
+    ASSERT_EQ( el_cv.getType()->getResults().size(), 2 );
 }

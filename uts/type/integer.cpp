@@ -21,46 +21,20 @@
 //  along with libcasm-rt. If not, see <http://www.gnu.org/licenses/>.
 //
 
-/**
-   @brief    TODO
+#include "gtest/gtest.h"
 
-   TODO
-*/
+#include "libcasm-ir.h"
+#include "libcasm-rt.h"
+#include "libcsel-ir.h"
 
-#ifndef _LIB_CASMRT_CONSTANT_H_
-#define _LIB_CASMRT_CONSTANT_H_
-
-#include "CasmRT.h"
-
-namespace libcasm_ir
+TEST( libcasm_rt__type, integer )
 {
-    class Value;
+    libcasm_ir::Type* ir_ty = libcasm_ir::Type::getInteger();
+    libcsel_ir::Type& el_ty = libcasm_rt::Type::get( *ir_ty );
+
+    ASSERT_TRUE( el_ty.isStructure() );
+    ASSERT_EQ( el_ty.getResults().size(), 2 );
+
+    ASSERT_TRUE( el_ty.getResults()[ 0 ]->isBit() );
+    ASSERT_TRUE( el_ty.getResults()[ 1 ]->isBit() );
 }
-
-namespace libcsel_ir
-{
-    class Value;
-}
-
-namespace libcasm_rt
-{
-    class Constant : public CasmRT
-    {
-      public:
-        static libcsel_ir::Value& get( libcasm_ir::Value& value );
-
-        // static libcsel_ir::Value* create( libcsel_ir::Type& type );
-    };
-}
-
-#endif /* _LIB_CASMRT_CONSTANT_H_ */
-
-//
-//  Local variables:
-//  mode: c++
-//  indent-tabs-mode: nil
-//  c-basic-offset: 4
-//  tab-width: 4
-//  End:
-//  vim:noexpandtab:sw=4:ts=4:
-//
