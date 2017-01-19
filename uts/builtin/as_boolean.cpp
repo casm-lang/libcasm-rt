@@ -26,6 +26,9 @@
 #include "libcasm-ir.h"
 #include "libcasm-rt.h"
 
+#include "libcsel-ir.h"
+#include "libcsel-rt.h"
+
 TEST( libcasm_rt__builtin, as_boolean )
 {
     libcasm_ir::Value* a = libcasm_ir::Constant::getInteger( 0 );
@@ -39,5 +42,5 @@ TEST( libcasm_rt__builtin, as_boolean )
     // c.addParameter( , true );
     // c.addParameter( )
 
-    //    libcsel_rt::CallableUnit::compile( c );
+    libcsel_rt::CallableUnit::compile( c );
 }
