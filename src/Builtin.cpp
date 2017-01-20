@@ -90,20 +90,26 @@ libcsel_ir::CallableUnit& Builtin::getAsBoolean(
         = stmt->add( new libcsel_ir::ExtractInstruction( arg, idx0 ) );
     libcsel_ir::Value* arg_d_ptr
         = stmt->add( new libcsel_ir::ExtractInstruction( arg, idx1 ) );
-    
-    libcsel_ir::Value* arg_v
-        = stmt->add( new libcsel_ir::LoadInstruction( arg_v_ptr ) );
-    libcsel_ir::Value* arg_d
-        = stmt->add( new libcsel_ir::LoadInstruction( arg_d_ptr ) );
-    
-    
+
     libcsel_ir::Value* ret_v_ptr
         = stmt->add( new libcsel_ir::ExtractInstruction( ret, idx0 ) );
     libcsel_ir::Value* ret_d_ptr
         = stmt->add( new libcsel_ir::ExtractInstruction( ret, idx1 ) );
-    
-    
-    
+
+    libcsel_ir::Value* arg_v
+        = stmt->add( new libcsel_ir::LoadInstruction( arg_v_ptr ) );
+    libcsel_ir::Value* arg_d
+        = stmt->add( new libcsel_ir::LoadInstruction( arg_d_ptr ) );
+
+    libcsel_ir::Value* v = stmt->add( new libcsel_ir::NeqUnsignedInstruction(
+        arg_v, libcsel_ir::Constant::getBit( arg_v->getType(), 0 ) ) );
+
+    libcsel_ir::Value* d = stmt->add( new libcsel_ir::NeqUnsignedInstruction(
+        arg_d, libcsel_ir::Constant::getBit( arg_d->getType(), 0 ) ) );
+
+    stmt->add( new libcsel_ir::StoreInstruction( v, ret_v_ptr ) );
+    stmt->add( new libcsel_ir::StoreInstruction( d, ret_d_ptr ) );
+
     cache[ key ] = el;
     return *el;
 }
