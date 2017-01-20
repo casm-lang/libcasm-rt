@@ -75,18 +75,36 @@ libcsel_ir::CallableUnit& Builtin::getAsBoolean(
         instr.getLabel(), &el_ty ); // PPA: TODO: add 'el' to context
     assert( el );
 
-    libcsel_ir::Reference* from
-        = new libcsel_ir::Reference( "from", el_ty.getArguments()[ 0 ], el );
-
-    libcsel_ir::Reference* to = new libcsel_ir::Reference(
-        "to", el_ty.getResults()[ 0 ], el, libcsel_ir::Reference::OUTPUT );
+    libcsel_ir::Value* arg = el->in( "arg", el_ty.getArguments()[ 0 ] );
+    libcsel_ir::Value* ret = el->out( "ret", el_ty.getResults()[ 0 ] );
 
     libcsel_ir::Scope* scope = new libcsel_ir::ParallelScope( el );
-    libcsel_ir::Statement* s0 = new libcsel_ir::TrivialStatement( scope );
-    s0->add( new libcsel_ir::NopInstruction() );
+    libcsel_ir::Statement* stmt = new libcsel_ir::TrivialStatement( scope );
 
+    libcsel_ir::Value* idx0
+        = libcsel_ir::Constant::getBit( libcsel_ir::Type::getBit( 8 ), 0 );
+    libcsel_ir::Value* idx1
+        = libcsel_ir::Constant::getBit( libcsel_ir::Type::getBit( 8 ), 1 );
+
+    libcsel_ir::Value* arg_v_ptr
+        = stmt->add( new libcsel_ir::ExtractInstruction( arg, idx0 ) );
+    libcsel_ir::Value* arg_d_ptr
+        = stmt->add( new libcsel_ir::ExtractInstruction( arg, idx1 ) );
+    
+    libcsel_ir::Value* arg_v
+        = stmt->add( new libcsel_ir::LoadInstruction( arg_v_ptr ) );
+    libcsel_ir::Value* arg_d
+        = stmt->add( new libcsel_ir::LoadInstruction( arg_d_ptr ) );
+    
+    
+    libcsel_ir::Value* ret_v_ptr
+        = stmt->add( new libcsel_ir::ExtractInstruction( ret, idx0 ) );
+    libcsel_ir::Value* ret_d_ptr
+        = stmt->add( new libcsel_ir::ExtractInstruction( ret, idx1 ) );
+    
+    
+    
     cache[ key ] = el;
-
     return *el;
 }
 
