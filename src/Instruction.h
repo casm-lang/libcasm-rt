@@ -30,15 +30,45 @@
 #ifndef _LIB_CASMRT_INSTRUCTION_H_
 #define _LIB_CASMRT_INSTRUCTION_H_
 
-#include "libcasm-ir.h"
-#include "libcasm-rt.h"
-#include "libcsel-ir.h"
+// #include "libcasm-ir.h"
+// #include "libcasm-rt.h"
+// #include "libcsel-ir.h"
+
+#include "CasmRT.h"
+
+namespace libcasm_ir
+{
+    class Value;
+    class Instruction;
+    class CallInstruction;
+}
+
+namespace libcsel_ir
+{
+    class Value;
+    class Module;
+    class Instruction;
+    class CallInstruction;
+
+    class CallableUnit;
+}
 
 namespace libcasm_rt
 {
-    class Instruction //: public CasmRT
+    class Instruction : public CasmRT
     {
       public:
+        static libcasm_ir::Value* execute( libcasm_ir::Instruction& value,
+            libcsel_ir::Module* module = nullptr );
+
+        static libcsel_ir::Instruction* get( libcasm_ir::Instruction& value,
+            libcsel_ir::Module* module = nullptr );
+
+        static libcsel_ir::CallInstruction* getCall(
+            libcasm_ir::CallInstruction& value,
+            libcsel_ir::Module* module = nullptr );
+
+        // old
         static libcsel_ir::CallableUnit* create(
             libcasm_ir::Value& value, libcsel_ir::Module* module = 0 );
     };

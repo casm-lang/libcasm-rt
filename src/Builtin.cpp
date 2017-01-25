@@ -29,6 +29,7 @@
 
 #include "../casm-ir/src/Builtin.h"
 #include "../casm-ir/src/Type.h"
+#include "../casm-ir/src/Value.h"
 
 #include "../csel-ir/src/CallableUnit.h"
 #include "../csel-ir/src/Instruction.h"
@@ -41,6 +42,33 @@
 // #include "libcsel-ir.h"
 
 using namespace libcasm_rt;
+
+libcsel_ir::CallableUnit& Builtin::get(
+    libcasm_ir::Value& value, libcsel_ir::Module* context )
+{
+    switch( value.getValueID() )
+    {
+        case libcasm_ir::Value::AS_BOOLEAN_BUILTIN:
+        {
+            return getAsBoolean( value, context );
+        }
+
+        // AS_INTEGER_BUILTIN,
+        // AS_BIT_BUILTIN,
+        // AS_STRING_BUILTIN,
+        // AS_FLOATING_BUILTIN,
+        // AS_RATIONAL_BUILTIN,
+        // AS_ENUMERATION_BUILTIN,
+
+        default:
+        {
+            libstdhl::Log::error(
+                " unsupported builtin '%s' of type '%s' to create RT instance",
+                value.getName(), value.getType()->getName() );
+            assert( 0 );
+        }
+    }
+}
 
 libcsel_ir::CallableUnit& Builtin::getAsBoolean(
     libcasm_ir::Value& value, libcsel_ir::Module* context )
@@ -113,57 +141,3 @@ libcsel_ir::CallableUnit& Builtin::getAsBoolean(
     cache[ key ] = el;
     return *el;
 }
-
-// libcsel_ir::CallableUnit* AsBooleanBuiltin::create(
-//     libcasm_ir::Value& value, libcsel_ir::Module* module )
-// {
-//     assert( libcasm_ir::isa< libcasm_ir::AsBooleanBuiltin >( &value ) );
-//     libcasm_ir::AsBooleanBuiltin& instr
-//         = static_cast< libcasm_ir::AsBooleanBuiltin& >( value );
-
-//     static std::unordered_map< std::string, libcsel_ir::CallableUnit* >
-//     cache;
-
-//     libcsel_ir::Structure* ta = libcasm_rt::Type::create( *instr->getLHS() );
-//     libcsel_ir::Structure* tb = libcasm_rt::Type::create( *instr->getRHS() );
-//     libcsel_ir::Structure* tt = libcasm_rt::Type::create( *instr );
-
-//     std::string key = std::string(
-//         "casmrt_" + std::string( value.getName() ) + "_TODO_ARGS" );
-//     // + std::string( ta->getName() )
-//     // + "_"
-//     // + std::string( tb->getName() )
-//     // + "_"
-//     // + std::string( tt->getName() ) );
-
-//     if( cache.count( key ) > 0 )
-//     {
-//         return cache[ key ];
-//     }
-
-//     const char* name = libstdhl::Allocator::string( key );
-
-//     libcsel_ir::CallableUnit* obj = new libcsel_ir::Intrinsic( name );
-//     assert( obj );
-
-//     cache[ key ] = obj;
-
-//     if( module )
-//     {
-//         module->add( obj );
-//     }
-
-//     libcsel_ir::Scope* scope = new libcsel_ir::ParallelScope( obj );
-
-//     libcsel_ir::Statement* stmt_d = new libcsel_ir::TrivialStatement( scope
-//     );
-//     libcsel_ir::Value* def = libcsel_ir::BitConstant::create( 1, 1 );
-//     if( module )
-//     {
-//         module->add( def );
-//     }
-
-//     stmt_d->add( new libcsel_ir::NopInstruction() );
-
-//     return obj;
-// }

@@ -39,10 +39,36 @@ libcsel_ir::Value& Constant::get( libcasm_ir::Value& value )
 
     switch( value.getValueID() )
     {
+        case libcasm_ir::Value::BOOLEAN_CONSTANT:
+        {
+            libcasm_ir::BooleanConstant& ir_cv
+                = libcasm_ir::cast< libcasm_ir::BooleanConstant >( value );
+
+            libcsel_ir::Type& el_ty = libcasm_rt::Type::get( *value.getType() );
+
+            return *libcsel_ir::Constant::getStructure( &el_ty,
+                { libcsel_ir::Constant::getBit(
+                      el_ty.getResults()[ 0 ], ir_cv.getValue() ),
+                    libcsel_ir::Constant::getBit(
+                        el_ty.getResults()[ 1 ], ir_cv.isDefined() ) } );
+        }
         case libcasm_ir::Value::INTEGER_CONSTANT:
         {
             libcasm_ir::IntegerConstant& ir_cv
                 = libcasm_ir::cast< libcasm_ir::IntegerConstant >( value );
+
+            libcsel_ir::Type& el_ty = libcasm_rt::Type::get( *value.getType() );
+
+            return *libcsel_ir::Constant::getStructure( &el_ty,
+                { libcsel_ir::Constant::getBit(
+                      el_ty.getResults()[ 0 ], ir_cv.getValue() ),
+                    libcsel_ir::Constant::getBit(
+                        el_ty.getResults()[ 1 ], ir_cv.isDefined() ) } );
+        }
+        case libcasm_ir::Value::BIT_CONSTANT:
+        {
+            libcasm_ir::BitConstant& ir_cv
+                = libcasm_ir::cast< libcasm_ir::BitConstant >( value );
 
             libcsel_ir::Type& el_ty = libcasm_rt::Type::get( *value.getType() );
 
