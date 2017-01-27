@@ -129,10 +129,10 @@ libcsel_ir::CallableUnit& Builtin::getAsBoolean(
     libcsel_ir::Value* arg_d
         = stmt->add( new libcsel_ir::LoadInstruction( arg_d_ptr ) );
 
-    libcsel_ir::Value* v = stmt->add( new libcsel_ir::NeqUnsignedInstruction(
+    libcsel_ir::Value* v = stmt->add( new libcsel_ir::NeqInstruction(
         arg_v, libcsel_ir::Constant::getBit( arg_v->getType(), 0 ) ) );
 
-    libcsel_ir::Value* d = stmt->add( new libcsel_ir::NeqUnsignedInstruction(
+    libcsel_ir::Value* d = stmt->add( new libcsel_ir::NeqInstruction(
         arg_d, libcsel_ir::Constant::getBit( arg_d->getType(), 0 ) ) );
 
     stmt->add( new libcsel_ir::StoreInstruction( v, ret_v_ptr ) );

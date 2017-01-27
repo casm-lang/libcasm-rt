@@ -92,8 +92,8 @@ target_link_libraries( ${TARGET}-check
   stdhl
   pass
   casm-ir
-  csel-ir
   csel-rt
+  csel-ir
 )
 
 
