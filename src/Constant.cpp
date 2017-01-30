@@ -37,18 +37,18 @@ libcsel_ir::Value& Constant::get( libcasm_ir::Value& value )
 {
     assert( libcasm_ir::isa< libcasm_ir::Constant >( value ) );
 
-    switch( value.getValueID() )
+    switch( value.id() )
     {
         case libcasm_ir::Value::BOOLEAN_CONSTANT:
         {
             libcasm_ir::BooleanConstant& ir_cv
                 = libcasm_ir::cast< libcasm_ir::BooleanConstant >( value );
 
-            libcsel_ir::Type& el_ty = libcasm_rt::Type::get( *value.getType() );
+            libcsel_ir::Type& el_ty = libcasm_rt::Type::get( value.type() );
 
             return *libcsel_ir::Constant::getStructure( &el_ty,
                 { libcsel_ir::Constant::getBit(
-                      el_ty.getResults()[ 0 ], ir_cv.getValue() ),
+                      el_ty.getResults()[ 0 ], ir_cv.value() ),
                     libcsel_ir::Constant::getBit(
                         el_ty.getResults()[ 1 ], ir_cv.isDefined() ) } );
         }
@@ -57,11 +57,11 @@ libcsel_ir::Value& Constant::get( libcasm_ir::Value& value )
             libcasm_ir::IntegerConstant& ir_cv
                 = libcasm_ir::cast< libcasm_ir::IntegerConstant >( value );
 
-            libcsel_ir::Type& el_ty = libcasm_rt::Type::get( *value.getType() );
+            libcsel_ir::Type& el_ty = libcasm_rt::Type::get( value.type() );
 
             return *libcsel_ir::Constant::getStructure( &el_ty,
                 { libcsel_ir::Constant::getBit(
-                      el_ty.getResults()[ 0 ], ir_cv.getValue() ),
+                      el_ty.getResults()[ 0 ], ir_cv.value() ),
                     libcsel_ir::Constant::getBit(
                         el_ty.getResults()[ 1 ], ir_cv.isDefined() ) } );
         }
@@ -70,11 +70,11 @@ libcsel_ir::Value& Constant::get( libcasm_ir::Value& value )
             libcasm_ir::BitConstant& ir_cv
                 = libcasm_ir::cast< libcasm_ir::BitConstant >( value );
 
-            libcsel_ir::Type& el_ty = libcasm_rt::Type::get( *value.getType() );
+            libcsel_ir::Type& el_ty = libcasm_rt::Type::get( value.type() );
 
             return *libcsel_ir::Constant::getStructure( &el_ty,
                 { libcsel_ir::Constant::getBit(
-                      el_ty.getResults()[ 0 ], ir_cv.getValue() ),
+                      el_ty.getResults()[ 0 ], ir_cv.value() ),
                     libcsel_ir::Constant::getBit(
                         el_ty.getResults()[ 1 ], ir_cv.isDefined() ) } );
         }
@@ -84,7 +84,7 @@ libcsel_ir::Value& Constant::get( libcasm_ir::Value& value )
 
     libstdhl::Log::error(
         " unimplemented constant transformation for '%s' with type '%s'",
-        value.getName(), value.getType()->getDescription() );
+        value.name(), value.type().description() );
 
     assert( 0 );
     return *libcsel_ir::Constant::NIL();

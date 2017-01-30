@@ -33,7 +33,7 @@ using namespace libcasm_rt;
 
 libcsel_ir::Type& Type::get( libcasm_ir::Type& type )
 {
-    switch( type.getID() )
+    switch( type.id() )
     {
         case libcasm_ir::Type::BOOLEAN:
         {
@@ -55,7 +55,7 @@ libcsel_ir::Type& Type::get( libcasm_ir::Type& type )
                 = static_cast< libcasm_ir::BitType& >( type );
 
             return *libcsel_ir::Type::getStructure( {
-                { libcsel_ir::Type::getBit( bit_ty.getSize() ), "value" },
+                { libcsel_ir::Type::getBit( bit_ty.bitsize() ), "value" },
                 { libcsel_ir::Type::getBit( 1 ), "isdef" },
             } );
         }
@@ -63,15 +63,15 @@ libcsel_ir::Type& Type::get( libcasm_ir::Type& type )
         {
             std::vector< libcsel_ir::Type* > tmp;
 
-            for( auto argument : type.getArguments() )
+            for( auto argument : type.arguments() )
             {
                 assert( argument );
                 tmp.push_back( &get( *argument ) );
             }
 
-            assert( type.getResult() );
+            assert( type.result() );
             return *libcsel_ir::Type::getRelation(
-                { &get( *type.getResult() ) }, tmp );
+                { &get( *type.result() ) }, tmp );
         }
         // fall through!
         case libcasm_ir::Type::_BOTTOM_:
@@ -79,13 +79,13 @@ libcsel_ir::Type& Type::get( libcasm_ir::Type& type )
         case libcasm_ir::Type::LABEL:
         {
             libstdhl::Log::error( " unsupported type transformation for '%s'",
-                type.getDescription() );
+                type.description() );
             assert( 0 );
         }
     }
 
     libstdhl::Log::error(
-        " unimplemented type transformation for '%s'", type.getDescription() );
+        " unimplemented type transformation for '%s'", type.description() );
     assert( 0 );
 
     return *libcsel_ir::Type::getLabel();

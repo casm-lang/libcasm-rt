@@ -51,7 +51,7 @@ namespace libcasm_rt
         static libcsel_ir::CallableUnit& get(
             libcasm_ir::Value& value, libcsel_ir::Module* context = nullptr );
 
-        static libcsel_ir::CallableUnit& getAsBoolean(
+        static libcsel_ir::CallableUnit& asBoolean(
             libcasm_ir::Value& value, libcsel_ir::Module* context = nullptr );
     };
 

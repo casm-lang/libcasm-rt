@@ -29,7 +29,7 @@
 
 TEST( libcasm_rt__type, integer )
 {
-    libcasm_ir::Type* ir_ty = libcasm_ir::Type::getInteger();
+    libcasm_ir::Type* ir_ty = libcasm_ir::Type::Integer();
     libcsel_ir::Type& el_ty = libcasm_rt::Type::get( *ir_ty );
 
     ASSERT_TRUE( el_ty.isStructure() );

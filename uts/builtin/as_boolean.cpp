@@ -31,16 +31,17 @@
 
 TEST( libcasm_rt__builtin, as_boolean )
 {
-    libcasm_ir::Value* a = libcasm_ir::Constant::getInteger( 0 );
+    libcasm_ir::Value* a = libcasm_ir::Constant::Integer( 0 );
 
-    libcasm_ir::Value* b = libcasm_ir::Builtin::getAsBuiltin(
-        libcasm_ir::Type::getRelation( libcasm_ir::Type::getBoolean(),
-            { libcasm_ir::Type::getInteger() } ) );
+    libcasm_ir::Value* b
+        = libcasm_ir::Builtin::asBuiltin( libcasm_ir::Type::Relation(
+            libcasm_ir::Type::Boolean(), { libcasm_ir::Type::Integer() } ) );
 
-    libcsel_ir::CallableUnit& c = libcasm_rt::Builtin::getAsBoolean( *b );
+    // libcsel_ir::CallableUnit& c = libcasm_rt::Builtin::asBoolean( *b );
 
-    // c.addParameter( , true );
-    // c.addParameter( )
+    // // c.addParameter( , true );
+    // // c.addParameter( )
 
-    libcsel_rt::CallableUnit::compile( c );
+    // libcsel_rt::CallableUnit::compile( c );
+    ASSERT_TRUE( false );
 }

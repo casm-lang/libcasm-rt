@@ -82,12 +82,12 @@ libcasm_ir::Value* Instruction::execute(
 
                     if( d.getValue() )
                     {
-                        return libcasm_ir::Constant::getBoolean( v.getValue() );
+                        return libcasm_ir::Constant::Boolean( v.getValue() );
                     }
                     else
                     {
-                        return libcasm_ir::Constant::getUndef(
-                            libcasm_ir::Type::getBoolean() );
+                        return libcasm_ir::Constant::Undef(
+                            libcasm_ir::Type::Boolean() );
                     }
                 }
                 else if( ty_res[ 0 ]->isBit() and ty_res[ 0 ]->getSize() == 64
@@ -104,12 +104,12 @@ libcasm_ir::Value* Instruction::execute(
 
                     if( d.getValue() )
                     {
-                        return libcasm_ir::Constant::getInteger( v.getValue() );
+                        return libcasm_ir::Constant::Integer( v.getValue() );
                     }
                     else
                     {
-                        return libcasm_ir::Constant::getUndef(
-                            libcasm_ir::Type::getInteger() );
+                        return libcasm_ir::Constant::Undef(
+                            libcasm_ir::Type::Integer() );
                     }
                 }
                 else
@@ -132,7 +132,7 @@ libcasm_ir::Value* Instruction::execute(
 
     libstdhl::Log::error(
         " unsupported builtin '%s' of type '%s' to create RT instance",
-        value.getName(), value.getType()->getName() );
+        value.name(), value.type().name() );
     assert( 0 );
     return 0;
 }
@@ -140,7 +140,7 @@ libcasm_ir::Value* Instruction::execute(
 libcsel_ir::Instruction* Instruction::get(
     libcasm_ir::Instruction& value, libcsel_ir::Module* module )
 {
-    switch( value.getValueID() )
+    switch( value.id() )
     {
         case libcasm_ir::Value::CALL_INSTRUCTION:
         {
@@ -156,7 +156,7 @@ libcsel_ir::Instruction* Instruction::get(
     libstdhl::Log::error(
         " unimplemented instruction transformation for '%s' with type "
         "'%s'",
-        value.getName(), value.getType()->getDescription() );
+        value.name(), value.type().description() );
 
     assert( 0 );
     return 0;
@@ -168,13 +168,13 @@ libcsel_ir::CallInstruction* Instruction::getCall(
     // static std::unordered_map< std::string, libcsel_ir::CallableUnit* >
     // cache;
 
-    libstdhl::Log::info( "%s: %s %s aka. %s", __FUNCTION__, value.getName(),
-        value.getType()->getDescription(), value.getType()->getName() );
+    libstdhl::Log::info( "%s: %s %s aka. %s", __FUNCTION__, value.name(),
+        value.type().description(), value.type().name() );
 
     std::string key = "";
-    key += value.getName();
+    key += value.name();
     key += " ";
-    key += value.getType()->getName();
+    key += value.type().name();
 
     // auto result = cache.find( key );
     // if( result != cache.end() )
@@ -183,7 +183,7 @@ libcsel_ir::CallInstruction* Instruction::getCall(
     //     return result->second;
     // }
 
-    libcasm_ir::Type& ir_ty = *value.getType();
+    libcasm_ir::Type& ir_ty = value.type();
     assert( not ir_ty.isRelation() );
 
     // // libcsel_ir::Type& el_ty = libcasm_rt::Type::get( ir_ty );
@@ -194,9 +194,9 @@ libcsel_ir::CallInstruction* Instruction::getCall(
     libcsel_ir::CallableUnit* callee = 0;
     libcsel_ir::CallInstruction* caller = 0;
 
-    for( auto v : value.getValues() )
+    for( auto v : value.values() )
     {
-        if( v == value.getValue( 0 ) )
+        if( v == value.value( 0 ) )
         {
             assert( libcasm_ir::isa< libcasm_ir::Builtin >( v ) );
             callee = &Builtin::get( *v );
@@ -207,8 +207,8 @@ libcsel_ir::CallInstruction* Instruction::getCall(
 
         assert( libcasm_ir::isa< libcasm_ir::Constant >( v ) );
 
-        libstdhl::Log::info( "%s: %s %s aka. %s", __FUNCTION__, v->getName(),
-            v->getType()->getDescription(), v->getType()->getName() );
+        libstdhl::Log::info( "%s: %s %s aka. %s", __FUNCTION__, v->name(),
+            v->type().description(), v->type().name() );
 
         caller->add( &Constant::get( *v ) );
     }

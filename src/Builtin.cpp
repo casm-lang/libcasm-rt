@@ -46,11 +46,11 @@ using namespace libcasm_rt;
 libcsel_ir::CallableUnit& Builtin::get(
     libcasm_ir::Value& value, libcsel_ir::Module* context )
 {
-    switch( value.getValueID() )
+    switch( value.id() )
     {
         case libcasm_ir::Value::AS_BOOLEAN_BUILTIN:
         {
-            return getAsBoolean( value, context );
+            return asBoolean( value, context );
         }
 
         // AS_INTEGER_BUILTIN,
@@ -64,24 +64,24 @@ libcsel_ir::CallableUnit& Builtin::get(
         {
             libstdhl::Log::error(
                 " unsupported builtin '%s' of type '%s' to create RT instance",
-                value.getName(), value.getType()->getName() );
+                value.name(), value.type().name() );
             assert( 0 );
         }
     }
 }
 
-libcsel_ir::CallableUnit& Builtin::getAsBoolean(
+libcsel_ir::CallableUnit& Builtin::asBoolean(
     libcasm_ir::Value& value, libcsel_ir::Module* context )
 {
     static std::unordered_map< std::string, libcsel_ir::CallableUnit* > cache;
 
-    libstdhl::Log::info( "%s: %s %s aka. %s", __FUNCTION__, value.getName(),
-        value.getType()->getDescription(), value.getType()->getName() );
+    libstdhl::Log::info( "%s: %s %s aka. %s", __FUNCTION__, value.name(),
+        value.type().description(), value.type().name() );
 
     std::string key = "";
-    key += value.getName();
+    key += value.name();
     key += " ";
-    key += value.getType()->getName();
+    key += value.type().name();
 
     auto result = cache.find( key );
     if( result != cache.end() )
@@ -89,8 +89,8 @@ libcsel_ir::CallableUnit& Builtin::getAsBoolean(
         return *result->second;
     }
 
-    libcasm_ir::Type& ir_ty = *value.getType();
-    assert( ir_ty.isRelation() and ir_ty.getArguments().size() == 1 );
+    libcasm_ir::Type& ir_ty = value.type();
+    assert( ir_ty.isRelation() and ir_ty.arguments().size() == 1 );
 
     libcsel_ir::Type& el_ty = libcasm_rt::Type::get( ir_ty );
     assert( el_ty.isRelation() and el_ty.getArguments().size() == 1
@@ -100,7 +100,7 @@ libcsel_ir::CallableUnit& Builtin::getAsBoolean(
         = libcasm_ir::cast< libcasm_ir::AsBooleanBuiltin >( value );
 
     libcsel_ir::CallableUnit* el = new libcsel_ir::Intrinsic(
-        instr.getLabel(), &el_ty ); // PPA: TODO: add 'el' to context
+        instr.label(), &el_ty ); // PPA: TODO: add 'el' to context
     assert( el );
 
     libcsel_ir::Value* arg = el->in( "arg", el_ty.getArguments()[ 0 ] );
