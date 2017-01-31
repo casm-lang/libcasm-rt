@@ -33,8 +33,8 @@ TEST( libcasm_rt__type, integer )
     libcsel_ir::Type& el_ty = libcasm_rt::Type::get( *ir_ty );
 
     ASSERT_TRUE( el_ty.isStructure() );
-    ASSERT_EQ( el_ty.getResults().size(), 2 );
+    ASSERT_EQ( el_ty.results().size(), 2 );
 
-    ASSERT_TRUE( el_ty.getResults()[ 0 ]->isBit() );
-    ASSERT_TRUE( el_ty.getResults()[ 1 ]->isBit() );
+    ASSERT_TRUE( el_ty.results()[ 0 ]->isBit() );
+    ASSERT_TRUE( el_ty.results()[ 1 ]->isBit() );
 }

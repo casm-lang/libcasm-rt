@@ -93,8 +93,8 @@ libcsel_ir::CallableUnit& Builtin::asBoolean(
     assert( ir_ty.isRelation() and ir_ty.arguments().size() == 1 );
 
     libcsel_ir::Type& el_ty = libcasm_rt::Type::get( ir_ty );
-    assert( el_ty.isRelation() and el_ty.getArguments().size() == 1
-            and el_ty.getResults().size() == 1 );
+    assert( el_ty.isRelation() and el_ty.arguments().size() == 1
+            and el_ty.results().size() == 1 );
 
     libcasm_ir::AsBooleanBuiltin& instr
         = libcasm_ir::cast< libcasm_ir::AsBooleanBuiltin >( value );
@@ -103,16 +103,16 @@ libcsel_ir::CallableUnit& Builtin::asBoolean(
         instr.label(), &el_ty ); // PPA: TODO: add 'el' to context
     assert( el );
 
-    libcsel_ir::Value* arg = el->in( "arg", el_ty.getArguments()[ 0 ] );
-    libcsel_ir::Value* ret = el->out( "ret", el_ty.getResults()[ 0 ] );
+    libcsel_ir::Value* arg = el->in( "arg", el_ty.arguments()[ 0 ] );
+    libcsel_ir::Value* ret = el->out( "ret", el_ty.results()[ 0 ] );
 
     libcsel_ir::Scope* scope = new libcsel_ir::ParallelScope( el );
     libcsel_ir::Statement* stmt = new libcsel_ir::TrivialStatement( scope );
 
     libcsel_ir::Value* idx0
-        = libcsel_ir::Constant::getBit( libcsel_ir::Type::getBit( 8 ), 0 );
+        = libcsel_ir::Constant::Bit( libcsel_ir::Type::Bit( 8 ), 0 );
     libcsel_ir::Value* idx1
-        = libcsel_ir::Constant::getBit( libcsel_ir::Type::getBit( 8 ), 1 );
+        = libcsel_ir::Constant::Bit( libcsel_ir::Type::Bit( 8 ), 1 );
 
     libcsel_ir::Value* arg_v_ptr
         = stmt->add( new libcsel_ir::ExtractInstruction( arg, idx0 ) );
@@ -130,10 +130,10 @@ libcsel_ir::CallableUnit& Builtin::asBoolean(
         = stmt->add( new libcsel_ir::LoadInstruction( arg_d_ptr ) );
 
     libcsel_ir::Value* v = stmt->add( new libcsel_ir::NeqInstruction(
-        arg_v, libcsel_ir::Constant::getBit( arg_v->getType(), 0 ) ) );
+        arg_v, libcsel_ir::Constant::Bit( &arg_v->type(), 0 ) ) );
 
     libcsel_ir::Value* d = stmt->add( new libcsel_ir::NeqInstruction(
-        arg_d, libcsel_ir::Constant::getBit( arg_d->getType(), 0 ) ) );
+        arg_d, libcsel_ir::Constant::Bit( &arg_d->type(), 0 ) ) );
 
     stmt->add( new libcsel_ir::StoreInstruction( v, ret_v_ptr ) );
     stmt->add( new libcsel_ir::StoreInstruction( d, ret_d_ptr ) );

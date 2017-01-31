@@ -32,6 +32,6 @@ TEST( libcasm_rt__constant, integer )
     libcasm_ir::Value* ir_cv = libcasm_ir::Constant::Integer( 5 );
     libcsel_ir::Value& el_cv = libcasm_rt::Constant::get( *ir_cv );
 
-    ASSERT_TRUE( el_cv.getType()->isStructure() );
-    ASSERT_EQ( el_cv.getType()->getResults().size(), 2 );
+    ASSERT_TRUE( el_cv.type().isStructure() );
+    ASSERT_EQ( el_cv.type().results().size(), 2 );
 }

@@ -37,16 +37,16 @@ libcsel_ir::Type& Type::get( libcasm_ir::Type& type )
     {
         case libcasm_ir::Type::BOOLEAN:
         {
-            return *libcsel_ir::Type::getStructure( {
-                { libcsel_ir::Type::getBit( 1 ), "value" },
-                { libcsel_ir::Type::getBit( 1 ), "isdef" },
+            return *libcsel_ir::Type::Structure( {
+                { libcsel_ir::Type::Bit( 1 ), "value" },
+                { libcsel_ir::Type::Bit( 1 ), "isdef" },
             } );
         }
         case libcasm_ir::Type::INTEGER:
         {
-            return *libcsel_ir::Type::getStructure( {
-                { libcsel_ir::Type::getBit( 64 ), "value" },
-                { libcsel_ir::Type::getBit( 1 ), "isdef" },
+            return *libcsel_ir::Type::Structure( {
+                { libcsel_ir::Type::Bit( 64 ), "value" },
+                { libcsel_ir::Type::Bit( 1 ), "isdef" },
             } );
         }
         case libcasm_ir::Type::BIT:
@@ -54,9 +54,9 @@ libcsel_ir::Type& Type::get( libcasm_ir::Type& type )
             libcasm_ir::BitType& bit_ty
                 = static_cast< libcasm_ir::BitType& >( type );
 
-            return *libcsel_ir::Type::getStructure( {
-                { libcsel_ir::Type::getBit( bit_ty.bitsize() ), "value" },
-                { libcsel_ir::Type::getBit( 1 ), "isdef" },
+            return *libcsel_ir::Type::Structure( {
+                { libcsel_ir::Type::Bit( bit_ty.bitsize() ), "value" },
+                { libcsel_ir::Type::Bit( 1 ), "isdef" },
             } );
         }
         case libcasm_ir::Type::RELATION:
@@ -70,7 +70,7 @@ libcsel_ir::Type& Type::get( libcasm_ir::Type& type )
             }
 
             assert( type.result() );
-            return *libcsel_ir::Type::getRelation(
+            return *libcsel_ir::Type::Relation(
                 { &get( *type.result() ) }, tmp );
         }
         // fall through!
@@ -88,7 +88,7 @@ libcsel_ir::Type& Type::get( libcasm_ir::Type& type )
         " unimplemented type transformation for '%s'", type.description() );
     assert( 0 );
 
-    return *libcsel_ir::Type::getLabel();
+    return *libcsel_ir::Type::Label();
 }
 
 template < typename T >
@@ -103,15 +103,15 @@ libcsel_ir::Type* Type::get( libcasm_ir::Type* result )
 
 //     // libcasm_ir::Type::ID tid = type->getID();
 
-//     // if( tid == libcasm_ir::Type::getBoolean()->getID() )
+//     // if( tid == libcasm_ir::Type::Boolean()->getID() )
 //     // {
 //     //     return Boolean::create();
 //     // }
-//     // else if( tid == libcasm_ir::Type::getInteger()->getID() )
+//     // else if( tid == libcasm_ir::Type::Integer()->getID() )
 //     // {
 //     //     return Integer::create();
 //     // }
-//     // else if( tid == libcasm_ir::Type::getRuleReference()->getID() )
+//     // else if( tid == libcasm_ir::Type::RuleReference()->getID() )
 //     // {
 //     //     return RulePtr::create();
 //     // }
