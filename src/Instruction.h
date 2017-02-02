@@ -41,6 +41,7 @@ namespace libcasm_ir
     class Value;
     class Instruction;
     class CallInstruction;
+    class EquInstruction;
 }
 
 namespace libcsel_ir
@@ -49,7 +50,6 @@ namespace libcsel_ir
     class Module;
     class Instruction;
     class CallInstruction;
-
     class CallableUnit;
 }
 
@@ -61,11 +61,14 @@ namespace libcasm_rt
         static libcasm_ir::Value* execute( libcasm_ir::Instruction& value,
             libcsel_ir::Module* module = nullptr );
 
-        static libcsel_ir::Instruction* get( libcasm_ir::Instruction& value,
+        static libcsel_ir::Value* get( libcasm_ir::Instruction& value,
             libcsel_ir::Module* module = nullptr );
 
         static libcsel_ir::CallInstruction* getCall(
             libcasm_ir::CallInstruction& value,
+            libcsel_ir::Module* module = nullptr );
+
+        static libcsel_ir::CallableUnit* Equ( libcasm_ir::EquInstruction& value,
             libcsel_ir::Module* module = nullptr );
 
         // old

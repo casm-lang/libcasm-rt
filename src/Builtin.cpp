@@ -96,11 +96,10 @@ libcsel_ir::CallableUnit& Builtin::asBoolean(
     assert( el_ty.isRelation() and el_ty.arguments().size() == 1
             and el_ty.results().size() == 1 );
 
-    libcasm_ir::AsBooleanBuiltin& instr
-        = libcasm_ir::cast< libcasm_ir::AsBooleanBuiltin >( value );
+    auto instr = libcasm_ir::cast< libcasm_ir::AsBooleanBuiltin >( value );
 
     libcsel_ir::CallableUnit* el = new libcsel_ir::Intrinsic(
-        instr.label(), &el_ty ); // PPA: TODO: add 'el' to context
+        instr->label(), &el_ty ); // PPA: TODO: add 'el' to context
     assert( el );
 
     libcsel_ir::Value* arg = el->in( "arg", el_ty.arguments()[ 0 ] );

@@ -41,42 +41,41 @@ libcsel_ir::Value& Constant::get( libcasm_ir::Value& value )
     {
         case libcasm_ir::Value::BOOLEAN_CONSTANT:
         {
-            libcasm_ir::BooleanConstant& ir_cv
+            auto ir_cv
                 = libcasm_ir::cast< libcasm_ir::BooleanConstant >( value );
 
             libcsel_ir::Type& el_ty = libcasm_rt::Type::get( value.type() );
 
             return *libcsel_ir::Constant::Structure( &el_ty,
                 { libcsel_ir::Constant::Bit(
-                      el_ty.results()[ 0 ], ir_cv.value() ),
+                      el_ty.results()[ 0 ], ir_cv->value() ),
                     libcsel_ir::Constant::Bit(
-                        el_ty.results()[ 1 ], ir_cv.isDefined() ) } );
+                        el_ty.results()[ 1 ], ir_cv->isDefined() ) } );
         }
         case libcasm_ir::Value::INTEGER_CONSTANT:
         {
-            libcasm_ir::IntegerConstant& ir_cv
+            auto ir_cv
                 = libcasm_ir::cast< libcasm_ir::IntegerConstant >( value );
 
             libcsel_ir::Type& el_ty = libcasm_rt::Type::get( value.type() );
 
             return *libcsel_ir::Constant::Structure( &el_ty,
                 { libcsel_ir::Constant::Bit(
-                      el_ty.results()[ 0 ], ir_cv.value() ),
+                      el_ty.results()[ 0 ], ir_cv->value() ),
                     libcsel_ir::Constant::Bit(
-                        el_ty.results()[ 1 ], ir_cv.isDefined() ) } );
+                        el_ty.results()[ 1 ], ir_cv->isDefined() ) } );
         }
         case libcasm_ir::Value::BIT_CONSTANT:
         {
-            libcasm_ir::BitConstant& ir_cv
-                = libcasm_ir::cast< libcasm_ir::BitConstant >( value );
+            auto ir_cv = libcasm_ir::cast< libcasm_ir::BitConstant >( value );
 
             libcsel_ir::Type& el_ty = libcasm_rt::Type::get( value.type() );
 
             return *libcsel_ir::Constant::Structure( &el_ty,
                 { libcsel_ir::Constant::Bit(
-                      el_ty.results()[ 0 ], ir_cv.value() ),
+                      el_ty.results()[ 0 ], ir_cv->value() ),
                     libcsel_ir::Constant::Bit(
-                        el_ty.results()[ 1 ], ir_cv.isDefined() ) } );
+                        el_ty.results()[ 1 ], ir_cv->isDefined() ) } );
         }
         default:
             break;
