@@ -30,10 +30,6 @@
 #ifndef _LIB_CASMRT_INSTRUCTION_H_
 #define _LIB_CASMRT_INSTRUCTION_H_
 
-// #include "libcasm-ir.h"
-// #include "libcasm-rt.h"
-// #include "libcsel-ir.h"
-
 #include "CasmRT.h"
 
 namespace libcasm_ir
@@ -61,52 +57,15 @@ namespace libcasm_rt
         static libcasm_ir::Value* execute( libcasm_ir::Instruction& value,
             libcsel_ir::Module* module = nullptr );
 
-        static libcsel_ir::Value* get( libcasm_ir::Instruction& value,
+        static libcsel_ir::CallableUnit& get(
+            libcasm_ir::Value& value, libcsel_ir::Module* context = nullptr );
+
+        static libcsel_ir::CallableUnit& Equ( libcasm_ir::EquInstruction& value,
             libcsel_ir::Module* module = nullptr );
-
-        static libcsel_ir::CallInstruction* getCall(
-            libcasm_ir::CallInstruction& value,
-            libcsel_ir::Module* module = nullptr );
-
-        static libcsel_ir::CallableUnit* Equ( libcasm_ir::EquInstruction& value,
-            libcsel_ir::Module* module = nullptr );
-
-        // old
-        static libcsel_ir::CallableUnit* create(
-            libcasm_ir::Value& value, libcsel_ir::Module* module = 0 );
-    };
-
-    template < class INSTR >
-    class ArithmeticInstruction //: public CasmRT
-    {
-      public:
-        static libcsel_ir::CallableUnit* create(
-            libcasm_ir::Value& value, libcsel_ir::Module* module = 0 );
-    };
-
-    // class AddInstruction //: public CasmRT
-    // {
-    // public:
-    //     static libcsel_ir::CallableUnit* create( libcasm_ir::AddInstruction&
-    //     value, libcsel_ir::Module* module = 0 );
-    // };
-
-    // class DivInstruction //: public CasmRT
-    // {
-    // public:
-    //     static libcsel_ir::CallableUnit* create( libcasm_ir::DivInstruction&
-    //     value, libcsel_ir::Module* module = 0 );
-    // };
-
-    class EquInstruction //: public CasmRT
-    {
-      public:
-        static libcsel_ir::CallableUnit* create(
-            libcasm_ir::Value& value, libcsel_ir::Module* module = 0 );
     };
 }
 
-#endif /* _LIB_CASMRT_INSTRUCTION_H_ */
+#endif // _LIB_CASMRT_INSTRUCTION_H_
 
 //
 //  Local variables:

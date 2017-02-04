@@ -26,6 +26,7 @@
 #include "Builtin.h"
 #include "Constant.h"
 #include "Type.h"
+#include "Value.h"
 
 #include "../stdhl/cpp/Default.h"
 #include "../stdhl/cpp/Log.h"
@@ -38,6 +39,7 @@
 #include "../csel-ir/src/Constant.h"
 #include "../csel-ir/src/Instruction.h"
 #include "../csel-ir/src/Intrinsic.h"
+#include "../csel-ir/src/Reference.h"
 #include "../csel-ir/src/Scope.h"
 #include "../csel-ir/src/Value.h"
 
@@ -49,30 +51,78 @@ using namespace libcasm_rt;
 libcasm_ir::Value* Instruction::execute(
     libcasm_ir::Instruction& value, libcsel_ir::Module* module )
 {
-    libcsel_ir::Value* el_obj = get( value );
+    libstdhl::Log::info( "%s: %s", __FUNCTION__, value.c_str() );
 
-    libstdhl::Log::info( "%s: %s %s aka. %s", __FUNCTION__, el_obj->name(),
-        el_obj->type().description(), el_obj->type().name() );
+    // CACHING MECHANISM!!!
+    // // static std::unordered_map< std::string, libcsel_ir::CallableUnit* >
+    // // cache;
 
-    libcsel_ir::Value* result = 0;
+    // std::string key = "";
+    // key += value.name();
+    // key += " ";
+    // key += value.type().name();
 
-    if( libcsel_ir::isa< libcsel_ir::Instruction >( el_obj ) )
+    // // auto result = cache.find( key );
+    // // if( result != cache.end() )
+    // // {
+    // //     libstdhl::Log::info( "found!" );
+    // //     return result->second;
+    // // }
+
+    libcsel_ir::Value* ir_instr_impl = 0;
+
+    u32 operand_pos = 0;
+
+    if( auto call = libcasm_ir::cast< libcasm_ir::CallInstruction >( value ) )
     {
-        result = libcsel_rt::Instruction::execute(
-            static_cast< libcsel_ir::Instruction& >( *el_obj ) );
+        // PPA: assuming a builtin call for now
+        ir_instr_impl = &Value::get( call->callee() );
+        operand_pos = 1;
     }
-    else if( libcsel_ir::isa< libcsel_ir::CallableUnit >( el_obj ) )
+    else if( libcasm_ir::isa< libcasm_ir::OperatorInstruction >( value ) )
     {
-        result = libcsel_rt::CallableUnit::execute(
-            static_cast< libcsel_ir::CallableUnit& >( *el_obj ) );
+        ir_instr_impl = &Value::get( value );
     }
     else
     {
         libstdhl::Log::error(
-            " unsupported instr '%s' to execute ", el_obj->name() );
+            " unsupported instruction transformation for '%s' with "
+            "type "
+            "'%s'",
+            value.name(), value.type().description() );
         assert( 0 );
         return 0;
     }
+
+    libcsel_ir::CallInstruction* el_instr_impl
+        = new libcsel_ir::CallInstruction( ir_instr_impl );
+
+    for( ; operand_pos < value.values().size(); operand_pos++ )
+    {
+        auto v = value.value( operand_pos );
+        assert( libcasm_ir::isa< libcasm_ir::Constant >( v ) );
+        auto c = &Constant::get( *v );
+
+        libstdhl::Log::info( "%s: operand %u:\n    %s --> %s", __FUNCTION__,
+            operand_pos, v->c_str(), c->c_str() );
+        // add constant to instr call
+        el_instr_impl->add( c );
+    }
+
+    for( auto res : ir_instr_impl->type().results() )
+    {
+        libstdhl::Log::info(
+            "%s: alloc result reg: %s", __FUNCTION__, res->name() );
+        // alloc result registers
+        el_instr_impl->add( new libcsel_ir::AllocInstruction( res ) );
+    }
+
+    libstdhl::Log::info( "%s: %s %s aka. %s", __FUNCTION__,
+        el_instr_impl->name(), el_instr_impl->type().description(),
+        el_instr_impl->type().name() );
+
+    libcsel_ir::Value* result
+        = libcsel_rt::Instruction::execute( *el_instr_impl );
 
     switch( result->id() )
     {
@@ -149,112 +199,9 @@ libcasm_ir::Value* Instruction::execute(
     return 0;
 }
 
-libcsel_ir::Value* Instruction::get(
-    libcasm_ir::Instruction& value, libcsel_ir::Module* module )
-{
-    switch( value.id() )
-    {
-        case libcasm_ir::Value::CALL_INSTRUCTION:
-        {
-            return getCall(
-                static_cast< libcasm_ir::CallInstruction& >( value ), module );
-        }
-        case libcasm_ir::Value::EQU_INSTRUCTION:
-        {
-            return Equ(
-                static_cast< libcasm_ir::EquInstruction& >( value ), module );
-        }
-        default:
-        {
-            break;
-        }
-    }
-
-    libstdhl::Log::error(
-        " unimplemented instruction transformation for '%s' with type "
-        "'%s'",
-        value.name(), value.type().description() );
-
-    assert( 0 );
-    return 0;
-}
-
-libcsel_ir::CallInstruction* Instruction::getCall(
-    libcasm_ir::CallInstruction& value, libcsel_ir::Module* module )
-{
-    // static std::unordered_map< std::string, libcsel_ir::CallableUnit* >
-    // cache;
-
-    libstdhl::Log::info( "%s: %s %s aka. %s", __FUNCTION__, value.name(),
-        value.type().description(), value.type().name() );
-
-    std::string key = "";
-    key += value.name();
-    key += " ";
-    key += value.type().name();
-
-    // auto result = cache.find( key );
-    // if( result != cache.end() )
-    // {
-    //     libstdhl::Log::info( "found!" );
-    //     return result->second;
-    // }
-
-    libcasm_ir::Type& ir_ty = value.type();
-    assert( not ir_ty.isRelation() );
-
-    // // libcsel_ir::Type& el_ty = libcasm_rt::Type::get( ir_ty );
-    // // assert( not el_ty.isRelation()
-    // //         and el_ty.getArguments().size() == ir_ty.getArguments().size()
-    // //         and el_ty.results().size() == 1 );
-
-    libcsel_ir::CallableUnit* callee = 0;
-    libcsel_ir::CallInstruction* caller = 0;
-
-    for( auto v : value.values() )
-    {
-        if( v == value.value( 0 ) )
-        {
-            assert( libcasm_ir::isa< libcasm_ir::Builtin >( v ) );
-            callee = &Builtin::get( *v );
-
-            caller = new libcsel_ir::CallInstruction( callee );
-            continue;
-        }
-
-        assert( libcasm_ir::isa< libcasm_ir::Constant >( v ) );
-
-        libstdhl::Log::info( "%s: %s %s aka. %s", __FUNCTION__, v->name(),
-            v->type().description(), v->type().name() );
-
-        caller->add( &Constant::get( *v ) );
-    }
-
-    caller->add(
-        new libcsel_ir::AllocInstruction( callee->type().results()[ 0 ] ) );
-
-    return caller;
-}
-
-libcsel_ir::CallableUnit* Instruction::Equ(
+libcsel_ir::CallableUnit& Instruction::Equ(
     libcasm_ir::EquInstruction& value, libcsel_ir::Module* module )
 {
-    static std::unordered_map< std::string, libcsel_ir::CallableUnit* > cache;
-
-    libstdhl::Log::info( "%s: %s %s aka. %s", __FUNCTION__, value.name(),
-        value.type().description(), value.type().name() );
-
-    std::string key = "";
-    key += value.name();
-    key += " ";
-    key += value.type().name();
-
-    auto result = cache.find( key );
-    if( result != cache.end() )
-    {
-        return result->second;
-    }
-
     libcasm_ir::Type& ir_ty = value.type();
     assert( not ir_ty.isRelation() );
 
@@ -267,55 +214,60 @@ libcsel_ir::CallableUnit* Instruction::Equ(
             and el_ty.results().size() == 1 );
 
     libcsel_ir::CallableUnit* el = new libcsel_ir::Intrinsic(
-        value.label(), &el_ty ); // PPA: TODO: add 'el' to context
+        value.name(), &el_ty ); // PPA: TODO: add 'el' to context
     assert( el );
 
-    // libcsel_ir::Value* arg = el->in( "arg", el_ty.arguments()[ 0 ] );
-    // libcsel_ir::Value* ret = el->out( "ret", el_ty.results()[ 0 ] );
+    libcsel_ir::Value* lhs = el->in( "lhs", el_ty.arguments()[ 0 ] );
+    libcsel_ir::Value* rhs = el->in( "lhs", el_ty.arguments()[ 1 ] );
+    libcsel_ir::Value* ret = el->out( "ret", el_ty.results()[ 0 ] );
 
     libcsel_ir::Scope* scope = new libcsel_ir::ParallelScope( el );
     libcsel_ir::Statement* stmt = new libcsel_ir::TrivialStatement( scope );
 
-    stmt->add( new libcsel_ir::NopInstruction() );
+    libcsel_ir::Value* idx0
+        = libcsel_ir::Constant::Bit( libcsel_ir::Type::Bit( 8 ), 0 );
+    libcsel_ir::Value* idx1
+        = libcsel_ir::Constant::Bit( libcsel_ir::Type::Bit( 8 ), 1 );
 
-    cache[ key ] = el;
-    return el;
-}
+    libcsel_ir::Value* lhs_v_ptr
+        = stmt->add( new libcsel_ir::ExtractInstruction( lhs, idx0 ) );
+    libcsel_ir::Value* lhs_d_ptr
+        = stmt->add( new libcsel_ir::ExtractInstruction( lhs, idx1 ) );
 
-//
-//
-// old
-//
-//
+    libcsel_ir::Value* rhs_v_ptr
+        = stmt->add( new libcsel_ir::ExtractInstruction( rhs, idx0 ) );
+    libcsel_ir::Value* rhs_d_ptr
+        = stmt->add( new libcsel_ir::ExtractInstruction( rhs, idx1 ) );
 
-libcsel_ir::CallableUnit* Instruction::create(
-    libcasm_ir::Value& value, libcsel_ir::Module* module )
-{
-    // if( libcasm_ir::isa< libcasm_ir::AddInstruction >( &value ) )
-    // {
-    //     return ArithmeticInstruction< libcsel_ir::AddSignedInstruction >::
-    //         create( value, module );
-    // }
-    // else if( libcasm_ir::isa< libcasm_ir::DivInstruction >( &value ) )
-    // {
-    //     return ArithmeticInstruction< libcsel_ir::DivSignedInstruction >::
-    //         create( value, module );
-    // }
-    // else if( libcasm_ir::isa< libcasm_ir::AndInstruction >( &value ) )
-    // {
-    //     assert( 0 );
-    //     return 0;
-    // }
-    // else if( libcasm_ir::isa< libcasm_ir::EquInstruction >( &value ) )
-    // {
-    //     return EquInstruction::create( value, module );
-    // }
-    // else
-    {
-        assert( !" unsupported/unimplemented instruction to create run-time implementation! " );
-    }
+    libcsel_ir::Value* ret_v_ptr
+        = stmt->add( new libcsel_ir::ExtractInstruction( ret, idx0 ) );
+    libcsel_ir::Value* ret_d_ptr
+        = stmt->add( new libcsel_ir::ExtractInstruction( ret, idx1 ) );
 
-    return 0;
+    stmt->add( new libcsel_ir::StoreInstruction(
+        libcsel_ir::Constant::TRUE(), ret_d_ptr ) );
+
+    libcsel_ir::Value* lhs_v
+        = stmt->add( new libcsel_ir::LoadInstruction( lhs_v_ptr ) );
+    libcsel_ir::Value* lhs_d
+        = stmt->add( new libcsel_ir::LoadInstruction( lhs_d_ptr ) );
+
+    libcsel_ir::Value* rhs_v
+        = stmt->add( new libcsel_ir::LoadInstruction( rhs_v_ptr ) );
+    libcsel_ir::Value* rhs_d
+        = stmt->add( new libcsel_ir::LoadInstruction( rhs_d_ptr ) );
+
+    // libcsel_ir::Value* v = stmt->add( new libcsel_ir::NeqInstruction(
+    //     arg_v, libcsel_ir::Constant::Bit( &arg_v->type(), 0 ) ) );
+
+    // libcsel_ir::Value* d = stmt->add( new libcsel_ir::NeqInstruction(
+    //     arg_d, libcsel_ir::Constant::Bit( &arg_d->type(), 0 ) ) );
+
+    // fix me here!!
+    stmt->add( new libcsel_ir::StoreInstruction(
+        libcsel_ir::Constant::FALSE(), ret_v_ptr ) );
+
+    return *el;
 }
 
 // template < class INSTR >

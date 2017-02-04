@@ -38,45 +38,15 @@
 #include "../csel-ir/src/Scope.h"
 #include "../csel-ir/src/Statement.h"
 
-// #include "CasmRT.h"
-// #include "libcsel-ir.h"
-
 using namespace libcasm_rt;
-
-libcsel_ir::CallableUnit& Builtin::get(
-    libcasm_ir::Value& value, libcsel_ir::Module* context )
-{
-    switch( value.id() )
-    {
-        case libcasm_ir::Value::AS_BOOLEAN_BUILTIN:
-        {
-            return asBoolean( value, context );
-        }
-
-        // AS_INTEGER_BUILTIN,
-        // AS_BIT_BUILTIN,
-        // AS_STRING_BUILTIN,
-        // AS_FLOATING_BUILTIN,
-        // AS_RATIONAL_BUILTIN,
-        // AS_ENUMERATION_BUILTIN,
-
-        default:
-        {
-            libstdhl::Log::error(
-                " unsupported builtin '%s' of type '%s' to create RT instance",
-                value.name(), value.type().name() );
-            assert( 0 );
-        }
-    }
-}
 
 libcsel_ir::CallableUnit& Builtin::asBoolean(
     libcasm_ir::Value& value, libcsel_ir::Module* context )
 {
     static std::unordered_map< std::string, libcsel_ir::CallableUnit* > cache;
 
-    libstdhl::Log::info( "%s: %s %s aka. %s", __FUNCTION__, value.name(),
-        value.type().description(), value.type().name() );
+    libstdhl::Log::info(
+        "%s: %s %s", __FUNCTION__, value.name(), value.type().description() );
 
     std::string key = "";
     key += value.name();

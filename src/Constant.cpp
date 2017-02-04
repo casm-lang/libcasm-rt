@@ -50,7 +50,7 @@ libcsel_ir::Value& Constant::get( libcasm_ir::Value& value )
                 { libcsel_ir::Constant::Bit(
                       el_ty.results()[ 0 ], ir_cv->value() ),
                     libcsel_ir::Constant::Bit(
-                        el_ty.results()[ 1 ], ir_cv->isDefined() ) } );
+                        el_ty.results()[ 1 ], ir_cv->defined() ) } );
         }
         case libcasm_ir::Value::INTEGER_CONSTANT:
         {
@@ -59,11 +59,13 @@ libcsel_ir::Value& Constant::get( libcasm_ir::Value& value )
 
             libcsel_ir::Type& el_ty = libcasm_rt::Type::get( value.type() );
 
+            libstdhl::Log::info( "RT:Constant: %s", ir_cv->c_str() );
+
             return *libcsel_ir::Constant::Structure( &el_ty,
                 { libcsel_ir::Constant::Bit(
                       el_ty.results()[ 0 ], ir_cv->value() ),
                     libcsel_ir::Constant::Bit(
-                        el_ty.results()[ 1 ], ir_cv->isDefined() ) } );
+                        el_ty.results()[ 1 ], ir_cv->defined() ) } );
         }
         case libcasm_ir::Value::BIT_CONSTANT:
         {
@@ -75,7 +77,7 @@ libcsel_ir::Value& Constant::get( libcasm_ir::Value& value )
                 { libcsel_ir::Constant::Bit(
                       el_ty.results()[ 0 ], ir_cv->value() ),
                     libcsel_ir::Constant::Bit(
-                        el_ty.results()[ 1 ], ir_cv->isDefined() ) } );
+                        el_ty.results()[ 1 ], ir_cv->defined() ) } );
         }
         default:
             break;

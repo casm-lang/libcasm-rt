@@ -27,33 +27,33 @@
    TODO
 */
 
-#ifndef _LIB_CASMRT_BUILTIN_H_
-#define _LIB_CASMRT_BUILTIN_H_
+#ifndef _LIB_CASMRT_VALUE_H_
+#define _LIB_CASMRT_VALUE_H_
 
 #include "CasmRT.h"
-
-namespace libcsel_ir
-{
-    class Module;
-    class CallableUnit;
-}
 
 namespace libcasm_ir
 {
     class Value;
 }
 
+namespace libcsel_ir
+{
+    class Value;
+    class Module;
+}
+
 namespace libcasm_rt
 {
-    class Builtin : public CasmRT
+    class Value : public CasmRT
     {
       public:
-        static libcsel_ir::CallableUnit& asBoolean(
+        static libcsel_ir::Value& get(
             libcasm_ir::Value& value, libcsel_ir::Module* context = nullptr );
     };
 }
 
-#endif /* _LIB_CASMRT_BUILTIN_H_ */
+#endif // _LIB_CASMRT_VALUE_H_
 
 //
 //  Local variables:

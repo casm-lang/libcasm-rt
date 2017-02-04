@@ -23,7 +23,8 @@
 
 #include "gtest/gtest.h"
 
-#include "libstdhlcpp.h"
+#include "libcasm-rt.h"
+#include "libstdhl.h"
 
 TEST( libcasm_rt, example )
 {
