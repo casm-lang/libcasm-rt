@@ -72,36 +72,32 @@ libcsel_ir::CallableUnit& Builtin::asBoolean(
         instr->label(), &el_ty ); // PPA: TODO: add 'el' to context
     assert( el );
 
-    libcsel_ir::Value* arg = el->in( "arg", el_ty.arguments()[ 0 ] );
-    libcsel_ir::Value* ret = el->out( "ret", el_ty.results()[ 0 ] );
+    auto arg = el->in( "arg", el_ty.arguments()[ 0 ] );
+    auto ret = el->out( "ret", el_ty.results()[ 0 ] );
 
     libcsel_ir::Scope* scope = new libcsel_ir::ParallelScope( el );
     libcsel_ir::Statement* stmt = new libcsel_ir::TrivialStatement( scope );
 
-    libcsel_ir::Value* idx0
-        = libcsel_ir::Constant::Bit( libcsel_ir::Type::Bit( 8 ), 0 );
-    libcsel_ir::Value* idx1
-        = libcsel_ir::Constant::Bit( libcsel_ir::Type::Bit( 8 ), 1 );
+    auto idx0 = libcsel_ir::Constant::Bit( libcsel_ir::Type::Bit( 8 ), 0 );
+    auto idx1 = libcsel_ir::Constant::Bit( libcsel_ir::Type::Bit( 8 ), 1 );
 
-    libcsel_ir::Value* arg_v_ptr
+    auto arg_v_ptr
         = stmt->add( new libcsel_ir::ExtractInstruction( arg, idx0 ) );
-    libcsel_ir::Value* arg_d_ptr
+    auto arg_d_ptr
         = stmt->add( new libcsel_ir::ExtractInstruction( arg, idx1 ) );
 
-    libcsel_ir::Value* ret_v_ptr
+    auto ret_v_ptr
         = stmt->add( new libcsel_ir::ExtractInstruction( ret, idx0 ) );
-    libcsel_ir::Value* ret_d_ptr
+    auto ret_d_ptr
         = stmt->add( new libcsel_ir::ExtractInstruction( ret, idx1 ) );
 
-    libcsel_ir::Value* arg_v
-        = stmt->add( new libcsel_ir::LoadInstruction( arg_v_ptr ) );
-    libcsel_ir::Value* arg_d
-        = stmt->add( new libcsel_ir::LoadInstruction( arg_d_ptr ) );
+    auto arg_v = stmt->add( new libcsel_ir::LoadInstruction( arg_v_ptr ) );
+    auto arg_d = stmt->add( new libcsel_ir::LoadInstruction( arg_d_ptr ) );
 
-    libcsel_ir::Value* v = stmt->add( new libcsel_ir::NeqInstruction(
+    auto v = stmt->add( new libcsel_ir::NeqInstruction(
         arg_v, libcsel_ir::Constant::Bit( &arg_v->type(), 0 ) ) );
 
-    libcsel_ir::Value* d = stmt->add( new libcsel_ir::NeqInstruction(
+    auto d = stmt->add( new libcsel_ir::NeqInstruction(
         arg_d, libcsel_ir::Constant::Bit( &arg_d->type(), 0 ) ) );
 
     stmt->add( new libcsel_ir::StoreInstruction( v, ret_v_ptr ) );
@@ -110,3 +106,13 @@ libcsel_ir::CallableUnit& Builtin::asBoolean(
     cache[ key ] = el;
     return *el;
 }
+
+//
+//  Local variables:
+//  mode: c++
+//  indent-tabs-mode: nil
+//  c-basic-offset: 4
+//  tab-width: 4
+//  End:
+//  vim:noexpandtab:sw=4:ts=4:
+//

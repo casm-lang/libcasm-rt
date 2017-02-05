@@ -30,10 +30,6 @@
 #ifndef _LIB_CASMRT_TYPE_H_
 #define _LIB_CASMRT_TYPE_H_
 
-// #include "libcasm-ir.h"
-// #include "libcasm-rt.h"
-// #include "libcsel-ir.h"
-
 #include "CasmRT.h"
 
 namespace libcasm_ir
@@ -52,9 +48,6 @@ namespace libcasm_rt
     {
       public:
         static libcsel_ir::Type& get( libcasm_ir::Type& type );
-
-        // /*OLD!!!*/static libcsel_ir::Structure* create( libcasm_ir::Value&
-        // value );
 
       private:
         template < typename T >
@@ -105,7 +98,7 @@ namespace libcasm_rt
     // };
 }
 
-#endif /* _LIB_CASMRT_TYPE_H_ */
+#endif // _LIB_CASMRT_TYPE_H_
 
 //
 //  Local variables:

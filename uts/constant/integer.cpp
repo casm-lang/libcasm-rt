@@ -21,11 +21,7 @@
 //  along with libcasm-rt. If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "gtest/gtest.h"
-
-#include "libcasm-ir.h"
-#include "libcasm-rt.h"
-#include "libcsel-ir.h"
+#include "uts/main.h"
 
 TEST( libcasm_rt__constant, integer )
 {
@@ -35,3 +31,13 @@ TEST( libcasm_rt__constant, integer )
     ASSERT_TRUE( el_cv.type().isStructure() );
     ASSERT_EQ( el_cv.type().results().size(), 2 );
 }
+
+//
+//  Local variables:
+//  mode: c++
+//  indent-tabs-mode: nil
+//  c-basic-offset: 4
+//  tab-width: 4
+//  End:
+//  vim:noexpandtab:sw=4:ts=4:
+//

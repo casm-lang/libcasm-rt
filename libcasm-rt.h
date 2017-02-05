@@ -35,7 +35,7 @@ namespace libcasm_rt
 {
 }
 
-#endif /* _LIB_CASMRT_H_ */
+#endif //_LIB_CASMRT_H_
 
 //
 //  Local variables:

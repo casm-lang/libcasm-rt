@@ -21,20 +21,26 @@
 //  along with libcasm-rt. If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "gtest/gtest.h"
+#include "uts/main.h"
 
-#include "libcasm-ir.h"
-#include "libcasm-rt.h"
-#include "libcsel-ir.h"
-
-TEST( libcasm_rt__type, integer )
+TEST( libcasm_rt__type_integer, IntegerType )
 {
     libcasm_ir::Type* ir_ty = libcasm_ir::Type::Integer();
     libcsel_ir::Type& el_ty = libcasm_rt::Type::get( *ir_ty );
 
-    ASSERT_TRUE( el_ty.isStructure() );
-    ASSERT_EQ( el_ty.results().size(), 2 );
+    EXPECT_TRUE( el_ty.isStructure() );
+    EXPECT_EQ( el_ty.results().size(), 2 );
 
-    ASSERT_TRUE( el_ty.results()[ 0 ]->isBit() );
-    ASSERT_TRUE( el_ty.results()[ 1 ]->isBit() );
+    EXPECT_TRUE( el_ty.results()[ 0 ]->isBit() );
+    EXPECT_TRUE( el_ty.results()[ 1 ]->isBit() );
 }
+
+//
+//  Local variables:
+//  mode: c++
+//  indent-tabs-mode: nil
+//  c-basic-offset: 4
+//  tab-width: 4
+//  End:
+//  vim:noexpandtab:sw=4:ts=4:
+//

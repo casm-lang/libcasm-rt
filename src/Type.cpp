@@ -91,11 +91,6 @@ libcsel_ir::Type& Type::get( libcasm_ir::Type& type )
     return *libcsel_ir::Type::Label();
 }
 
-template < typename T >
-libcsel_ir::Type* Type::get( libcasm_ir::Type* result )
-{
-}
-
 // libcsel_ir::Structure* Type::create( libcasm_ir::Value& value )
 // {
 //     // libcasm_ir::Type* type = value.getType()->getResult();
@@ -249,10 +244,6 @@ libcsel_ir::Type* Type::get( libcasm_ir::Type* result )
 //     }
 //     return type;
 // }
-
-/*
-
-*/
 
 //
 //  Local variables:

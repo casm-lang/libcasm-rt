@@ -23,34 +23,48 @@
 
 #include "uts/main.h"
 
-TEST( libcasm_rt__instruction_equ, EquInstruction_valid )
+using namespace libcasm_ir;
+
+TEST( libcasm_rt__Builtin_AsBoolean, Integer_true )
 {
-    auto a = libcasm_ir::Constant::Integer( 123 );
-    auto b = libcasm_ir::Constant::Integer( 123 );
+    auto a = Constant::Integer( 1 );
 
-    // auto i = libstdhl::make< libcasm_ir::EquInstruction >( a, b );
-    // auto r = libcasm_rt::Value::execute( *i.get() );
+    auto s = Builtin::asBuiltin(
+        Type::Relation( Type::Boolean(), { Type::Integer() } ) );
 
-    auto i = libcasm_ir::EquInstruction( a, b );
+    auto i = CallInstruction( s, { a } );
+
     auto r = libcasm_rt::Value::execute( i );
 
-    ASSERT_TRUE( *r == *libcasm_ir::Constant::Boolean( true ) );
+    EXPECT_TRUE( *r == *Constant::Boolean( true ) );
 }
 
-TEST( libcasm_rt__instruction_equ, EquInstruction_invalid )
+TEST( libcasm_rt__Builtin_AsBoolean, Integer_false )
 {
-    auto a = libcasm_ir::Constant::Integer( 0 );
-    auto b = libcasm_ir::Constant::Integer( 10 );
+    auto a = Constant::Integer( 0 );
 
-    printf( "%s, %s\n", a->name(), b->name() );
+    auto s = Builtin::asBuiltin(
+        Type::Relation( Type::Boolean(), { Type::Integer() } ) );
 
-    // auto i = libstdhl::make< libcasm_ir::EquInstruction >( a, b );
-    // libcasm_ir::Value* r = libcasm_rt::Value::execute( *i.get() );
+    auto i = CallInstruction( s, { a } );
 
-    auto i = libcasm_ir::EquInstruction( a, b );
     auto r = libcasm_rt::Value::execute( i );
 
-    ASSERT_TRUE( *r == *libcasm_ir::Constant::Boolean( false ) );
+    EXPECT_TRUE( *r == *Constant::Boolean( false ) );
+}
+
+TEST( libcasm_rt__Builtin_AsBoolean, Integer_undef )
+{
+    auto a = Constant::Undef( Type::Integer() );
+
+    auto s = Builtin::asBuiltin(
+        Type::Relation( Type::Boolean(), { Type::Integer() } ) );
+
+    auto i = CallInstruction( s, { a } );
+
+    auto r = libcasm_rt::Value::execute( i );
+
+    EXPECT_TRUE( *r == *Constant::Undef( Type::Boolean() ) );
 }
 
 //

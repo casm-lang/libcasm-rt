@@ -48,12 +48,10 @@ namespace libcasm_rt
     {
       public:
         static libcsel_ir::Value& get( libcasm_ir::Value& value );
-
-        // static libcsel_ir::Value* create( libcsel_ir::Type& type );
     };
 }
 
-#endif /* _LIB_CASMRT_CONSTANT_H_ */
+#endif // _LIB_CASMRT_CONSTANT_H_
 
 //
 //  Local variables:

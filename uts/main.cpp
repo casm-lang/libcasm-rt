@@ -21,27 +21,24 @@
 //  along with libcasm-rt. If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "gtest/gtest.h"
+#include "uts/main.h"
 
-#include "libcasm-ir.h"
-#include "libcasm-rt.h"
-
-#include "libcsel-ir.h"
-#include "libcsel-rt.h"
-
-TEST( libcasm_rt__builtin, as_boolean )
+void dummy( void )
 {
-    libcasm_ir::Value* a = libcasm_ir::Constant::Integer( 0 );
-
-    libcasm_ir::Value* b
-        = libcasm_ir::Builtin::asBuiltin( libcasm_ir::Type::Relation(
-            libcasm_ir::Type::Boolean(), { libcasm_ir::Type::Integer() } ) );
-
-    // libcsel_ir::CallableUnit& c = libcasm_rt::Builtin::asBoolean( *b );
-
-    // // c.addParameter( , true );
-    // // c.addParameter( )
-
-    // libcsel_rt::CallableUnit::compile( c );
-    ASSERT_TRUE( false );
+    libstdhl::Log::DefaultSource = libstdhl::Log::Source(
+        []( void* arg ) -> const char* { return "libcasm_rt"; } );
 }
+
+TEST( libcasm_rt_main, empty )
+{
+}
+
+//
+//  Local variables:
+//  mode: c++
+//  indent-tabs-mode: nil
+//  c-basic-offset: 4
+//  tab-width: 4
+//  End:
+//  vim:noexpandtab:sw=4:ts=4:
+//

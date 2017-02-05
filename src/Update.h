@@ -30,19 +30,31 @@
 #ifndef _LIB_CASMRT_UPDATE_H_
 #define _LIB_CASMRT_UPDATE_H_
 
-#include "libcasm-ir.h"
-#include "libcasm-rt.h"
-#include "libcsel-ir.h"
+#include "CasmRT.h"
+
+namespace libcasm_ir
+{
+    class UpdateInstruction;
+    class LookupInstruction;
+    class Function;
+}
+
+namespace libcsel_ir
+{
+    class CallableUnit;
+    class Variable;
+    class Module;
+}
 
 namespace libcasm_rt
 {
-    class HashImplementation //: public CasmRT
+    class HashImplementation : public CasmRT
     {
       public:
         static libcsel_ir::CallableUnit* create( void );
     };
 
-    class UpdateImplementation //: public CasmRT
+    class UpdateImplementation : public CasmRT
     {
       public:
         static libcsel_ir::CallableUnit* create(
@@ -50,7 +62,7 @@ namespace libcasm_rt
             libcsel_ir::Module* module = 0 );
     };
 
-    class LookupImplementation //: public CasmRT
+    class LookupImplementation : public CasmRT
     {
       public:
         static libcsel_ir::CallableUnit* create(
@@ -58,32 +70,32 @@ namespace libcasm_rt
             libcsel_ir::Module* module = 0 );
     };
 
-    class FunctionState
+    class FunctionState : public CasmRT
     {
       public:
         static libcsel_ir::Variable* create( libcasm_ir::Function& value );
     };
 
-    class FunctionLocation
+    class FunctionLocation : public CasmRT
     {
       public:
         static libcsel_ir::CallableUnit* create( libcasm_ir::Function& value );
     };
 
-    class ProgramFunctionState
+    class ProgramFunctionState : public CasmRT
     {
       public:
         static libcsel_ir::Variable* create( libcsel_ir::Variable* value = 0 );
     };
 
-    class ProgramRuleSignature
+    class ProgramRuleSignature : public CasmRT
     {
       public:
         static libcsel_ir::CallableUnit* create( void );
     };
 }
 
-#endif /* _LIB_CASMRT_UPDATE_H_ */
+#endif // _LIB_CASMRT_UPDATE_H_
 
 //
 //  Local variables:

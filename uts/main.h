@@ -21,13 +21,25 @@
 //  along with libcasm-rt. If not, see <http://www.gnu.org/licenses/>.
 //
 
+#ifndef _LIB_CASMRT_UTS_MAIN_H_
+#define _LIB_CASMRT_UTS_MAIN_H_
+
 #include "gtest/gtest.h"
 
+#include "libcasm-ir.h"
 #include "libcasm-rt.h"
+#include "libcsel-ir.h"
+#include "libcsel-rt.h"
 #include "libstdhl.h"
 
-TEST( libcasm_rt, example )
-{
-    libstdhl::Log::DefaultSource = libstdhl::Log::Source(
-        []( void* arg ) -> const char* { return "libcasm_rt"; } );
-}
+#endif // _LIB_CASMRT_UTS_MAIN_H_
+
+//
+//  Local variables:
+//  mode: c++
+//  indent-tabs-mode: nil
+//  c-basic-offset: 4
+//  tab-width: 4
+//  End:
+//  vim:noexpandtab:sw=4:ts=4:
+//
