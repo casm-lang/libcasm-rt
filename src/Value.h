@@ -52,7 +52,6 @@ namespace libcasm_rt
         static libcasm_ir::Value* execute( libcasm_ir::Instruction& value,
             libcsel_ir::Module* module = nullptr );
 
-      private:
         static libcsel_ir::Value& get(
             libcasm_ir::Value& value, libcsel_ir::Module* context = nullptr );
     };
