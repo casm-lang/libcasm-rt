@@ -26,6 +26,7 @@
 
 #include "src/Constant.h"
 #include "src/Instruction.h"
+#include "src/Value.h"
 #include "src/Type.h"
 #include "src/Update.h"
 #include "src/Builtin.h"

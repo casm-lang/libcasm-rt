@@ -38,7 +38,7 @@ TEST( libcasm_rt__instruction_equ, valid )
     // auto r = libcasm_rt::Instruction::execute( *i.get() );
 
     auto i = libcasm_ir::EquInstruction( a, b );
-    libcasm_ir::Value* r = libcasm_rt::Instruction::execute( i );
+    auto r = libcasm_rt::Instruction::execute( i );
 
     ASSERT_TRUE( *r == *libcasm_ir::Constant::Boolean( true ) );
 }
@@ -54,7 +54,7 @@ TEST( libcasm_rt__instruction_equ, invalid )
     // libcasm_ir::Value* r = libcasm_rt::Instruction::execute( *i.get() );
 
     auto i = libcasm_ir::EquInstruction( a, b );
-    libcasm_ir::Value* r = libcasm_rt::Instruction::execute( i );
+    auto r = libcasm_rt::Instruction::execute( i );
 
     ASSERT_TRUE( *r == *libcasm_ir::Constant::Boolean( false ) );
 }
