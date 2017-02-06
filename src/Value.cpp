@@ -106,14 +106,12 @@ libcasm_ir::Value* Value::execute(
     for( auto res : ir_instr_impl->type().results() )
     {
         libstdhl::Log::info(
-            "%s: alloc result reg: %s", __FUNCTION__, res->name() );
+            "%s: alloc result register:\n    %s", __FUNCTION__, res->name() );
         // alloc result registers
         el_instr_impl->add( new libcsel_ir::AllocInstruction( res ) );
     }
 
-    libstdhl::Log::info( "%s: %s %s aka. %s", __FUNCTION__,
-        el_instr_impl->name(), el_instr_impl->type().description(),
-        el_instr_impl->type().name() );
+    libstdhl::Log::info( "%s: %s %s", __FUNCTION__, el_instr_impl->c_str() );
 
     libcsel_ir::Value* result
         = libcsel_rt::Instruction::execute( *el_instr_impl );

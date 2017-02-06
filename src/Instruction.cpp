@@ -91,9 +91,6 @@ libcsel_ir::CallableUnit& Instruction::Equ(
     auto ret_d_ptr
         = stmt->add( new libcsel_ir::ExtractInstruction( ret, idx1 ) );
 
-    stmt->add( new libcsel_ir::StoreInstruction(
-        libcsel_ir::Constant::TRUE(), ret_d_ptr ) );
-
     auto lhs_v = stmt->add( new libcsel_ir::LoadInstruction( lhs_v_ptr ) );
     auto lhs_d = stmt->add( new libcsel_ir::LoadInstruction( lhs_d_ptr ) );
 
@@ -113,6 +110,9 @@ libcsel_ir::CallableUnit& Instruction::Equ(
     auto r5 = stmt->add( new libcsel_ir::OrInstruction( r3, r4 ) );
 
     stmt->add( new libcsel_ir::StoreInstruction( r5, ret_v_ptr ) );
+
+    stmt->add( new libcsel_ir::StoreInstruction(
+        libcsel_ir::Constant::TRUE(), ret_d_ptr ) );
 
     return *el;
 }

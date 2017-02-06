@@ -25,7 +25,7 @@
 
 using namespace libcasm_ir;
 
-TEST( libcasm_rt__Builtin_AsBoolean, Integer_true )
+TEST( libcasm_rt__builtin_as_boolean, AsBoolean_Integer_true )
 {
     auto a = Constant::Integer( 1 );
 
@@ -39,7 +39,7 @@ TEST( libcasm_rt__Builtin_AsBoolean, Integer_true )
     EXPECT_TRUE( *r == *Constant::Boolean( true ) );
 }
 
-TEST( libcasm_rt__Builtin_AsBoolean, Integer_false )
+TEST( libcasm_rt__builtin_as_boolean, AsBoolean_Integer_false )
 {
     auto a = Constant::Integer( 0 );
 
@@ -53,7 +53,7 @@ TEST( libcasm_rt__Builtin_AsBoolean, Integer_false )
     EXPECT_TRUE( *r == *Constant::Boolean( false ) );
 }
 
-TEST( libcasm_rt__Builtin_AsBoolean, Integer_undef )
+TEST( libcasm_rt__builtin_as_boolean, AsBoolean_Integer_undef )
 {
     auto a = Constant::Undef( Type::Integer() );
 

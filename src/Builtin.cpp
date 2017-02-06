@@ -94,14 +94,11 @@ libcsel_ir::CallableUnit& Builtin::asBoolean(
     auto arg_v = stmt->add( new libcsel_ir::LoadInstruction( arg_v_ptr ) );
     auto arg_d = stmt->add( new libcsel_ir::LoadInstruction( arg_d_ptr ) );
 
-    auto v = stmt->add( new libcsel_ir::NeqInstruction(
+    auto reg_v = stmt->add( new libcsel_ir::NeqInstruction(
         arg_v, libcsel_ir::Constant::Bit( &arg_v->type(), 0 ) ) );
 
-    auto d = stmt->add( new libcsel_ir::NeqInstruction(
-        arg_d, libcsel_ir::Constant::Bit( &arg_d->type(), 0 ) ) );
-
-    stmt->add( new libcsel_ir::StoreInstruction( v, ret_v_ptr ) );
-    stmt->add( new libcsel_ir::StoreInstruction( d, ret_d_ptr ) );
+    stmt->add( new libcsel_ir::StoreInstruction( reg_v, ret_v_ptr ) );
+    stmt->add( new libcsel_ir::StoreInstruction( arg_d, ret_d_ptr ) );
 
     cache[ key ] = el;
     return *el;

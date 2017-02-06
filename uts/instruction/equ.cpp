@@ -34,7 +34,8 @@ TEST( libcasm_rt__instruction_equ, EquInstruction_valid )
     auto i = libcasm_ir::EquInstruction( a, b );
     auto r = libcasm_rt::Value::execute( i );
 
-    ASSERT_TRUE( *r == *libcasm_ir::Constant::Boolean( true ) );
+    auto z = libcasm_ir::Constant::Boolean( true );
+    ASSERT_TRUE( *r == *z );
 }
 
 TEST( libcasm_rt__instruction_equ, EquInstruction_invalid )
@@ -42,13 +43,13 @@ TEST( libcasm_rt__instruction_equ, EquInstruction_invalid )
     auto a = libcasm_ir::Constant::Integer( 0 );
     auto b = libcasm_ir::Constant::Integer( 10 );
 
-    printf( "%s, %s\n", a->name(), b->name() );
-
     // auto i = libstdhl::make< libcasm_ir::EquInstruction >( a, b );
     // libcasm_ir::Value* r = libcasm_rt::Value::execute( *i.get() );
 
     auto i = libcasm_ir::EquInstruction( a, b );
     auto r = libcasm_rt::Value::execute( i );
+
+    printf( "equ %s, %s --> %s\n", a->name(), b->name(), r->name() );
 
     ASSERT_TRUE( *r == *libcasm_ir::Constant::Boolean( false ) );
 }
