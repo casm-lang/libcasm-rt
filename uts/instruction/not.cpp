@@ -23,6 +23,10 @@
 
 #include "uts/main.h"
 
+// | NOT | undef | false | true  | sym  |
+// |-----+-------+-------+-------+------|
+// | -   | undef | true  | false | sym' |
+
 TEST( libcasm_rt__instruction_not, NotInstruction_0 )
 {
     auto a = libcasm_ir::Constant::Integer( 123 );
