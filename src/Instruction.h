@@ -36,6 +36,7 @@ namespace libcasm_ir
 {
     class Value;
     class Instruction;
+    class NotInstruction;
     class CallInstruction;
     class EquInstruction;
 }
@@ -54,6 +55,9 @@ namespace libcasm_rt
     class Instruction : public CasmRT
     {
       public:
+        static libcsel_ir::CallableUnit& Not(
+            libcasm_ir::NotInstruction& value, libcsel_ir::Module* module );
+
         static libcsel_ir::CallableUnit& Equ( libcasm_ir::EquInstruction& value,
             libcsel_ir::Module* module = nullptr );
     };

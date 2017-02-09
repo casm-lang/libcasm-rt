@@ -116,6 +116,8 @@ libcasm_ir::Value* Value::execute(
     libcsel_ir::Value* result
         = libcsel_rt::Instruction::execute( *el_instr_impl );
 
+    libcasm_ir::Value* ir_result = 0;
+
     switch( result->id() )
     {
         case libcsel_ir::Value::STRUCTURE_CONSTANT:
@@ -140,11 +142,11 @@ libcasm_ir::Value* Value::execute(
 
                 if( d.value() )
                 {
-                    return libcasm_ir::Constant::Boolean( v.value() );
+                    ir_result = libcasm_ir::Constant::Boolean( v.value() );
                 }
                 else
                 {
-                    return libcasm_ir::Constant::Undef(
+                    ir_result = libcasm_ir::Constant::Undef(
                         libcasm_ir::Type::Boolean() );
                 }
             }
@@ -162,11 +164,11 @@ libcasm_ir::Value* Value::execute(
 
                 if( d.value() )
                 {
-                    return libcasm_ir::Constant::Integer( v.value() );
+                    ir_result = libcasm_ir::Constant::Integer( v.value() );
                 }
                 else
                 {
-                    return libcasm_ir::Constant::Undef(
+                    ir_result = libcasm_ir::Constant::Undef(
                         libcasm_ir::Type::Integer() );
                 }
             }
@@ -187,8 +189,10 @@ libcasm_ir::Value* Value::execute(
         }
     }
 
-    assert( 0 );
-    return 0;
+    assert( ir_result );
+    libstdhl::Log::info( "%s --> %s\n", value.c_str(), ir_result->name() );
+
+    return ir_result;
 }
 
 libcsel_ir::Value& Value::get(
@@ -212,6 +216,11 @@ libcsel_ir::Value& Value::get(
         {
             return Instruction::Equ(
                 static_cast< libcasm_ir::EquInstruction& >( value ), context );
+        }
+        case libcasm_ir::Value::NOT_INSTRUCTION:
+        {
+            return Instruction::Not(
+                static_cast< libcasm_ir::NotInstruction& >( value ), context );
         }
 
         default:

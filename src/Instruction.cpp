@@ -48,6 +48,61 @@
 
 using namespace libcasm_rt;
 
+libcsel_ir::CallableUnit& Instruction::Not(
+    libcasm_ir::NotInstruction& value, libcsel_ir::Module* module )
+{
+    libcasm_ir::Type& ir_ty = value.type();
+    assert( not ir_ty.isRelation() );
+
+    libcsel_ir::Type& el_ty = *libcsel_ir::Type::Relation(
+        { &libcasm_rt::Type::get( value.type() ) },
+        { &libcasm_rt::Type::get( value.get()->type() ) } );
+
+    assert( el_ty.isRelation() and el_ty.arguments().size() == 1
+            and el_ty.results().size() == 1 );
+
+    libcsel_ir::CallableUnit* el = new libcsel_ir::Intrinsic(
+        value.name(), &el_ty ); // PPA: TODO: add 'el' to context
+    assert( el );
+
+    auto arg = el->in( "arg", el_ty.arguments()[ 0 ] );
+    auto ret = el->out( "ret", el_ty.results()[ 0 ] );
+
+    libcsel_ir::Scope* scope = new libcsel_ir::ParallelScope( el );
+    libcsel_ir::Statement* stmt = new libcsel_ir::TrivialStatement( scope );
+
+    auto idx0 = libcsel_ir::Constant::Bit( libcsel_ir::Type::Bit( 8 ), 0 );
+    auto idx1 = libcsel_ir::Constant::Bit( libcsel_ir::Type::Bit( 8 ), 1 );
+
+    auto arg_v_ptr
+        = stmt->add( new libcsel_ir::ExtractInstruction( arg, idx0 ) );
+    auto arg_d_ptr
+        = stmt->add( new libcsel_ir::ExtractInstruction( arg, idx1 ) );
+
+    auto ret_v_ptr
+        = stmt->add( new libcsel_ir::ExtractInstruction( ret, idx0 ) );
+    auto ret_d_ptr
+        = stmt->add( new libcsel_ir::ExtractInstruction( ret, idx1 ) );
+
+    auto arg_v = stmt->add( new libcsel_ir::LoadInstruction( arg_v_ptr ) );
+    auto arg_d = stmt->add( new libcsel_ir::LoadInstruction( arg_d_ptr ) );
+
+    libcsel_ir::Value* r0 = 0;
+    if( value.get()->type().isBit() )
+    {
+        r0 = stmt->add( new libcsel_ir::NotInstruction( arg_v ) );
+    }
+    else
+    {
+        r0 = stmt->add( new libcsel_ir::LnotInstruction( arg_v ) );
+    }
+
+    stmt->add( new libcsel_ir::StoreInstruction( r0, ret_v_ptr ) );
+    stmt->add( new libcsel_ir::StoreInstruction( arg_d, ret_d_ptr ) );
+
+    return *el;
+}
+
 libcsel_ir::CallableUnit& Instruction::Equ(
     libcasm_ir::EquInstruction& value, libcsel_ir::Module* module )
 {
@@ -105,7 +160,7 @@ libcsel_ir::CallableUnit& Instruction::Equ(
     auto r0 = stmt->add( new libcsel_ir::OrInstruction( lhs_d, rhs_d ) );
     auto r1 = stmt->add( new libcsel_ir::AndInstruction( lhs_d, rhs_d ) );
     auto r2 = stmt->add( new libcsel_ir::EquInstruction( lhs_v, rhs_v ) );
-    auto r3 = stmt->add( new libcsel_ir::NotInstruction( r0 ) );
+    auto r3 = stmt->add( new libcsel_ir::LnotInstruction( r0 ) );
     auto r4 = stmt->add( new libcsel_ir::AndInstruction( r1, r2 ) );
     auto r5 = stmt->add( new libcsel_ir::OrInstruction( r3, r4 ) );
 

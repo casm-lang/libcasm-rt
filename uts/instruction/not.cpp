@@ -23,42 +23,12 @@
 
 #include "uts/main.h"
 
-// | EQU      | undef | x : Type | sym  |
-// |----------+-------+----------+------|
-// | undef    | true  | false    | sym' |
-// | y : Type | false | x == y   | sym' |
-// | sym      | sym'  | sym'     | sym' |
-
-TEST( libcasm_rt__instruction_equ, EquInstruction_true )
+TEST( libcasm_rt__instruction_not, NotInstruction_0 )
 {
     auto a = libcasm_ir::Constant::Integer( 123 );
-    auto b = libcasm_ir::Constant::Integer( 123 );
 
-    // auto i = libstdhl::make< libcasm_ir::EquInstruction >( a, b );
-    // auto r = libcasm_rt::Value::execute( *i.get() );
-
-    auto i = libcasm_ir::EquInstruction( a, b );
+    auto i = libcasm_ir::NotInstruction( a );
     auto r = libcasm_rt::Value::execute( i );
-
-    libcasm_ir::BooleanConstant* rr = 0;
-    ASSERT_TRUE( rr = libcasm_ir::cast< libcasm_ir::BooleanConstant >( r ) );
-    EXPECT_TRUE( *rr == *libcasm_ir::Constant::Boolean( true ) );
-    EXPECT_EQ( rr->value(), true );
-    EXPECT_EQ( rr->defined(), true );
-}
-
-TEST( libcasm_rt__instruction_equ, EquInstruction_false )
-{
-    auto a = libcasm_ir::Constant::Integer( 0 );
-    auto b = libcasm_ir::Constant::Integer( 10 );
-
-    // auto i = libstdhl::make< libcasm_ir::EquInstruction >( a, b );
-    // libcasm_ir::Value* r = libcasm_rt::Value::execute( *i.get() );
-
-    auto i = libcasm_ir::EquInstruction( a, b );
-    auto r = libcasm_rt::Value::execute( i );
-
-    printf( "equ %s, %s --> %s\n", a->name(), b->name(), r->name() );
 
     libcasm_ir::BooleanConstant* rr = 0;
     ASSERT_TRUE( rr = libcasm_ir::cast< libcasm_ir::BooleanConstant >( r ) );
@@ -67,12 +37,11 @@ TEST( libcasm_rt__instruction_equ, EquInstruction_false )
     EXPECT_EQ( rr->defined(), true );
 }
 
-TEST( libcasm_rt__instruction_equ, 00 )
+TEST( libcasm_rt__instruction_not, NotInstruction_1 )
 {
-    auto a = libcasm_ir::Constant::Undef( libcasm_ir::Type::Integer() );
-    auto b = libcasm_ir::Constant::Undef( libcasm_ir::Type::Integer() );
+    auto a = libcasm_ir::Constant::Integer( 0 );
 
-    auto i = libcasm_ir::EquInstruction( a, b );
+    auto i = libcasm_ir::NotInstruction( a );
     auto r = libcasm_rt::Value::execute( i );
 
     libcasm_ir::BooleanConstant* rr = 0;
@@ -80,6 +49,20 @@ TEST( libcasm_rt__instruction_equ, 00 )
     EXPECT_TRUE( *rr == *libcasm_ir::Constant::Boolean( true ) );
     EXPECT_EQ( rr->value(), true );
     EXPECT_EQ( rr->defined(), true );
+}
+
+TEST( libcasm_rt__instruction_not, NotInstruction_2 )
+{
+    auto a = libcasm_ir::Constant::Undef( libcasm_ir::Type::Integer() );
+
+    auto i = libcasm_ir::NotInstruction( a );
+    auto r = libcasm_rt::Value::execute( i );
+
+    libcasm_ir::BooleanConstant* rr = 0;
+    ASSERT_TRUE( rr = libcasm_ir::cast< libcasm_ir::BooleanConstant >( r ) );
+    EXPECT_TRUE(
+        *rr == *libcasm_ir::Constant::Undef( libcasm_ir::Type::Boolean() ) );
+    EXPECT_EQ( rr->defined(), false );
 }
 
 //
