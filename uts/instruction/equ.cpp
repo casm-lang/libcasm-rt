@@ -23,6 +23,8 @@
 
 #include "uts/main.h"
 
+using namespace libcasm_ir;
+
 // | EQU      | undef | x : Type | sym  |
 // |----------+-------+----------+------|
 // | undef    | true  | false    | sym' |
@@ -31,55 +33,46 @@
 
 TEST( libcasm_rt__instruction_equ, EquInstruction_true )
 {
-    auto a = libcasm_ir::Constant::Integer( 123 );
-    auto b = libcasm_ir::Constant::Integer( 123 );
+    auto a = IntegerConstant( 123 );
+    auto b = IntegerConstant( 123 );
 
-    // auto i = libstdhl::make< libcasm_ir::EquInstruction >( a, b );
-    // auto r = libcasm_rt::Value::execute( *i.get() );
-
-    auto i = libcasm_ir::EquInstruction( a, b );
+    auto i = EquInstruction( &a, &b );
     auto r = libcasm_rt::Value::execute( i );
 
-    libcasm_ir::BooleanConstant* rr = 0;
-    ASSERT_TRUE( rr = libcasm_ir::cast< libcasm_ir::BooleanConstant >( r ) );
-    EXPECT_TRUE( *rr == *libcasm_ir::Constant::Boolean( true ) );
-    EXPECT_EQ( rr->value(), true );
-    EXPECT_EQ( rr->defined(), true );
+    ASSERT_TRUE( *r == BooleanConstant( true ) );
 }
 
 TEST( libcasm_rt__instruction_equ, EquInstruction_false )
 {
-    auto a = libcasm_ir::Constant::Integer( 0 );
-    auto b = libcasm_ir::Constant::Integer( 10 );
+    auto a = IntegerConstant( 0 );
+    auto b = IntegerConstant( 10 );
 
-    // auto i = libstdhl::make< libcasm_ir::EquInstruction >( a, b );
-    // libcasm_ir::Value* r = libcasm_rt::Value::execute( *i.get() );
-
-    auto i = libcasm_ir::EquInstruction( a, b );
+    auto i = EquInstruction( &a, &b );
     auto r = libcasm_rt::Value::execute( i );
 
-    printf( "equ %s, %s --> %s\n", a->name(), b->name(), r->name() );
-
-    libcasm_ir::BooleanConstant* rr = 0;
-    ASSERT_TRUE( rr = libcasm_ir::cast< libcasm_ir::BooleanConstant >( r ) );
-    EXPECT_TRUE( *rr == *libcasm_ir::Constant::Boolean( false ) );
-    EXPECT_EQ( rr->value(), false );
-    EXPECT_EQ( rr->defined(), true );
+    ASSERT_TRUE( *r == BooleanConstant( false ) );
 }
 
-TEST( libcasm_rt__instruction_equ, 00 )
+TEST( libcasm_rt__instruction_equ, EquInstruction_undef_true )
 {
-    auto a = libcasm_ir::Constant::Undef( libcasm_ir::Type::Integer() );
-    auto b = libcasm_ir::Constant::Undef( libcasm_ir::Type::Integer() );
+    auto a = IntegerConstant();
+    auto b = IntegerConstant();
 
-    auto i = libcasm_ir::EquInstruction( a, b );
+    auto i = EquInstruction( &a, &b );
     auto r = libcasm_rt::Value::execute( i );
 
-    libcasm_ir::BooleanConstant* rr = 0;
-    ASSERT_TRUE( rr = libcasm_ir::cast< libcasm_ir::BooleanConstant >( r ) );
-    EXPECT_TRUE( *rr == *libcasm_ir::Constant::Boolean( true ) );
-    EXPECT_EQ( rr->value(), true );
-    EXPECT_EQ( rr->defined(), true );
+    ASSERT_TRUE( *r == BooleanConstant( true ) );
+}
+
+TEST( libcasm_rt__instruction_equ, EquInstruction_undef_false )
+{
+    auto a = IntegerConstant();
+    auto b = IntegerConstant( 321 );
+
+    auto i = EquInstruction( &a, &b );
+    auto r = libcasm_rt::Value::execute( i );
+
+    ASSERT_TRUE( *r == BooleanConstant( false ) );
 }
 
 //

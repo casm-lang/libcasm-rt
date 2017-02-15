@@ -23,50 +23,40 @@
 
 #include "uts/main.h"
 
+using namespace libcasm_ir;
+
 // | NOT | undef | false | true  | sym  |
 // |-----+-------+-------+-------+------|
 // | -   | undef | true  | false | sym' |
 
 TEST( libcasm_rt__instruction_not, NotInstruction_0 )
 {
-    auto a = libcasm_ir::Constant::Integer( 123 );
+    auto a = IntegerConstant( 123 );
 
-    auto i = libcasm_ir::NotInstruction( a );
+    auto i = NotInstruction( &a );
     auto r = libcasm_rt::Value::execute( i );
 
-    libcasm_ir::BooleanConstant* rr = 0;
-    ASSERT_TRUE( rr = libcasm_ir::cast< libcasm_ir::BooleanConstant >( r ) );
-    EXPECT_TRUE( *rr == *libcasm_ir::Constant::Boolean( false ) );
-    EXPECT_EQ( rr->value(), false );
-    EXPECT_EQ( rr->defined(), true );
+    ASSERT_TRUE( *r == BooleanConstant( false ) );
 }
 
 TEST( libcasm_rt__instruction_not, NotInstruction_1 )
 {
-    auto a = libcasm_ir::Constant::Integer( 0 );
+    auto a = IntegerConstant( 0 );
 
-    auto i = libcasm_ir::NotInstruction( a );
+    auto i = NotInstruction( &a );
     auto r = libcasm_rt::Value::execute( i );
 
-    libcasm_ir::BooleanConstant* rr = 0;
-    ASSERT_TRUE( rr = libcasm_ir::cast< libcasm_ir::BooleanConstant >( r ) );
-    EXPECT_TRUE( *rr == *libcasm_ir::Constant::Boolean( true ) );
-    EXPECT_EQ( rr->value(), true );
-    EXPECT_EQ( rr->defined(), true );
+    ASSERT_TRUE( *r == BooleanConstant( true ) );
 }
 
 TEST( libcasm_rt__instruction_not, NotInstruction_2 )
 {
-    auto a = libcasm_ir::Constant::Undef( libcasm_ir::Type::Integer() );
+    auto a = IntegerConstant();
 
-    auto i = libcasm_ir::NotInstruction( a );
+    auto i = NotInstruction( &a );
     auto r = libcasm_rt::Value::execute( i );
 
-    libcasm_ir::BooleanConstant* rr = 0;
-    ASSERT_TRUE( rr = libcasm_ir::cast< libcasm_ir::BooleanConstant >( r ) );
-    EXPECT_TRUE(
-        *rr == *libcasm_ir::Constant::Undef( libcasm_ir::Type::Boolean() ) );
-    EXPECT_EQ( rr->defined(), false );
+    ASSERT_TRUE( *r == BooleanConstant() );
 }
 
 //

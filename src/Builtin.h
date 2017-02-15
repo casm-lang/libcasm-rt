@@ -48,7 +48,7 @@ namespace libcasm_rt
     class Builtin : public CasmRT
     {
       public:
-        static libcsel_ir::CallableUnit& asBoolean(
+        static libcsel_ir::CallableUnit* asBoolean(
             libcasm_ir::Value& value, libcsel_ir::Module* context = nullptr );
     };
 }

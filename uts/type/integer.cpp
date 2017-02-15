@@ -23,9 +23,12 @@
 
 #include "uts/main.h"
 
+using namespace libcasm_ir;
+
 TEST( libcasm_rt__type_integer, IntegerType )
 {
-    libcasm_ir::Type* ir_ty = libcasm_ir::Type::Integer();
+    auto ir_ty = Type::Integer();
+
     libcsel_ir::Type& el_ty = libcasm_rt::Type::get( *ir_ty );
 
     EXPECT_TRUE( el_ty.isStructure() );

@@ -48,7 +48,7 @@
 
 using namespace libcasm_rt;
 
-libcsel_ir::CallableUnit& Instruction::Not(
+libcsel_ir::CallableUnit* Instruction::Not(
     libcasm_ir::NotInstruction& value, libcsel_ir::Module* module )
 {
     libcasm_ir::Type& ir_ty = value.type();
@@ -71,8 +71,8 @@ libcsel_ir::CallableUnit& Instruction::Not(
     libcsel_ir::Scope* scope = new libcsel_ir::ParallelScope( el );
     libcsel_ir::Statement* stmt = new libcsel_ir::TrivialStatement( scope );
 
-    auto idx0 = libcsel_ir::Constant::Bit( libcsel_ir::Type::Bit( 8 ), 0 );
-    auto idx1 = libcsel_ir::Constant::Bit( libcsel_ir::Type::Bit( 8 ), 1 );
+    auto idx0 = new libcsel_ir::BitConstant( 8, 0 );
+    auto idx1 = new libcsel_ir::BitConstant( 8, 1 );
 
     auto arg_v_ptr
         = stmt->add( new libcsel_ir::ExtractInstruction( arg, idx0 ) );
@@ -100,10 +100,10 @@ libcsel_ir::CallableUnit& Instruction::Not(
     stmt->add( new libcsel_ir::StoreInstruction( r0, ret_v_ptr ) );
     stmt->add( new libcsel_ir::StoreInstruction( arg_d, ret_d_ptr ) );
 
-    return *el;
+    return el;
 }
 
-libcsel_ir::CallableUnit& Instruction::Equ(
+libcsel_ir::CallableUnit* Instruction::Equ(
     libcasm_ir::EquInstruction& value, libcsel_ir::Module* module )
 {
     libcasm_ir::Type& ir_ty = value.type();
@@ -128,8 +128,8 @@ libcsel_ir::CallableUnit& Instruction::Equ(
     libcsel_ir::Scope* scope = new libcsel_ir::ParallelScope( el );
     libcsel_ir::Statement* stmt = new libcsel_ir::TrivialStatement( scope );
 
-    auto idx0 = libcsel_ir::Constant::Bit( libcsel_ir::Type::Bit( 8 ), 0 );
-    auto idx1 = libcsel_ir::Constant::Bit( libcsel_ir::Type::Bit( 8 ), 1 );
+    auto idx0 = new libcsel_ir::BitConstant( 8, 0 );
+    auto idx1 = new libcsel_ir::BitConstant( 8, 1 );
 
     auto lhs_v_ptr
         = stmt->add( new libcsel_ir::ExtractInstruction( lhs, idx0 ) );
@@ -167,9 +167,9 @@ libcsel_ir::CallableUnit& Instruction::Equ(
     stmt->add( new libcsel_ir::StoreInstruction( r5, ret_v_ptr ) );
 
     stmt->add( new libcsel_ir::StoreInstruction(
-        libcsel_ir::Constant::TRUE(), ret_d_ptr ) );
+        new libcsel_ir::BitConstant( 1, 1 ), ret_d_ptr ) );
 
-    return *el;
+    return el;
 }
 
 // template < class INSTR >

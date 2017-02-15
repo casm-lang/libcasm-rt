@@ -40,7 +40,7 @@
 
 using namespace libcasm_rt;
 
-libcsel_ir::CallableUnit& Builtin::asBoolean(
+libcsel_ir::CallableUnit* Builtin::asBoolean(
     libcasm_ir::Value& value, libcsel_ir::Module* context )
 {
     static std::unordered_map< std::string, libcsel_ir::CallableUnit* > cache;
@@ -56,7 +56,7 @@ libcsel_ir::CallableUnit& Builtin::asBoolean(
     auto result = cache.find( key );
     if( result != cache.end() )
     {
-        return *result->second;
+        return result->second;
     }
 
     libcasm_ir::Type& ir_ty = value.type();
@@ -78,8 +78,8 @@ libcsel_ir::CallableUnit& Builtin::asBoolean(
     libcsel_ir::Scope* scope = new libcsel_ir::ParallelScope( el );
     libcsel_ir::Statement* stmt = new libcsel_ir::TrivialStatement( scope );
 
-    auto idx0 = libcsel_ir::Constant::Bit( libcsel_ir::Type::Bit( 8 ), 0 );
-    auto idx1 = libcsel_ir::Constant::Bit( libcsel_ir::Type::Bit( 8 ), 1 );
+    auto idx0 = new libcsel_ir::BitConstant( 8, 0 );
+    auto idx1 = new libcsel_ir::BitConstant( 8, 1 );
 
     auto arg_v_ptr
         = stmt->add( new libcsel_ir::ExtractInstruction( arg, idx0 ) );
@@ -95,13 +95,13 @@ libcsel_ir::CallableUnit& Builtin::asBoolean(
     auto arg_d = stmt->add( new libcsel_ir::LoadInstruction( arg_d_ptr ) );
 
     auto reg_v = stmt->add( new libcsel_ir::NeqInstruction(
-        arg_v, libcsel_ir::Constant::Bit( &arg_v->type(), 0 ) ) );
+        arg_v, new libcsel_ir::BitConstant( &arg_v->type(), 0 ) ) );
 
     stmt->add( new libcsel_ir::StoreInstruction( reg_v, ret_v_ptr ) );
     stmt->add( new libcsel_ir::StoreInstruction( arg_d, ret_d_ptr ) );
 
     cache[ key ] = el;
-    return *el;
+    return el;
 }
 
 //

@@ -23,13 +23,15 @@
 
 #include "uts/main.h"
 
+using namespace libcasm_ir;
+
 TEST( libcasm_rt__constant, integer )
 {
-    libcasm_ir::Value* ir_cv = libcasm_ir::Constant::Integer( 5 );
-    libcsel_ir::Value& el_cv = libcasm_rt::Constant::get( *ir_cv );
+    auto ir_cv = IntegerConstant( 5 );
+    auto el_cv = libcasm_rt::Constant::get( ir_cv );
 
-    ASSERT_TRUE( el_cv.type().isStructure() );
-    ASSERT_EQ( el_cv.type().results().size(), 2 );
+    EXPECT_TRUE( el_cv->type().isStructure() );
+    EXPECT_EQ( el_cv->type().results().size(), 2 );
 }
 
 //

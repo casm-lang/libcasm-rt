@@ -37,17 +37,18 @@ namespace libcasm_ir
     class Value;
 }
 
-namespace libcsel_ir
-{
-    class Value;
-}
+// namespace libcsel_ir
+// {
+//     class Value;
+// }
+#include "../csel-ir/src/Constant.h"
 
 namespace libcasm_rt
 {
     class Constant : public CasmRT
     {
       public:
-        static libcsel_ir::Value& get( libcasm_ir::Value& value );
+        static libcsel_ir::Value::Ptr get( libcasm_ir::Value& value );
     };
 }
 
