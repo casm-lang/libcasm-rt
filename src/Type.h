@@ -47,7 +47,7 @@ namespace libcasm_rt
     class Type : public CasmRT
     {
       public:
-        static libcsel_ir::Type& get( libcasm_ir::Type& type );
+        static libcsel_ir::Type& get( const libcasm_ir::Type& type );
 
       private:
         template < typename T >

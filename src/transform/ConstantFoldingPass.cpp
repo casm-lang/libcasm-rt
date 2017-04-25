@@ -28,7 +28,7 @@
 #include "../casm-ir/src/Instruction.h"
 #include "../casm-ir/src/Specification.h"
 #include "../casm-ir/src/Visitor.h"
-#include "../casm-ir/src/analyze/CasmIRDumpPass.h"
+#include "../casm-ir/src/analyze/ConsistencyCheckPass.h"
 
 #include "../casm-rt/src/Value.h"
 
@@ -41,14 +41,14 @@ static libpass::PassRegistration< ConstantFoldingPass > PASS(
 
 bool ConstantFoldingPass::run( libpass::PassResult& pr )
 {
-    Specification* value = (Specification*)pr.result< CasmIRDumpPass >();
-    assert( value );
+    const auto data = pr.result< ConsistencyCheckPass >();
+    const auto specification = data->specification();
 
-    value->iterate( Traversal::PREORDER, []( Value& value, Context& ) {
+    specification->iterate( Traversal::PREORDER, []( Value& value ) {
         if( auto instr = cast< Instruction >( value ) )
         {
-            libstdhl::Log::info(
-                "cf: %s = %s ...", instr->label(), instr->name() );
+            libstdhl::Log::info( "cf: %s = %s ...", instr->label().c_str(),
+                instr->name().c_str() );
 
             u32 operand_pos = 0;
 
@@ -64,7 +64,8 @@ bool ConstantFoldingPass::run( libpass::PassResult& pr )
                 }
 
                 libstdhl::Log::info( "  +--> call instr: %s, %s",
-                    call->callee().name(), call->callee().type().name() );
+                    call->callee()->name().c_str(),
+                    call->callee()->type().name().c_str() );
             }
             else if( isa< OperatorInstruction >( instr ) )
             {
@@ -77,9 +78,9 @@ bool ConstantFoldingPass::run( libpass::PassResult& pr )
                 return;
             }
 
-            for( ; operand_pos < instr->values().size(); operand_pos++ )
+            for( ; operand_pos < instr->operands().size(); operand_pos++ )
             {
-                if( not isa< Constant >( instr->value( operand_pos ) ) )
+                if( not isa< Constant >( instr->operand( operand_pos ) ) )
                 {
                     // non-constant instr operand found, abort constant folding
                     return;
@@ -89,10 +90,10 @@ bool ConstantFoldingPass::run( libpass::PassResult& pr )
             auto result = libcasm_rt::Value::execute( *instr );
             assert( result );
 
-            libstdhl::Log::info( "  +==> %s = %s %s", result->label(),
-                result->type().name(), result->name() );
+            libstdhl::Log::info( "  +==> %s = %s %s", result->label().c_str(),
+                result->type().name().c_str(), result->name().c_str() );
 
-            instr->replaceAllUsesWith( *result.get() );
+            instr->replaceAllUsesWith( result );
         }
     } );
 

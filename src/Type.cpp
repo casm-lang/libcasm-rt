@@ -31,65 +31,74 @@
 
 using namespace libcasm_rt;
 
-libcsel_ir::Type& Type::get( libcasm_ir::Type& type )
+libcsel_ir::Type& Type::get( const libcasm_ir::Type& type )
 {
-    switch( type.id() )
-    {
-        case libcasm_ir::Type::BOOLEAN:
-        {
-            return *libcsel_ir::Type::Structure( {
-                { libcsel_ir::Type::Bit( 1 ), "value" },
-                { libcsel_ir::Type::Bit( 1 ), "isdef" },
-            } );
-        }
-        case libcasm_ir::Type::INTEGER:
-        {
-            return *libcsel_ir::Type::Structure( {
-                { libcsel_ir::Type::Bit( 64 ), "value" },
-                { libcsel_ir::Type::Bit( 1 ), "isdef" },
-            } );
-        }
-        case libcasm_ir::Type::BIT:
-        {
-            libcasm_ir::BitType& bit_ty
-                = static_cast< libcasm_ir::BitType& >( type );
+    return *libstdhl::get< libcsel_ir::LabelType >();
+    
+    // switch( type.id() )
+    // {
+    //     case libcasm_ir::Type::BOOLEAN:
+    //     {
+    //         return *libcsel_ir::Type::Structure( {
+    //             { libcsel_ir::Type::Bit( 1 ), "value" },
+    //             { libcsel_ir::Type::Bit( 1 ), "isdef" },
+    //         } );
+    //     }
+    //     case libcasm_ir::Type::INTEGER:
+    //     {
+    //         return *libcsel_ir::Type::Structure( {
+    //             { libcsel_ir::Type::Bit( 64 ), "value" },
+    //             { libcsel_ir::Type::Bit( 1 ), "isdef" },
+    //         } );
+    //     }
+    //     case libcasm_ir::Type::BIT:
+    //     {
+    //         libcasm_ir::BitType& bit_ty
+    //             = static_cast< libcasm_ir::BitType& >( type );
 
-            return *libcsel_ir::Type::Structure( {
-                { libcsel_ir::Type::Bit( bit_ty.bitsize() ), "value" },
-                { libcsel_ir::Type::Bit( 1 ), "isdef" },
-            } );
-        }
-        case libcasm_ir::Type::RELATION:
-        {
-            std::vector< libcsel_ir::Type* > tmp;
+    //         return *libcsel_ir::Type::Structure( {
+    //             { libcsel_ir::Type::Bit( bit_ty.bitsize() ), "value" },
+    //             { libcsel_ir::Type::Bit( 1 ), "isdef" },
+    //         } );
+    //     }
+    //     case libcasm_ir::Type::RELATION:
+    //     {
+    //         std::vector< libcsel_ir::Type* > tmp;
 
-            for( auto argument : type.arguments() )
-            {
-                assert( argument );
-                tmp.push_back( &get( *argument ) );
-            }
+    //         for( auto argument : type.arguments() )
+    //         {
+    //             assert( argument );
+    //             tmp.push_back( &get( *argument ) );
+    //         }
 
-            assert( type.result() );
-            return *libcsel_ir::Type::Relation(
-                { &get( *type.result() ) }, tmp );
-        }
-        // fall through!
-        case libcasm_ir::Type::_BOTTOM_:
-        case libcasm_ir::Type::_TOP_:
-        case libcasm_ir::Type::LABEL:
-        {
-            libstdhl::Log::error( " unsupported type transformation for '%s'",
-                type.description() );
-            assert( 0 );
-        }
-    }
+    //         assert( type.result() );
+    //         return *libcsel_ir::Type::Relation(
+    //             { &get( *type.result() ) }, tmp );
+    //     }
+    //     // fall through!
+    //     case libcasm_ir::Type::_BOTTOM_:
+    //     case libcasm_ir::Type::_TOP_:
+    //     case libcasm_ir::Type::LABEL:
+    //     {
+    //         libstdhl::Log::error( " unsupported type transformation for '%s'",
+    //             type.description() );
+    //         assert( 0 );
+    //     }
+    // }
 
-    libstdhl::Log::error(
-        " unimplemented type transformation for '%s'", type.description() );
-    assert( 0 );
+    // libstdhl::Log::error(
+    //     " unimplemented type transformation for '%s'", type.description() );
+    // assert( 0 );
 
-    return *libcsel_ir::Type::Label();
+    // return *libcsel_ir::Type::Label();
 }
+
+
+
+
+
+
+
 
 // libcsel_ir::Structure* Type::create( libcasm_ir::Value& value )
 // {
