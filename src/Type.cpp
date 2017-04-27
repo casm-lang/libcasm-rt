@@ -31,10 +31,10 @@
 
 using namespace libcasm_rt;
 
-libcsel_ir::Type& Type::get( const libcasm_ir::Type& type )
+libcsel_ir::Type Type::get( const libcasm_ir::Type& type )
 {
-    return *libstdhl::get< libcsel_ir::LabelType >();
-    
+    return libcsel_ir::VoidType();
+
     // switch( type.id() )
     // {
     //     case libcasm_ir::Type::BOOLEAN:
@@ -61,6 +61,8 @@ libcsel_ir::Type& Type::get( const libcasm_ir::Type& type )
     //             { libcsel_ir::Type::Bit( 1 ), "isdef" },
     //         } );
     //     }
+    // }
+
     //     case libcasm_ir::Type::RELATION:
     //     {
     //         std::vector< libcsel_ir::Type* > tmp;
@@ -80,7 +82,8 @@ libcsel_ir::Type& Type::get( const libcasm_ir::Type& type )
     //     case libcasm_ir::Type::_TOP_:
     //     case libcasm_ir::Type::LABEL:
     //     {
-    //         libstdhl::Log::error( " unsupported type transformation for '%s'",
+    //         libstdhl::Log::error( " unsupported type transformation for
+    //         '%s'",
     //             type.description() );
     //         assert( 0 );
     //     }
@@ -92,13 +95,6 @@ libcsel_ir::Type& Type::get( const libcasm_ir::Type& type )
 
     // return *libcsel_ir::Type::Label();
 }
-
-
-
-
-
-
-
 
 // libcsel_ir::Structure* Type::create( libcasm_ir::Value& value )
 // {

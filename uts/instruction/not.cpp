@@ -29,34 +29,42 @@ using namespace libcasm_ir;
 // |-----+-------+-------+-------+------|
 // | -   | undef | true  | false | sym' |
 
+static const auto targ
+    = libstdhl::List< Type >{ { libstdhl::get< IntegerType >() } };
+static const auto tres = libstdhl::get< BooleanType >();
+static const auto type = libstdhl::get< RelationType >( tres, targ );
+
 TEST( libcasm_rt__instruction_not, NotInstruction_0 )
 {
-    auto a = IntegerConstant( 123 );
+    const auto a = IntegerConstant( 123 );
 
-    auto i = NotInstruction( &a );
-    auto r = libcasm_rt::Value::execute( i );
+    const auto r
+        = libcasm_rt::Value::execute( Value::NOT_INSTRUCTION, *type, a );
 
-    ASSERT_TRUE( *r == BooleanConstant( false ) );
+    EXPECT_TRUE( r.type().isBoolean() );
+    EXPECT_TRUE( r == BooleanConstant( false ) );
 }
 
 TEST( libcasm_rt__instruction_not, NotInstruction_1 )
 {
-    auto a = IntegerConstant( 0 );
+    const auto a = IntegerConstant( 0 );
 
-    auto i = NotInstruction( &a );
-    auto r = libcasm_rt::Value::execute( i );
+    const auto r
+        = libcasm_rt::Value::execute( Value::NOT_INSTRUCTION, *type, a );
 
-    ASSERT_TRUE( *r == BooleanConstant( true ) );
+    EXPECT_TRUE( r.type().isBoolean() );
+    EXPECT_TRUE( r == BooleanConstant( true ) );
 }
 
 TEST( libcasm_rt__instruction_not, NotInstruction_2 )
 {
-    auto a = IntegerConstant();
+    const auto a = IntegerConstant();
 
-    auto i = NotInstruction( &a );
-    auto r = libcasm_rt::Value::execute( i );
+    const auto r
+        = libcasm_rt::Value::execute( Value::NOT_INSTRUCTION, *type, a );
 
-    ASSERT_TRUE( *r == BooleanConstant() );
+    EXPECT_TRUE( r.type().isBoolean() );
+    EXPECT_TRUE( r == BooleanConstant() );
 }
 
 //

@@ -89,12 +89,12 @@ add_executable( ${TARGET}-check
 
 target_link_libraries( ${TARGET}-check
   ${TARGET}
-  pthread
-  stdhl
-  pass
-  casm-ir
   csel-rt
   csel-ir
+  casm-ir
+  pass
+  stdhl
+  pthread
 )
 
 

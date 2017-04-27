@@ -26,6 +26,8 @@
 
 #include "libpass.h"
 
+#include "../casm-ir/src/Specification.h"
+
 /**
    @brief    TODO
 

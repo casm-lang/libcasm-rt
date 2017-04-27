@@ -32,25 +32,158 @@
 
 #include "CasmRT.h"
 
-namespace libcsel_ir
-{
-    class Module;
-    class CallableUnit;
-}
+#include "Instruction.h"
 
-namespace libcasm_ir
-{
-    class Value;
-}
+#include "../casm-ir/src/Builtin.h"
 
 namespace libcasm_rt
 {
-    class Builtin : public CasmRT
+    namespace Builtin
     {
-      public:
-        static libcsel_ir::CallableUnit* asBoolean(
-            libcasm_ir::Value& value, libcsel_ir::Module* context = nullptr );
-    };
+        using Arguments = std::vector< libcasm_ir::Constant >;
+
+        libcasm_ir::Constant execute( const libcasm_ir::AbortBuiltin& builtin,
+            const Arguments& operands );
+
+        libcasm_ir::Constant execute( const libcasm_ir::AssertBuiltin& builtin,
+            const Arguments& operands );
+
+        libcasm_ir::Constant execute( const libcasm_ir::PrintBuiltin& builtin,
+            const Arguments& operands );
+
+        libcasm_ir::Constant execute( const libcasm_ir::PrintLnBuiltin& builtin,
+            const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::AsBooleanBuiltin& builtin,
+            const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::AsIntegerBuiltin& builtin,
+            const Arguments& operands );
+
+        libcasm_ir::Constant execute( const libcasm_ir::AsBitBuiltin& builtin,
+            const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::AsStringBuiltin& builtin,
+            const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::AsFloatingBuiltin& builtin,
+            const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::AsRationalBuiltin& builtin,
+            const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::AsEnumerationBuiltin& builtin,
+            const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::DecBuiltin& builtin, const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::HexBuiltin& builtin, const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::OctBuiltin& builtin, const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::BinBuiltin& builtin, const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::AdduBuiltin& builtin, const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::AddsBuiltin& builtin, const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::SubuBuiltin& builtin, const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::SubsBuiltin& builtin, const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::MuluBuiltin& builtin, const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::MulsBuiltin& builtin, const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::LesuBuiltin& builtin, const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::LessBuiltin& builtin, const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::LequBuiltin& builtin, const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::LeqsBuiltin& builtin, const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::GreuBuiltin& builtin, const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::GresBuiltin& builtin, const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::GequBuiltin& builtin, const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::GeqsBuiltin& builtin, const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::ZextBuiltin& builtin, const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::SextBuiltin& builtin, const Arguments& operands );
+
+        libcasm_ir::Constant execute( const libcasm_ir::TruncBuiltin& builtin,
+            const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::ShlBuiltin& builtin, const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::ShrBuiltin& builtin, const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::AshrBuiltin& builtin, const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::ClzBuiltin& builtin, const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::CloBuiltin& builtin, const Arguments& operands );
+
+        libcasm_ir::Constant execute(
+            const libcasm_ir::ClsBuiltin& builtin, const Arguments& operands );
+
+        // libcasm_ir::Constant execute( const libcasm_ir::PowBuiltin& builtin
+        // );
+
+        // libcasm_ir::Constant execute( const libcasm_ir::RandBuiltin& builtin
+        // );
+
+        template < typename T >
+        inline libcasm_ir::Constant execute(
+            const libcasm_ir::Type::Ptr& type, const Arguments& operands )
+        {
+            const T builtin( type );
+            return execute( builtin, operands );
+        }
+
+        template < typename T >
+        inline libcasm_ir::Constant execute(
+            const libcasm_ir::Type& type, const Arguments& operands )
+        {
+            const auto t = libstdhl::wrap( (libcasm_ir::Type&)type );
+            return execute< T >( t, operands );
+        }
+    }
 }
 
 #endif // _LIB_CASMRT_BUILTIN_H_

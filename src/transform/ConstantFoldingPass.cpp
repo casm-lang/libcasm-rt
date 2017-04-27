@@ -30,7 +30,7 @@
 #include "../casm-ir/src/Visitor.h"
 #include "../casm-ir/src/analyze/ConsistencyCheckPass.h"
 
-#include "../casm-rt/src/Value.h"
+#include "../casm-rt/src/Instruction.h"
 
 using namespace libcasm_ir;
 
@@ -87,7 +87,7 @@ bool ConstantFoldingPass::run( libpass::PassResult& pr )
                 }
             }
 
-            auto result = libcasm_rt::Value::execute( *instr );
+            auto result = libcasm_rt::Instruction::execute( *instr );
             assert( result );
 
             libstdhl::Log::info( "  +==> %s = %s %s", result->label().c_str(),

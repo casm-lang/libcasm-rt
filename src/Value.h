@@ -32,30 +32,36 @@
 
 #include "CasmRT.h"
 
+#include "../casm-ir/src/Constant.h"
 #include "../casm-ir/src/Value.h"
-
-namespace libcasm_ir
-{
-    class Instruction;
-    class Constant;
-}
-
-namespace libcsel_ir
-{
-    class Value;
-    class Module;
-}
 
 namespace libcasm_rt
 {
-    class Value : public CasmRT
+    /**
+       @extends CasmRT
+     */
+    namespace Value
     {
-      public:
-        static libcasm_ir::Value::Ptr execute( libcasm_ir::Instruction& value,
-            libcsel_ir::Module* module = nullptr );
+        libcasm_ir::Constant execute( const libcasm_ir::Value::ID id,
+            const libcasm_ir::Type::Ptr& type,
+            const std::vector< libcasm_ir::Constant >& operands );
 
-        static libcsel_ir::Value* get(
-            libcasm_ir::Value& value, libcsel_ir::Module* context = nullptr );
+        template < typename... Args >
+        libcasm_ir::Constant execute( libcasm_ir::Value::ID ID,
+            const libcasm_ir::Type& type,
+            Args&&... args )
+        {
+            const auto t = libstdhl::wrap( (libcasm_ir::Type&)type );
+            return execute( ID, t, { std::forward< Args >( args )... } );
+        }
+
+        template < typename... Args >
+        libcasm_ir::Constant execute( libcasm_ir::Value::ID ID,
+            const libcasm_ir::Type::Ptr& type,
+            Args&&... args )
+        {
+            return execute( ID, type, { std::forward< Args >( args )... } );
+        }
     };
 }
 

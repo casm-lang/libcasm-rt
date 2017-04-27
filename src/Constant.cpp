@@ -80,7 +80,8 @@ libcsel_ir::Value::Ptr Constant::get( libcasm_ir::Value& value )
     //     }
     //     case libcasm_ir::Value::BIT_CONSTANT:
     //     {
-    //         auto ir_cv = libcasm_ir::cast< libcasm_ir::BitConstant >( value );
+    //         auto ir_cv = libcasm_ir::cast< libcasm_ir::BitConstant >( value
+    //         );
 
     //         libstdhl::Log::info( "RT:Constant: %s", ir_cv->c_str() );
 

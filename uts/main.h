@@ -24,13 +24,12 @@
 #ifndef _LIB_CASMRT_UTS_MAIN_H_
 #define _LIB_CASMRT_UTS_MAIN_H_
 
-#include "gtest/gtest.h"
+#include "../stdhl/uts/main.h"
 
-#include "libcasm-ir.h"
 #include "libcasm-rt.h"
-#include "libcsel-ir.h"
-#include "libcsel-rt.h"
-#include "libstdhl.h"
+// #include "libcsel-ir.h"
+// #include "libcsel-rt.h"
+// #include "libstdhl.h"
 
 #endif // _LIB_CASMRT_UTS_MAIN_H_
 

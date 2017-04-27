@@ -25,46 +25,39 @@
 
 using namespace libcasm_ir;
 
+static const auto targ
+    = libstdhl::List< Type >{ { libstdhl::get< IntegerType >() } };
+static const auto tres = libstdhl::get< BooleanType >();
+static const auto type = libstdhl::get< RelationType >( tres, targ );
+
 TEST( libcasm_rt__builtin_as_boolean, AsBoolean_Integer_true )
 {
-    auto a = IntegerConstant( 1 );
+    const auto a = IntegerConstant( 1 );
 
-    auto s = Builtin::asBuiltin(
-        Type::Relation( Type::Boolean(), { Type::Integer() } ) );
+    const auto r
+        = libcasm_rt::Value::execute( Value::AS_BOOLEAN_BUILTIN, *type, a );
 
-    auto i = CallInstruction( s, { &a } );
-
-    auto r = libcasm_rt::Value::execute( i );
-
-    EXPECT_TRUE( *r == BooleanConstant( true ) );
+    EXPECT_TRUE( r == BooleanConstant( true ) );
 }
 
 TEST( libcasm_rt__builtin_as_boolean, AsBoolean_Integer_false )
 {
-    auto a = IntegerConstant( 0 );
+    const auto a = IntegerConstant( 0 );
 
-    auto s = Builtin::asBuiltin(
-        Type::Relation( Type::Boolean(), { Type::Integer() } ) );
+    const auto r
+        = libcasm_rt::Value::execute( Value::AS_BOOLEAN_BUILTIN, *type, a );
 
-    auto i = CallInstruction( s, { &a } );
-
-    auto r = libcasm_rt::Value::execute( i );
-
-    EXPECT_TRUE( *r == BooleanConstant( false ) );
+    EXPECT_TRUE( r == BooleanConstant( false ) );
 }
 
 TEST( libcasm_rt__builtin_as_boolean, AsBoolean_Integer_undef )
 {
-    auto a = IntegerConstant();
+    const auto a = IntegerConstant();
 
-    auto s = Builtin::asBuiltin(
-        Type::Relation( Type::Boolean(), { Type::Integer() } ) );
+    const auto r
+        = libcasm_rt::Value::execute( Value::AS_BOOLEAN_BUILTIN, *type, a );
 
-    auto i = CallInstruction( s, { &a } );
-
-    auto r = libcasm_rt::Value::execute( i );
-
-    EXPECT_TRUE( *r == BooleanConstant() );
+    EXPECT_TRUE( r == BooleanConstant() );
 }
 
 //

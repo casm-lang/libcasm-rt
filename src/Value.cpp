@@ -31,6 +31,7 @@
 #include "../stdhl/cpp/Default.h"
 #include "../stdhl/cpp/Log.h"
 
+#include "../casm-ir/src/Builtin.h"
 #include "../casm-ir/src/Constant.h"
 #include "../casm-ir/src/Instruction.h"
 #include "../casm-ir/src/Type.h"
@@ -45,7 +46,613 @@
 
 using namespace libcasm_rt;
 
-libcasm_ir::Value::Ptr Value::execute(
+libcasm_ir::Constant Value::execute( const libcasm_ir::Value::ID id,
+    const libcasm_ir::Type::Ptr& type,
+    const std::vector< libcasm_ir::Constant >& operands )
+{
+    switch( id )
+    {
+        //
+        // General Instruction
+        //
+
+        case libcasm_ir::Value::ID::SYMBOLIC_INSTRUCTION:
+        {
+            // TODO
+            return libcasm_ir::BooleanConstant( false );
+        }
+
+        case libcasm_ir::Value::ID::CALL_INSTRUCTION:
+        {
+            // TODO
+            return libcasm_ir::BooleanConstant( false );
+        }
+
+        //
+        // Arithmetic Instruction
+        //
+
+        case libcasm_ir::Value::ID::INV_INSTRUCTION:
+        {
+            assert( operands.size() == 1 );
+
+            const auto operand
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
+
+            return libcasm_rt::Instruction::
+                execute< libcasm_ir::InvInstruction >( operand );
+        }
+
+        case libcasm_ir::Value::ID::ADD_INSTRUCTION:
+        {
+            assert( operands.size() == 2 );
+
+            const auto lhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
+            const auto rhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
+
+            return libcasm_rt::Instruction::
+                execute< libcasm_ir::AddInstruction >( lhs, rhs );
+        }
+
+        case libcasm_ir::Value::ID::SUB_INSTRUCTION:
+        {
+            assert( operands.size() == 2 );
+
+            const auto lhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
+            const auto rhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
+
+            return libcasm_rt::Instruction::
+                execute< libcasm_ir::SubInstruction >( lhs, rhs );
+        }
+
+        case libcasm_ir::Value::ID::MUL_INSTRUCTION:
+        {
+            assert( operands.size() == 2 );
+
+            const auto lhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
+            const auto rhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
+
+            return libcasm_rt::Instruction::
+                execute< libcasm_ir::MulInstruction >( lhs, rhs );
+        }
+
+        case libcasm_ir::Value::ID::DIV_INSTRUCTION:
+        {
+            assert( operands.size() == 2 );
+
+            const auto lhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
+            const auto rhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
+
+            return libcasm_rt::Instruction::
+                execute< libcasm_ir::DivInstruction >( lhs, rhs );
+        }
+
+        case libcasm_ir::Value::ID::POW_INSTRUCTION:
+        {
+            assert( operands.size() == 2 );
+
+            const auto lhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
+            const auto rhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
+
+            return libcasm_rt::Instruction::
+                execute< libcasm_ir::PowInstruction >( lhs, rhs );
+        }
+
+        case libcasm_ir::Value::ID::MOD_INSTRUCTION:
+        {
+            assert( operands.size() == 2 );
+
+            const auto lhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
+            const auto rhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
+
+            return libcasm_rt::Instruction::
+                execute< libcasm_ir::ModInstruction >( lhs, rhs );
+        }
+
+        //
+        // Compare Instruction
+        //
+
+        case libcasm_ir::Value::ID::EQU_INSTRUCTION:
+        {
+            assert( operands.size() == 2 );
+
+            const auto lhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
+            const auto rhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
+
+            return libcasm_rt::Instruction::
+                execute< libcasm_ir::EquInstruction >( lhs, rhs );
+        }
+
+        case libcasm_ir::Value::ID::NEQ_INSTRUCTION:
+        {
+            assert( operands.size() == 2 );
+
+            const auto lhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
+            const auto rhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
+
+            return libcasm_rt::Instruction::
+                execute< libcasm_ir::NeqInstruction >( lhs, rhs );
+        }
+
+        case libcasm_ir::Value::ID::LTH_INSTRUCTION:
+        {
+            assert( operands.size() == 2 );
+
+            const auto lhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
+            const auto rhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
+
+            return libcasm_rt::Instruction::
+                execute< libcasm_ir::LthInstruction >( lhs, rhs );
+        }
+
+        case libcasm_ir::Value::ID::LEQ_INSTRUCTION:
+        {
+            assert( operands.size() == 2 );
+
+            const auto lhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
+            const auto rhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
+
+            return libcasm_rt::Instruction::
+                execute< libcasm_ir::LeqInstruction >( lhs, rhs );
+        }
+
+        case libcasm_ir::Value::ID::GTH_INSTRUCTION:
+        {
+            assert( operands.size() == 2 );
+
+            const auto lhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
+            const auto rhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
+
+            return libcasm_rt::Instruction::
+                execute< libcasm_ir::GthInstruction >( lhs, rhs );
+        }
+
+        case libcasm_ir::Value::ID::GEQ_INSTRUCTION:
+        {
+            assert( operands.size() == 2 );
+
+            const auto lhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
+            const auto rhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
+
+            return libcasm_rt::Instruction::
+                execute< libcasm_ir::GeqInstruction >( lhs, rhs );
+        }
+
+        //
+        // Logical Instruction
+        //
+
+        case libcasm_ir::Value::ID::OR_INSTRUCTION:
+        {
+            assert( operands.size() == 2 );
+
+            const auto lhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
+            const auto rhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
+
+            return libcasm_rt::Instruction::
+                execute< libcasm_ir::OrInstruction >( lhs, rhs );
+        }
+
+        case libcasm_ir::Value::ID::IMP_INSTRUCTION:
+        {
+            assert( operands.size() == 2 );
+
+            const auto lhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
+            const auto rhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
+
+            return libcasm_rt::Instruction::
+                execute< libcasm_ir::ImpInstruction >( lhs, rhs );
+        }
+
+        case libcasm_ir::Value::ID::XOR_INSTRUCTION:
+        {
+            assert( operands.size() == 2 );
+
+            const auto lhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
+            const auto rhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
+
+            return libcasm_rt::Instruction::
+                execute< libcasm_ir::XorInstruction >( lhs, rhs );
+        }
+
+        case libcasm_ir::Value::ID::AND_INSTRUCTION:
+        {
+            assert( operands.size() == 2 );
+
+            const auto lhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
+            const auto rhs
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
+
+            return libcasm_rt::Instruction::
+                execute< libcasm_ir::XorInstruction >( lhs, rhs );
+        }
+
+        case libcasm_ir::Value::ID::NOT_INSTRUCTION:
+        {
+            assert( operands.size() == 1 );
+
+            const auto operand
+                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
+
+            return libcasm_rt::Instruction::
+                execute< libcasm_ir::NotInstruction >( operand );
+        }
+
+        //
+        // General Builtins
+        //
+
+        case libcasm_ir::Value::ID::ABORT_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::AbortBuiltin >(
+                type, operands );
+        }
+
+        case libcasm_ir::Value::ID::ASSERT_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::AssertBuiltin >(
+                type, operands );
+        }
+
+        //
+        // Output Builtins
+        //
+
+        case libcasm_ir::Value::ID::PRINT_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::PrintBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::PRINTLN_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::PrintLnBuiltin >(
+                type, operands );
+        }
+
+        //
+        // Casting Builtins
+        //
+
+        case libcasm_ir::Value::ID::AS_BOOLEAN_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::AsBooleanBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::AS_INTEGER_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::AsIntegerBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::AS_BIT_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::AsBitBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::AS_STRING_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::AsStringBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::AS_FLOATING_BUILTIN:
+        {
+            return libcasm_rt::Builtin::
+                execute< libcasm_ir::AsFloatingBuiltin >( type, operands );
+        }
+        case libcasm_ir::Value::ID::AS_RATIONAL_BUILTIN:
+        {
+            return libcasm_rt::Builtin::
+                execute< libcasm_ir::AsRationalBuiltin >( type, operands );
+        }
+        case libcasm_ir::Value::ID::AS_ENUMERATION_BUILTIN:
+        {
+            return libcasm_rt::Builtin::
+                execute< libcasm_ir::AsEnumerationBuiltin >( type, operands );
+        }
+
+        //
+        // Stringify Builtins
+        //
+
+        case libcasm_ir::Value::ID::DEC_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::DecBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::HEX_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::HexBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::OCT_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::OctBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::BIN_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::BinBuiltin >(
+                type, operands );
+        }
+
+        //
+        // Arithmetic Builtins
+        //
+
+        case libcasm_ir::Value::ID::ADDU_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::AdduBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::ADDS_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::AddsBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::SUBU_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::SubuBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::SUBS_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::SubsBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::MULU_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::MuluBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::MULS_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::MulsBuiltin >(
+                type, operands );
+        }
+
+        //
+        // Compare Builtins
+        //
+
+        case libcasm_ir::Value::ID::LESU_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::LesuBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::LESS_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::LessBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::LEQU_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::LequBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::LEQS_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::LeqsBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::GREU_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::GreuBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::GRES_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::GresBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::GEQU_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::GequBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::GEQS_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::GeqsBuiltin >(
+                type, operands );
+        }
+
+        //
+        // Bit Builtins
+        //
+
+        case libcasm_ir::Value::ID::ZEXT_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::ZextBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::SEXT_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::SextBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::TRUNC_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::TruncBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::SHL_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::ShlBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::SHR_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::ShrBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::ASHR_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::AshrBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::CLZ_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::ClzBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::CLO_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::CloBuiltin >(
+                type, operands );
+        }
+        case libcasm_ir::Value::ID::CLS_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::ClsBuiltin >(
+                type, operands );
+        }
+
+        // //
+        // // Math Builtins
+        // //
+
+        // case libcasm_ir::Value::ID::POW_BUILTIN:
+        // {
+        //     return libcasm_rt::Builtin::execute< libcasm_ir::PowBuiltin >(
+        //         type, operands );
+        // }
+        // case libcasm_ir::Value::ID::RAND_BUILTIN:
+        // {
+        //     return libcasm_rt::Builtin::execute< libcasm_ir::RandBuiltin >(
+        //         type, operands );
+        // }
+
+        //
+        // Invalid Non-Constant Value IDs to execute
+        //
+
+        case libcasm_ir::Value::ID::VALUE:
+        case libcasm_ir::Value::ID::VALUE_LIST:
+        case libcasm_ir::Value::ID::USER:
+        case libcasm_ir::Value::ID::SPECIFICATION:
+        case libcasm_ir::Value::ID::AGENT:
+        case libcasm_ir::Value::ID::RULE:
+        case libcasm_ir::Value::ID::DERIVED:
+        case libcasm_ir::Value::ID::FUNCTION:
+        case libcasm_ir::Value::ID::ENUMERATION:
+        case libcasm_ir::Value::ID::BLOCK:
+        case libcasm_ir::Value::ID::EXECUTION_SEMANTICS_BLOCK:
+        case libcasm_ir::Value::ID::PARALLEL_BLOCK:
+        case libcasm_ir::Value::ID::SEQUENTIAL_BLOCK:
+        case libcasm_ir::Value::ID::STATEMENT:
+        case libcasm_ir::Value::ID::TRIVIAL_STATEMENT:
+        case libcasm_ir::Value::ID::BRANCH_STATEMENT:
+        case libcasm_ir::Value::ID::CONSTANT:
+        case libcasm_ir::Value::ID::VOID_CONSTANT:
+        case libcasm_ir::Value::ID::RULE_REFERENCE_CONSTANT:
+        case libcasm_ir::Value::ID::BOOLEAN_CONSTANT:
+        case libcasm_ir::Value::ID::INTEGER_CONSTANT:
+        case libcasm_ir::Value::ID::BIT_CONSTANT:
+        case libcasm_ir::Value::ID::STRING_CONSTANT:
+        case libcasm_ir::Value::ID::FLOATING_CONSTANT:
+        case libcasm_ir::Value::ID::RATIONAL_CONSTANT:
+        case libcasm_ir::Value::ID::ENUMERATION_CONSTANT:
+        case libcasm_ir::Value::ID::IDENTIFIER:
+        case libcasm_ir::Value::ID::INSTRUCTION:
+        case libcasm_ir::Value::ID::UNARY_INSTRUCTION:
+        case libcasm_ir::Value::ID::BINARY_INSTRUCTION:
+        case libcasm_ir::Value::ID::ASSERT_INSTRUCTION:
+        case libcasm_ir::Value::ID::SELECT_INSTRUCTION:
+        case libcasm_ir::Value::ID::SKIP_INSTRUCTION:
+        case libcasm_ir::Value::ID::FORK_INSTRUCTION:
+        case libcasm_ir::Value::ID::MERGE_INSTRUCTION:
+        case libcasm_ir::Value::ID::LOOKUP_INSTRUCTION:
+        case libcasm_ir::Value::ID::UPDATE_INSTRUCTION:
+        case libcasm_ir::Value::ID::LOCATION_INSTRUCTION:
+        case libcasm_ir::Value::ID::LOCAL_INSTRUCTION:
+        case libcasm_ir::Value::ID::OPERATOR_INSTRUCTION:
+        case libcasm_ir::Value::ID::ARITHMETIC_INSTRUCTION:
+        case libcasm_ir::Value::ID::COMPARE_INSTRUCTION:
+        case libcasm_ir::Value::ID::LOGICAL_INSTRUCTION:
+        case libcasm_ir::Value::ID::BUILTIN:
+        case libcasm_ir::Value::ID::GENERAL_BUILTIN:
+        case libcasm_ir::Value::ID::OUTPUT_BUILTIN:
+        case libcasm_ir::Value::ID::CASTING_BUILTIN:
+        case libcasm_ir::Value::ID::STRINGIFY_BUILTIN:
+        case libcasm_ir::Value::ID::OPERATOR_BUILTIN:
+        case libcasm_ir::Value::ID::ARITHMETIC_BUILTIN:
+        case libcasm_ir::Value::ID::COMPARE_BUILTIN:
+        case libcasm_ir::Value::ID::BIT_BUILTIN:
+        // case libcasm_ir::Value::ID::MATH_BUILTIN:
+        case libcasm_ir::Value::ID::_SIZE_:
+        {
+            // invalid for constant instruction evaluation
+            break;
+        }
+    }
+
+    assert( !" internal error " );
+    return libcasm_ir::VoidConstant();
+}
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+static libcasm_ir::Value::Ptr execute(
     libcasm_ir::Instruction& value, libcsel_ir::Module* module )
 {
     return libstdhl::get< libcasm_ir::VoidConstant >();
@@ -186,44 +793,46 @@ libcasm_ir::Value::Ptr Value::execute(
     // }
 }
 
-libcsel_ir::Value* Value::get(
-    libcasm_ir::Value& value, libcsel_ir::Module* context )
-{
-    switch( value.id() )
-    {
-        case libcasm_ir::Value::AS_BOOLEAN_BUILTIN:
-        {
-            return Builtin::asBoolean( value, context );
-        }
+// static libcsel_ir::Value* get(
+//     libcasm_ir::Value& value, libcsel_ir::Module* context )
+// {
+//     switch( value.id() )
+//     {
+//         case libcasm_ir::Value::AS_BOOLEAN_BUILTIN:
+//         {
+//             return Builtin::asBoolean( value, context );
+//         }
 
-        // AS_INTEGER_BUILTIN,
-        // AS_BIT_BUILTIN,
-        // AS_STRING_BUILTIN,
-        // AS_FLOATING_BUILTIN,
-        // AS_RATIONAL_BUILTIN,
-        // AS_ENUMERATION_BUILTIN,
+//         // AS_INTEGER_BUILTIN,
+//         // AS_BIT_BUILTIN,
+//         // AS_STRING_BUILTIN,
+//         // AS_FLOATING_BUILTIN,
+//         // AS_RATIONAL_BUILTIN,
+//         // AS_ENUMERATION_BUILTIN,
 
-        case libcasm_ir::Value::EQU_INSTRUCTION:
-        {
-            return Instruction::Equ(
-                static_cast< libcasm_ir::EquInstruction& >( value ), context );
-        }
-        case libcasm_ir::Value::NOT_INSTRUCTION:
-        {
-            return Instruction::Not(
-                static_cast< libcasm_ir::NotInstruction& >( value ), context );
-        }
+//         case libcasm_ir::Value::EQU_INSTRUCTION:
+//         {
+//             return Instruction::Equ(
+//                 static_cast< libcasm_ir::EquInstruction& >( value ), context
+//                 );
+//         }
+//         case libcasm_ir::Value::NOT_INSTRUCTION:
+//         {
+//             return Instruction::Not(
+//                 static_cast< libcasm_ir::NotInstruction& >( value ), context
+//                 );
+//         }
 
-        default:
-        {
-            libstdhl::Log::error(
-                " unsupported value '%s' of type '%s' to create RT instance",
-                value.name().c_str(), value.type().name().c_str() );
-            assert( 0 );
-            return 0;
-        }
-    }
-}
+//         default:
+//         {
+//             libstdhl::Log::error(
+//                 " unsupported value '%s' of type '%s' to create RT instance",
+//                 value.name().c_str(), value.type().name().c_str() );
+//             assert( 0 );
+//             return 0;
+//         }
+//     }
+// }
 
 //
 //  Local variables:
