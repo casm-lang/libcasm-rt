@@ -27,51 +27,78 @@
 #include "../stdhl/cpp/Log.h"
 
 #include "../casm-ir/src/Type.h"
+
+#include "../csel-ir/src/Structure.h"
 #include "../csel-ir/src/Type.h"
 
 using namespace libcasm_rt;
 
-libcsel_ir::Type& Type::get( libcasm_ir::Type& type )
+static libcsel_ir::Type::Ptr boolean = nullptr;
+static libcsel_ir::Type::Ptr integer = nullptr;
+static libcsel_ir::Type::Ptr bit = nullptr;
+
+libcsel_ir::Type::Ptr Type::get( const libcasm_ir::Type& type )
 {
     switch( type.id() )
     {
         case libcasm_ir::Type::BOOLEAN:
         {
-            return *libcsel_ir::Type::Structure( {
-                { libcsel_ir::Type::Bit( 1 ), "value" },
-                { libcsel_ir::Type::Bit( 1 ), "isdef" },
-            } );
+            if( not boolean )
+            {
+                boolean = libstdhl::get< libcsel_ir::StructureType >(
+                    libstdhl::get< libcsel_ir::Structure >(
+                        "casm_rt__" + type.name(),
+                        std::initializer_list< libcsel_ir::StructureElement >{
+                            { libstdhl::get< libcsel_ir::BitType >( 1 ),
+                                "value" },
+                            { libstdhl::get< libcsel_ir::BitType >( 1 ),
+                                "isdef" } } ) );
+            }
+            return boolean;
         }
         case libcasm_ir::Type::INTEGER:
         {
-            return *libcsel_ir::Type::Structure( {
-                { libcsel_ir::Type::Bit( 64 ), "value" },
-                { libcsel_ir::Type::Bit( 1 ), "isdef" },
-            } );
+            if( not integer )
+            {
+                integer = libstdhl::get< libcsel_ir::StructureType >(
+                    libstdhl::get< libcsel_ir::Structure >(
+                        "casm_rt__" + type.name(),
+                        std::initializer_list< libcsel_ir::StructureElement >{
+                            { libstdhl::get< libcsel_ir::BitType >( 64 ),
+                                "value" },
+                            { libstdhl::get< libcsel_ir::BitType >( 1 ),
+                                "isdef" } } ) );
+            }
+            return integer;
         }
         case libcasm_ir::Type::BIT:
         {
-            libcasm_ir::BitType& bit_ty
-                = static_cast< libcasm_ir::BitType& >( type );
+            const auto btype
+                = static_cast< const libcasm_ir::BitType& >( type );
 
-            return *libcsel_ir::Type::Structure( {
-                { libcsel_ir::Type::Bit( bit_ty.bitsize() ), "value" },
-                { libcsel_ir::Type::Bit( 1 ), "isdef" },
-            } );
+            return libstdhl::get< libcsel_ir::StructureType >(
+                libstdhl::get< libcsel_ir::Structure >(
+                    "casm_rt__" + btype.name(),
+                    std::initializer_list< libcsel_ir::StructureElement >{
+                        { libstdhl::get< libcsel_ir::BitType >(
+                              btype.bitsize() ),
+                            "value" },
+                        { libstdhl::get< libcsel_ir::BitType >( 1 ),
+                            "isdef" } } ) );
         }
         case libcasm_ir::Type::RELATION:
         {
-            std::vector< libcsel_ir::Type* > tmp;
-
-            for( auto argument : type.arguments() )
+            std::vector< libcsel_ir::Type::Ptr > arguments;
+            for( const auto& argument : type.arguments() )
             {
-                assert( argument );
-                tmp.push_back( &get( *argument ) );
+                arguments.push_back( get( *argument.get() ) );
             }
 
-            assert( type.result() );
-            return *libcsel_ir::Type::Relation(
-                { &get( *type.result() ) }, tmp );
+            const std::vector< libcsel_ir::Type::Ptr > results
+                = { get( type.result() ) };
+
+            return libstdhl::get< libcsel_ir::RelationType >(
+                results, arguments );
         }
         // fall through!
         case libcasm_ir::Type::_BOTTOM_:
@@ -79,34 +106,34 @@ libcsel_ir::Type& Type::get( libcasm_ir::Type& type )
         case libcasm_ir::Type::LABEL:
         {
             libstdhl::Log::error( " unsupported type transformation for '%s'",
-                type.description() );
+                type.description().c_str() );
             assert( 0 );
         }
     }
 
-    libstdhl::Log::error(
-        " unimplemented type transformation for '%s'", type.description() );
+    libstdhl::Log::error( " unimplemented type transformation for '%s'",
+        type.description().c_str() );
     assert( 0 );
 
-    return *libcsel_ir::Type::Label();
+    return libstdhl::get< libcsel_ir::VoidType >();
 }
 
-// libcsel_ir::Structure* Type::create( libcasm_ir::Value& value )
+// libcsel_ir::Structure* Type::create( Value& value )
 // {
-//     // libcasm_ir::Type* type = value.getType()->getResult();
+//     // Type* type = value.getType()->getResult();
 //     // assert( type and " invalid type pointer! " );
 
-//     // libcasm_ir::Type::ID tid = type->getID();
+//     // Type::ID tid = type->getID();
 
-//     // if( tid == libcasm_ir::Type::Boolean()->getID() )
+//     // if( tid == Type::Boolean()->getID() )
 //     // {
 //     //     return Boolean::create();
 //     // }
-//     // else if( tid == libcasm_ir::Type::Integer()->getID() )
+//     // else if( tid == Type::Integer()->getID() )
 //     // {
 //     //     return Integer::create();
 //     // }
-//     // else if( tid == libcasm_ir::Type::RuleReference()->getID() )
+//     // else if( tid == Type::RuleReference()->getID() )
 //     // {
 //     //     return RulePtr::create();
 //     // }
@@ -168,7 +195,7 @@ libcsel_ir::Type& Type::get( libcasm_ir::Type& type )
 //     return type;
 // }
 
-// libcsel_ir::Structure* String::create( libcasm_ir::StringConstant& value )
+// libcsel_ir::Structure* String::create( StringConstant& value )
 // {
 //     static std::unordered_map< i16, libcsel_ir::Structure* > cache;
 

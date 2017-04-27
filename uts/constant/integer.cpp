@@ -30,8 +30,8 @@ TEST( libcasm_rt__constant, integer )
     auto ir_cv = IntegerConstant( 5 );
     auto el_cv = libcasm_rt::Constant::get( ir_cv );
 
-    EXPECT_TRUE( el_cv->type().isStructure() );
-    EXPECT_EQ( el_cv->type().results().size(), 2 );
+    EXPECT_TRUE( el_cv.type().isStructure() );
+    EXPECT_EQ( el_cv.type().results().size(), 2 );
 }
 
 //

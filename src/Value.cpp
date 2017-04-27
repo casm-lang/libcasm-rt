@@ -31,9 +31,10 @@
 #include "../stdhl/cpp/Default.h"
 #include "../stdhl/cpp/Log.h"
 
+#include "../casm-ir/src/Builtin.h"
+#include "../casm-ir/src/Constant.h"
 #include "../casm-ir/src/Instruction.h"
 #include "../casm-ir/src/Type.h"
-#include "../casm-ir/src/Value.h"
 
 #include "../csel-ir/src/CallableUnit.h"
 #include "../csel-ir/src/Constant.h"
@@ -44,19 +45,18 @@
 
 using namespace libcasm_rt;
 
-libcasm_ir::Value::Ptr Value::execute(
+libcasm_ir::Constant Value::execute(
     libcasm_ir::Instruction& value, libcsel_ir::Module* module )
 {
-    libstdhl::Log::info( "%s: %s", __FUNCTION__, value.c_str() );
-
-    libcsel_ir::Value* ir_instr_impl = 0;
+    libstdhl::Log::info( "%s: %s", __FUNCTION__, value.dump().c_str() );
 
     u32 operand_pos = 0;
+    libcsel_ir::Value::Ptr ir_instr_impl = nullptr;
 
     if( auto call = libcasm_ir::cast< libcasm_ir::CallInstruction >( value ) )
     {
         // PPA: assuming a builtin call for now
-        ir_instr_impl = Value::get( call->callee() );
+        ir_instr_impl = Value::get( *call->callee().get() );
         operand_pos = 1;
     }
     else if( libcasm_ir::isa< libcasm_ir::OperatorInstruction >( value ) )
@@ -66,23 +66,25 @@ libcasm_ir::Value::Ptr Value::execute(
     else
     {
         libstdhl::Log::error(
-            " unsupported value '%s' with type '%s' to execute", value.name(),
-            value.type().description() );
+            " unsupported value '%s' with type '%s' to execute",
+            value.name().c_str(), value.type().description().c_str() );
         assert( 0 );
-        return nullptr;
+        return libcasm_ir::VoidConstant();
     }
 
-    std::vector< libcsel_ir::Value::Ptr > stack;
+    std::vector< libcsel_ir::Constant > stack;
+    std::vector< libcsel_ir::Value::Ptr > args;
 
-    for( ; operand_pos < value.values().size(); operand_pos++ )
+    for( ; operand_pos < value.operands().size(); operand_pos++ )
     {
-        auto v = value.value( operand_pos );
+        const auto v = value.operand( operand_pos );
         assert( libcasm_ir::isa< libcasm_ir::Constant >( v ) );
 
-        stack.push_back( Constant::get( *v ) );
+        stack.push_back( Constant::get( *v.get() ) );
+        args.push_back( libstdhl::wrap( stack.back() ) );
 
         libstdhl::Log::info( "%s: operand %u:\n    %s --> %s", __FUNCTION__,
-            operand_pos, v->c_str(), stack.back()->c_str() );
+            operand_pos, v->dump().c_str(), args.back()->name().c_str() );
 
         // // add constant to instr call
         // el_instr_impl.add( &c );
@@ -90,102 +92,88 @@ libcasm_ir::Value::Ptr Value::execute(
 
     for( auto res : ir_instr_impl->type().results() )
     {
-        libstdhl::Log::info(
-            "%s: alloc result register:\n    %s", __FUNCTION__, res->name() );
+        libstdhl::Log::info( "%s: alloc result register:\n    %s", __FUNCTION__,
+            res->name().c_str() );
         // // alloc result registers
-        // el_instr_impl.add( new libcsel_ir::AllocInstruction( res ) );
 
-        stack.push_back( libstdhl::make< libcsel_ir::Value >(
-            libcsel_ir::AllocInstruction( res ) ) );
+        args.push_back( libstdhl::make< libcsel_ir::AllocInstruction >( res ) );
     }
 
-    libcsel_ir::CallInstruction el_instr_impl( ir_instr_impl, stack );
+    auto i = libcsel_ir::CallInstruction( ir_instr_impl, args );
 
-    libstdhl::Log::info( "%s: %s %s", __FUNCTION__, el_instr_impl.c_str() );
+    libstdhl::Log::info( "%s: %s %s", __FUNCTION__, i.dump().c_str() );
 
-    auto result = libcsel_rt::Instruction::execute( el_instr_impl );
+    const auto result = libcsel_rt::Instruction::execute( i );
 
-    switch( result->id() )
+    const auto result_types = result.type().results();
+    assert( result.type().isStructure() );
+    assert( result_types.size() == 2 );
+
+    const auto s
+        = static_cast< const libcsel_ir::StructureConstant& >( result );
+
+    const auto t0 = result_types[ 0 ];
+    const auto t1 = result_types[ 1 ];
+
+    switch( value.type().id() )
     {
-        case libcsel_ir::Value::STRUCTURE_CONSTANT:
+        case libcasm_ir::Type::BOOLEAN:
         {
-            auto res
-                = static_cast< libcsel_ir::StructureConstant* >( result.get() );
+            assert( t0->isBit() and t0->bitsize() == 1 );
+            assert( t1->isBit() and t1->bitsize() == 1 );
+            const auto v = static_cast< const libcsel_ir::BitConstant& >(
+                s.value()[ 0 ] );
+            const auto d = static_cast< const libcsel_ir::BitConstant& >(
+                s.value()[ 1 ] );
 
-            auto ty_res = result->type().results();
-            assert( ty_res.size() == 2 );
-
-            if( ty_res[ 0 ]->isBit() and ty_res[ 0 ]->bitsize() == 1
-                and ty_res[ 1 ]->isBit()
-                and ty_res[ 1 ]->bitsize() == 1 )
+            if( d.value()[ 0 ] )
             {
-                // we found a boolean!
-                auto v = static_cast< libcsel_ir::BitConstant* >(
-                    res->value()[ 0 ].get() );
-                auto d = static_cast< libcsel_ir::BitConstant* >(
-                    res->value()[ 1 ].get() );
-
-                if( d->value() )
-                {
-                    return libstdhl::make< libcasm_ir::BooleanConstant >(
-                        v->value() );
-                }
-                else
-                {
-                    return libstdhl::make< libcasm_ir::BooleanConstant >();
-                }
-            }
-            else if( ty_res[ 0 ]->isBit() and ty_res[ 0 ]->bitsize() == 64
-                     and ty_res[ 1 ]->isBit()
-                     and ty_res[ 1 ]->bitsize() == 1 )
-            {
-                // we found a integer!
-                auto v = static_cast< libcsel_ir::BitConstant* >(
-                    res->value()[ 0 ].get() );
-                auto d = static_cast< libcsel_ir::BitConstant* >(
-                    res->value()[ 1 ].get() );
-
-                if( d->value() )
-                {
-                    return libstdhl::make< libcasm_ir::IntegerConstant >(
-                        v->value() );
-                }
-                else
-                {
-                    return libstdhl::make< libcasm_ir::IntegerConstant >();
-                }
+                return libcasm_ir::BooleanConstant( v.value()[ 0 ] );
             }
             else
             {
-                libstdhl::Log::error(
-                    " unsupported result value '%s' of type '%s' ",
-                    result->name(), result->type().name() );
-
-                assert( 0 );
-                return nullptr;
+                return libcasm_ir::BooleanConstant();
             }
-            break;
+        }
+        case libcasm_ir::Type::INTEGER:
+        {
+            assert( t0->isBit() and t0->bitsize() == 64 );
+            assert( t1->isBit() and t1->bitsize() == 1 );
+            const auto v = static_cast< const libcsel_ir::BitConstant& >(
+                s.value()[ 0 ] );
+            const auto d = static_cast< const libcsel_ir::BitConstant& >(
+                s.value()[ 1 ] );
+
+            if( d.value()[ 0 ] )
+            {
+                return libcasm_ir::IntegerConstant( v.value()[ 0 ] );
+            }
+            else
+            {
+                return libcasm_ir::IntegerConstant();
+            }
         }
         default:
         {
             libstdhl::Log::error(
-                " unsupported result value '%s' of type '%s' ", result->name(),
-                result->type().name() );
-
+                " unsupported result value '%s' of type '%s' ",
+                result.name().c_str(), result.type().name().c_str() );
             assert( 0 );
-            return nullptr;
+            return libcasm_ir::VoidConstant();
         }
     }
 }
 
-libcsel_ir::Value* Value::get(
-    libcasm_ir::Value& value, libcsel_ir::Module* context )
+libcsel_ir::Value::Ptr Value::get(
+    const libcasm_ir::Value& value, libcsel_ir::Module* context )
 {
     switch( value.id() )
     {
         case libcasm_ir::Value::AS_BOOLEAN_BUILTIN:
         {
-            return Builtin::asBoolean( value, context );
+            return Builtin::asBoolean(
+                static_cast< const libcasm_ir::AsBooleanBuiltin& >( value ),
+                context );
         }
 
         // AS_INTEGER_BUILTIN,
@@ -198,19 +186,21 @@ libcsel_ir::Value* Value::get(
         case libcasm_ir::Value::EQU_INSTRUCTION:
         {
             return Instruction::Equ(
-                static_cast< libcasm_ir::EquInstruction& >( value ), context );
+                static_cast< const libcasm_ir::EquInstruction& >( value ),
+                context );
         }
         case libcasm_ir::Value::NOT_INSTRUCTION:
         {
             return Instruction::Not(
-                static_cast< libcasm_ir::NotInstruction& >( value ), context );
+                static_cast< const libcasm_ir::NotInstruction& >( value ),
+                context );
         }
 
         default:
         {
             libstdhl::Log::error(
                 " unsupported value '%s' of type '%s' to create RT instance",
-                value.name(), value.type().name() );
+                value.name().c_str(), value.type().name().c_str() );
             assert( 0 );
             return 0;
         }

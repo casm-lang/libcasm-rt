@@ -27,15 +27,15 @@ using namespace libcasm_ir;
 
 TEST( libcasm_rt__type_integer, IntegerType )
 {
-    auto ir_ty = Type::Integer();
+    auto ir_ty = IntegerType();
 
-    libcsel_ir::Type& el_ty = libcasm_rt::Type::get( *ir_ty );
+    auto el_ty = libcasm_rt::Type::get( ir_ty );
 
-    EXPECT_TRUE( el_ty.isStructure() );
-    EXPECT_EQ( el_ty.results().size(), 2 );
+    EXPECT_TRUE( el_ty->isStructure() );
+    EXPECT_EQ( el_ty->results().size(), 2 );
 
-    EXPECT_TRUE( el_ty.results()[ 0 ]->isBit() );
-    EXPECT_TRUE( el_ty.results()[ 1 ]->isBit() );
+    EXPECT_TRUE( el_ty->results()[ 0 ]->isBit() );
+    EXPECT_TRUE( el_ty->results()[ 1 ]->isBit() );
 }
 
 //

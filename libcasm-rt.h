@@ -31,6 +31,8 @@
 #include "src/Update.h"
 #include "src/Builtin.h"
 
+#include "src/transform/ConstantFoldingPass.h"
+
 namespace libcasm_rt
 {
 }

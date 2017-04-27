@@ -25,46 +25,51 @@
 
 using namespace libcasm_ir;
 
-TEST( libcasm_rt__builtin_as_boolean, AsBoolean_Integer_true )
+TEST( libcasm_rt__builtin_as_boolean, Integer_true )
 {
-    auto a = IntegerConstant( 1 );
+    auto a = libstdhl::get< IntegerConstant >( 1 );
 
-    auto s = Builtin::asBuiltin(
-        Type::Relation( Type::Boolean(), { Type::Integer() } ) );
+    auto at = Types( { libstdhl::get< IntegerType >() } );
+    auto rt
+        = libstdhl::make< RelationType >( libstdhl::get< BooleanType >(), at );
 
-    auto i = CallInstruction( s, { &a } );
+    auto s = Builtin::asBuiltin( rt );
 
-    auto r = libcasm_rt::Value::execute( i );
+    auto c = CallInstruction( s, { a } );
 
-    EXPECT_TRUE( *r == BooleanConstant( true ) );
+    auto r = libcasm_rt::Value::execute( c );
+
+    EXPECT_TRUE( r == BooleanConstant( true ) );
 }
 
-TEST( libcasm_rt__builtin_as_boolean, AsBoolean_Integer_false )
+TEST( libcasm_rt__builtin_as_boolean, Integer_false )
 {
-    auto a = IntegerConstant( 0 );
+    auto a = libstdhl::get< IntegerConstant >( 0 );
 
     auto s = Builtin::asBuiltin(
-        Type::Relation( Type::Boolean(), { Type::Integer() } ) );
+        libstdhl::get< RelationType >( libstdhl::get< BooleanType >(),
+            Types( { libstdhl::get< IntegerType >() } ) ) );
 
-    auto i = CallInstruction( s, { &a } );
+    auto i = CallInstruction( s, { a } );
 
     auto r = libcasm_rt::Value::execute( i );
 
-    EXPECT_TRUE( *r == BooleanConstant( false ) );
+    EXPECT_TRUE( r == BooleanConstant( false ) );
 }
 
-TEST( libcasm_rt__builtin_as_boolean, AsBoolean_Integer_undef )
+TEST( libcasm_rt__builtin_as_boolean, Integer_undef )
 {
-    auto a = IntegerConstant();
+    auto a = libstdhl::get< IntegerConstant >();
 
     auto s = Builtin::asBuiltin(
-        Type::Relation( Type::Boolean(), { Type::Integer() } ) );
+        libstdhl::get< RelationType >( libstdhl::get< BooleanType >(),
+            Types( { libstdhl::get< IntegerType >() } ) ) );
 
-    auto i = CallInstruction( s, { &a } );
+    auto i = CallInstruction( s, { a } );
 
     auto r = libcasm_rt::Value::execute( i );
 
-    EXPECT_TRUE( *r == BooleanConstant() );
+    EXPECT_TRUE( r == BooleanConstant() );
 }
 
 //

@@ -29,34 +29,44 @@ using namespace libcasm_ir;
 // |-----+-------+-------+-------+------|
 // | -   | undef | true  | false | sym' |
 
-TEST( libcasm_rt__instruction_not, NotInstruction_0 )
+TEST( libcasm_rt__instruction_not, NotInstruction_123_to_false )
 {
-    auto a = IntegerConstant( 123 );
+    auto a = libstdhl::get< IntegerConstant >( 123 );
 
-    auto i = NotInstruction( &a );
+    auto i = NotInstruction( a );
     auto r = libcasm_rt::Value::execute( i );
 
-    ASSERT_TRUE( *r == BooleanConstant( false ) );
+    ASSERT_TRUE( r == BooleanConstant( false ) );
 }
 
-TEST( libcasm_rt__instruction_not, NotInstruction_1 )
+TEST( libcasm_rt__instruction_not, NotInstruction_1_to_false )
 {
-    auto a = IntegerConstant( 0 );
+    auto a = libstdhl::get< IntegerConstant >( 1 );
 
-    auto i = NotInstruction( &a );
+    auto i = NotInstruction( a );
     auto r = libcasm_rt::Value::execute( i );
 
-    ASSERT_TRUE( *r == BooleanConstant( true ) );
+    ASSERT_TRUE( r == BooleanConstant( false ) );
 }
 
-TEST( libcasm_rt__instruction_not, NotInstruction_2 )
+TEST( libcasm_rt__instruction_not, NotInstruction_0_to_true )
 {
-    auto a = IntegerConstant();
+    auto a = libstdhl::get< IntegerConstant >( 0 );
 
-    auto i = NotInstruction( &a );
+    auto i = NotInstruction( a );
     auto r = libcasm_rt::Value::execute( i );
 
-    ASSERT_TRUE( *r == BooleanConstant() );
+    ASSERT_TRUE( r == BooleanConstant( true ) );
+}
+
+TEST( libcasm_rt__instruction_not, NotInstruction_undef_to_undef )
+{
+    auto a = libstdhl::get< IntegerConstant >();
+
+    auto i = NotInstruction( a );
+    auto r = libcasm_rt::Value::execute( i );
+
+    ASSERT_TRUE( r == BooleanConstant() );
 }
 
 //

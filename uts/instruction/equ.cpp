@@ -33,46 +33,46 @@ using namespace libcasm_ir;
 
 TEST( libcasm_rt__instruction_equ, EquInstruction_true )
 {
-    auto a = IntegerConstant( 123 );
-    auto b = IntegerConstant( 123 );
+    auto a = libstdhl::get< IntegerConstant >( 123 );
+    auto b = libstdhl::get< IntegerConstant >( 123 );
 
-    auto i = EquInstruction( &a, &b );
+    auto i = EquInstruction( a, b );
     auto r = libcasm_rt::Value::execute( i );
 
-    ASSERT_TRUE( *r == BooleanConstant( true ) );
+    ASSERT_TRUE( r == BooleanConstant( true ) );
 }
 
 TEST( libcasm_rt__instruction_equ, EquInstruction_false )
 {
-    auto a = IntegerConstant( 0 );
-    auto b = IntegerConstant( 10 );
+    auto a = libstdhl::get< IntegerConstant >( 0 );
+    auto b = libstdhl::get< IntegerConstant >( 10 );
 
-    auto i = EquInstruction( &a, &b );
+    auto i = EquInstruction( a, b );
     auto r = libcasm_rt::Value::execute( i );
 
-    ASSERT_TRUE( *r == BooleanConstant( false ) );
+    ASSERT_TRUE( r == BooleanConstant( false ) );
 }
 
 TEST( libcasm_rt__instruction_equ, EquInstruction_undef_true )
 {
-    auto a = IntegerConstant();
-    auto b = IntegerConstant();
+    auto a = libstdhl::get< IntegerConstant >();
+    auto b = libstdhl::get< IntegerConstant >();
 
-    auto i = EquInstruction( &a, &b );
+    auto i = EquInstruction( a, b );
     auto r = libcasm_rt::Value::execute( i );
 
-    ASSERT_TRUE( *r == BooleanConstant( true ) );
+    ASSERT_TRUE( r == BooleanConstant( true ) );
 }
 
 TEST( libcasm_rt__instruction_equ, EquInstruction_undef_false )
 {
-    auto a = IntegerConstant();
-    auto b = IntegerConstant( 321 );
+    auto a = libstdhl::get< IntegerConstant >();
+    auto b = libstdhl::get< IntegerConstant >( 321 );
 
-    auto i = EquInstruction( &a, &b );
+    auto i = EquInstruction( a, b );
     auto r = libcasm_rt::Value::execute( i );
 
-    ASSERT_TRUE( *r == BooleanConstant( false ) );
+    ASSERT_TRUE( r == BooleanConstant( false ) );
 }
 
 //

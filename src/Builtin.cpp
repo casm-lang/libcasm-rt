@@ -24,84 +24,95 @@
 #include "Builtin.h"
 #include "Type.h"
 
-#include "../stdhl/cpp/Default.h"
-#include "../stdhl/cpp/Log.h"
-
 #include "../casm-ir/src/Builtin.h"
-#include "../casm-ir/src/Type.h"
-#include "../casm-ir/src/Value.h"
 
 #include "../csel-ir/src/CallableUnit.h"
 #include "../csel-ir/src/Instruction.h"
 #include "../csel-ir/src/Intrinsic.h"
-#include "../csel-ir/src/Reference.h"
+#include "../csel-ir/src/Module.h"
 #include "../csel-ir/src/Scope.h"
 #include "../csel-ir/src/Statement.h"
 
 using namespace libcasm_rt;
 
-libcsel_ir::CallableUnit* Builtin::asBoolean(
-    libcasm_ir::Value& value, libcsel_ir::Module* context )
+libcsel_ir::CallableUnit::Ptr Builtin::asBoolean(
+    const libcasm_ir::AsBooleanBuiltin& value, libcsel_ir::Module* context )
 {
-    static std::unordered_map< std::string, libcsel_ir::CallableUnit* > cache;
+    static std::unordered_map< std::string,
+        std::weak_ptr< libcsel_ir::CallableUnit > >
+        cache;
 
-    libstdhl::Log::info(
-        "%s: %s %s", __FUNCTION__, value.name(), value.type().description() );
+    libstdhl::Log::info( "%s: %s %s",
+        __FUNCTION__,
+        value.name().c_str(),
+        value.type().description().c_str() );
 
-    std::string key = "";
-    key += value.name();
-    key += " ";
-    key += value.type().name();
+    const auto key = value.make_hash();
 
     auto result = cache.find( key );
     if( result != cache.end() )
     {
-        return result->second;
+        return result->second.lock();
     }
 
-    libcasm_ir::Type& ir_ty = value.type();
+    const auto& ir_ty = value.type();
     assert( ir_ty.isRelation() and ir_ty.arguments().size() == 1 );
 
-    libcsel_ir::Type& el_ty = libcasm_rt::Type::get( ir_ty );
-    assert( el_ty.isRelation() and el_ty.arguments().size() == 1
-            and el_ty.results().size() == 1 );
+    auto el_ty = libcasm_rt::Type::get( ir_ty );
 
-    auto instr = libcasm_ir::cast< libcasm_ir::AsBooleanBuiltin >( value );
+    assert( el_ty->isRelation() and el_ty->arguments().size() == 1
+            and el_ty->results().size() == 1 );
 
-    libcsel_ir::CallableUnit* el = new libcsel_ir::Intrinsic(
-        instr->label(), &el_ty ); // PPA: TODO: add 'el' to context
-    assert( el );
+    auto implementation = libstdhl::make< libcsel_ir::Intrinsic >( value.name(),
+        std::static_pointer_cast< libcsel_ir::RelationType >(
+            el_ty ) ); // PPA: TODO: add 'el' to context
 
-    auto arg = el->in( "arg", el_ty.arguments()[ 0 ] );
-    auto ret = el->out( "ret", el_ty.results()[ 0 ] );
+    assert( implementation );
 
-    libcsel_ir::Scope* scope = new libcsel_ir::ParallelScope( el );
-    libcsel_ir::Statement* stmt = new libcsel_ir::TrivialStatement( scope );
+    auto arg = implementation->in( "arg", el_ty->arguments()[ 0 ] );
+    auto ret = implementation->out( "ret", el_ty->results()[ 0 ] );
 
-    auto idx0 = new libcsel_ir::BitConstant( 8, 0 );
-    auto idx1 = new libcsel_ir::BitConstant( 8, 1 );
+    auto scope = libstdhl::make< libcsel_ir::ParallelScope >();
+    implementation->setContext( scope );
 
-    auto arg_v_ptr
-        = stmt->add( new libcsel_ir::ExtractInstruction( arg, idx0 ) );
-    auto arg_d_ptr
-        = stmt->add( new libcsel_ir::ExtractInstruction( arg, idx1 ) );
+    auto stmt = libstdhl::make< libcsel_ir::TrivialStatement >();
+    stmt->setParent( scope );
+    scope->add( stmt );
 
-    auto ret_v_ptr
-        = stmt->add( new libcsel_ir::ExtractInstruction( ret, idx0 ) );
-    auto ret_d_ptr
-        = stmt->add( new libcsel_ir::ExtractInstruction( ret, idx1 ) );
+    auto idx0 = libstdhl::get< libcsel_ir::BitConstant >( 8, 0 );
+    auto idx1 = libstdhl::get< libcsel_ir::BitConstant >( 8, 1 );
 
-    auto arg_v = stmt->add( new libcsel_ir::LoadInstruction( arg_v_ptr ) );
-    auto arg_d = stmt->add( new libcsel_ir::LoadInstruction( arg_d_ptr ) );
+    auto arg_v_ptr = stmt->add(
+        libstdhl::make< libcsel_ir::ExtractInstruction >( arg, idx0 ) );
+    auto arg_d_ptr = stmt->add(
+        libstdhl::make< libcsel_ir::ExtractInstruction >( arg, idx1 ) );
 
-    auto reg_v = stmt->add( new libcsel_ir::NeqInstruction(
-        arg_v, new libcsel_ir::BitConstant( &arg_v->type(), 0 ) ) );
+    auto ret_v_ptr = stmt->add(
+        libstdhl::make< libcsel_ir::ExtractInstruction >( ret, idx0 ) );
+    auto ret_d_ptr = stmt->add(
+        libstdhl::make< libcsel_ir::ExtractInstruction >( ret, idx1 ) );
 
-    stmt->add( new libcsel_ir::StoreInstruction( reg_v, ret_v_ptr ) );
-    stmt->add( new libcsel_ir::StoreInstruction( arg_d, ret_d_ptr ) );
+    auto arg_v = stmt->add(
+        libstdhl::make< libcsel_ir::LoadInstruction >( arg_v_ptr ) );
+    auto arg_d = stmt->add(
+        libstdhl::make< libcsel_ir::LoadInstruction >( arg_d_ptr ) );
 
-    cache[ key ] = el;
-    return el;
+    assert( arg_v->type().isBit() );
+
+    auto zero = libstdhl::get< libcsel_ir::BitConstant >(
+        std::static_pointer_cast< libcsel_ir::BitType >( arg_v->ptr_type() ),
+        0 );
+
+    auto reg_v = stmt->add(
+        libstdhl::make< libcsel_ir::NeqInstruction >( arg_v, zero ) );
+
+    stmt->add(
+        libstdhl::make< libcsel_ir::StoreInstruction >( reg_v, ret_v_ptr ) );
+    stmt->add(
+        libstdhl::make< libcsel_ir::StoreInstruction >( arg_d, ret_d_ptr ) );
+
+    cache[ key ] = implementation;
+    return implementation;
 }
 
 //

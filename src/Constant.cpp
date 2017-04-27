@@ -33,77 +33,56 @@
 
 using namespace libcasm_rt;
 
-libcsel_ir::Value::Ptr Constant::get( libcasm_ir::Value& value )
+libcsel_ir::Constant Constant::get( const libcasm_ir::Value& value )
 {
     assert( libcasm_ir::isa< libcasm_ir::Constant >( value ) );
+
+    const auto ty = Type::get( value.type() );
 
     switch( value.id() )
     {
         case libcasm_ir::Value::BOOLEAN_CONSTANT:
         {
-            auto ir_cv
-                = libcasm_ir::cast< libcasm_ir::BooleanConstant >( value );
+            const auto c
+                = static_cast< const libcasm_ir::BooleanConstant& >( value );
 
-            libstdhl::Log::info( "RT:Constant: %s", ir_cv->c_str() );
-
-            libcsel_ir::Type& el_ty = libcasm_rt::Type::get( value.type() );
-
-            const std::vector< libcsel_ir::Constant::Ptr > el_args
-                = { libstdhl::make< libcsel_ir::BitConstant >(
-                        el_ty.results()[ 0 ], ir_cv->value() ),
-                    libstdhl::make< libcsel_ir::BitConstant >(
-                        el_ty.results()[ 1 ], ir_cv->defined() ) };
-
-            return std::static_pointer_cast< libcsel_ir::Value >(
-                libstdhl::make< libcsel_ir::StructureConstant >(
-                    el_ty, el_args ) );
+            return libcsel_ir::StructureConstant( ty,
+                std::initializer_list< libcsel_ir::Constant >{
+                    libcsel_ir::BitConstant( ty->results()[ 0 ], c.value() ),
+                    libcsel_ir::BitConstant(
+                        ty->results()[ 1 ], c.defined() ) } );
         }
         case libcasm_ir::Value::INTEGER_CONSTANT:
         {
-            auto ir_cv
-                = libcasm_ir::cast< libcasm_ir::IntegerConstant >( value );
+            const auto c
+                = static_cast< const libcasm_ir::IntegerConstant& >( value );
 
-            libstdhl::Log::info( "RT:Constant: %s", ir_cv->c_str() );
-
-            libcsel_ir::Type& el_ty = libcasm_rt::Type::get( value.type() );
-
-            const std::vector< libcsel_ir::Constant::Ptr > el_args
-                = { libstdhl::make< libcsel_ir::BitConstant >(
-                        el_ty.results()[ 0 ], ir_cv->value() ),
-                    libstdhl::make< libcsel_ir::BitConstant >(
-                        el_ty.results()[ 1 ], ir_cv->defined() ) };
-
-            return std::static_pointer_cast< libcsel_ir::Value >(
-                libstdhl::make< libcsel_ir::StructureConstant >(
-                    el_ty, el_args ) );
+            return libcsel_ir::StructureConstant( ty,
+                std::initializer_list< libcsel_ir::Constant >{
+                    libcsel_ir::BitConstant( ty->results()[ 0 ], c.value_i64() ),
+                    libcsel_ir::BitConstant(
+                        ty->results()[ 1 ], c.defined() ) } );
         }
         case libcasm_ir::Value::BIT_CONSTANT:
         {
-            auto ir_cv = libcasm_ir::cast< libcasm_ir::BitConstant >( value );
+            const auto c
+                = static_cast< const libcasm_ir::BitConstant& >( value );
 
-            libstdhl::Log::info( "RT:Constant: %s", ir_cv->c_str() );
-
-            libcsel_ir::Type& el_ty = libcasm_rt::Type::get( value.type() );
-
-            const std::vector< libcsel_ir::Constant::Ptr > el_args
-                = { libstdhl::make< libcsel_ir::BitConstant >(
-                        el_ty.results()[ 0 ], ir_cv->value() ),
-                    libstdhl::make< libcsel_ir::BitConstant >(
-                        el_ty.results()[ 1 ], ir_cv->defined() ) };
-
-            return std::static_pointer_cast< libcsel_ir::Value >(
-                libstdhl::make< libcsel_ir::StructureConstant >(
-                    el_ty, el_args ) );
+            return libcsel_ir::StructureConstant( ty,
+                std::initializer_list< libcsel_ir::Constant >{
+                    libcsel_ir::BitConstant( ty->results()[ 0 ], c.value() ),
+                    libcsel_ir::BitConstant(
+                        ty->results()[ 1 ], c.defined() ) } );
         }
         default:
         {
             libstdhl::Log::error(
                 " unimplemented constant transformation for '%s' with type "
                 "'%s'",
-                value.name(), value.type().description() );
+                value.name().c_str(), value.type().description().c_str() );
 
             assert( 0 );
-            return libstdhl::make< libcsel_ir::VoidConstant >();
+            return libcsel_ir::VoidConstant();
         }
     }
 }

@@ -32,12 +32,11 @@
 
 #include "CasmRT.h"
 
-#include "../casm-ir/src/Value.h"
-
 namespace libcasm_ir
 {
     class Instruction;
     class Constant;
+    class Value;
 }
 
 namespace libcsel_ir
@@ -51,11 +50,12 @@ namespace libcasm_rt
     class Value : public CasmRT
     {
       public:
-        static libcasm_ir::Value::Ptr execute( libcasm_ir::Instruction& value,
+        static libcasm_ir::Constant execute( libcasm_ir::Instruction& value,
             libcsel_ir::Module* module = nullptr );
 
-        static libcsel_ir::Value* get(
-            libcasm_ir::Value& value, libcsel_ir::Module* context = nullptr );
+        static std::shared_ptr< libcsel_ir::Value > get(
+            const libcasm_ir::Value& value,
+            libcsel_ir::Module* context = nullptr );
     };
 }
 

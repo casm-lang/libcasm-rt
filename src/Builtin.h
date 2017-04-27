@@ -32,15 +32,15 @@
 
 #include "CasmRT.h"
 
+namespace libcasm_ir
+{
+    class AsBooleanBuiltin;
+}
+
 namespace libcsel_ir
 {
     class Module;
     class CallableUnit;
-}
-
-namespace libcasm_ir
-{
-    class Value;
 }
 
 namespace libcasm_rt
@@ -48,8 +48,9 @@ namespace libcasm_rt
     class Builtin : public CasmRT
     {
       public:
-        static libcsel_ir::CallableUnit* asBoolean(
-            libcasm_ir::Value& value, libcsel_ir::Module* context = nullptr );
+        static std::shared_ptr< libcsel_ir::CallableUnit > asBoolean(
+            const libcasm_ir::AsBooleanBuiltin& value,
+            libcsel_ir::Module* context = nullptr );
     };
 }
 

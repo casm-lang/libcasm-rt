@@ -25,8 +25,10 @@
 
 void libcasm_rt_main_dummy( void )
 {
-    libstdhl::Log::DefaultSource = libstdhl::Log::Source(
-        []( void* arg ) -> const char* { return "libcasm_rt"; } );
+    const auto source = libstdhl::make< libstdhl::Log::Source >(
+        "libcasm-rt", "CASM RT Library" );
+
+    libstdhl::Log::defaultSource( source );
 }
 
 TEST( libcasm_rt_main, empty )

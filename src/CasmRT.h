@@ -24,6 +24,10 @@
 #ifndef _LIB_CASMRT_CASMRT_H_
 #define _LIB_CASMRT_CASMRT_H_
 
+#include "../stdhl/cpp/Default.h"
+#include "../stdhl/cpp/Log.h"
+#include "../stdhl/cpp/Type.h"
+
 namespace libcasm_rt
 {
     class CasmRT

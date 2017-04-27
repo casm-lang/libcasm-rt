@@ -21,10 +21,10 @@
 //  along with libcasm-rt. If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef _LIB_CASMIR_CONSTANT_FOLDING_PASS_H_
-#define _LIB_CASMIR_CONSTANT_FOLDING_PASS_H_
+#ifndef _LIB_CASMRT_CONSTANT_FOLDING_PASS_H_
+#define _LIB_CASMRT_CONSTANT_FOLDING_PASS_H_
 
-#include "libpass.h"
+#include "../casm-ir/src/analyze/ConsistencyCheckPass.h"
 
 /**
    @brief    TODO
@@ -34,16 +34,21 @@
 
 namespace libcasm_ir
 {
+    /**
+       @extends CasmRT
+     */
     class ConstantFoldingPass final : public libpass::Pass
     {
       public:
+        using Data = ConsistencyCheckPass::Data;
+
         static char id;
 
         bool run( libpass::PassResult& pr ) override;
     };
 }
 
-#endif // _LIB_CASMIR_CONSTANT_FOLDING_PASS_H_
+#endif // _LIB_CASMRT_CONSTANT_FOLDING_PASS_H_
 
 //
 //  Local variables:

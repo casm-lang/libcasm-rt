@@ -34,19 +34,13 @@
 
 namespace libcasm_ir
 {
-    class Value;
-    class Instruction;
     class NotInstruction;
-    class CallInstruction;
     class EquInstruction;
 }
 
 namespace libcsel_ir
 {
-    class Value;
     class Module;
-    class Instruction;
-    class CallInstruction;
     class CallableUnit;
 }
 
@@ -55,10 +49,12 @@ namespace libcasm_rt
     class Instruction : public CasmRT
     {
       public:
-        static libcsel_ir::CallableUnit* Not(
-            libcasm_ir::NotInstruction& value, libcsel_ir::Module* module );
+        static std::shared_ptr< libcsel_ir::CallableUnit > Not(
+            const libcasm_ir::NotInstruction& value,
+            libcsel_ir::Module* module = nullptr );
 
-        static libcsel_ir::CallableUnit* Equ( libcasm_ir::EquInstruction& value,
+        static std::shared_ptr< libcsel_ir::CallableUnit > Equ(
+            const libcasm_ir::EquInstruction& value,
             libcsel_ir::Module* module = nullptr );
     };
 }
