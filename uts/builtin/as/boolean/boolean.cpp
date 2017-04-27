@@ -42,7 +42,7 @@ static const auto type
 
 TEST_( undef_to_undef, );
 TEST_( false_to_false, false );
-TEST_( true_to_true, true );
+TEST_( true__to_true, true );
 
 //
 //  Local variables:

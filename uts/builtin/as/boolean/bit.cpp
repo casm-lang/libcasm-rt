@@ -42,22 +42,22 @@ using namespace libcasm_ir;
 
 TEST_( undef_at_undef, 1, ( 1 ), );
 TEST_( false_at_zero, 1, ( 1, 0 ), false );
-TEST_( false_at_one, 1, ( 1, 1 ), true );
+TEST_( true__at_one, 1, ( 1, 1 ), true );
 
 TEST_( undef_at_undef, 8, ( 8 ), );
 TEST_( false_at_zero, 8, ( 8, 0 ), false );
-TEST_( false_at_one, 8, ( 8, 1 ), true );
-TEST_( false_at_large, 8, ( 8, 0xee ), true );
+TEST_( true__at_one, 8, ( 8, 1 ), true );
+TEST_( true__at_large, 8, ( 8, 0xee ), true );
 
 TEST_( undef_at_undef, 23, ( 23 ), );
 TEST_( false_at_zero, 23, ( 23, 0 ), false );
-TEST_( false_at_one, 23, ( 23, 1 ), true );
-TEST_( false_at_large, 23, ( 23, 0xfeed ), true );
+TEST_( true__at_one, 23, ( 23, 1 ), true );
+TEST_( true__at_large, 23, ( 23, 0xfeed ), true );
 
 TEST_( undef_at_undef, 48, ( 48 ), );
 TEST_( false_at_zero, 48, ( 48, 0 ), false );
-TEST_( false_at_one, 48, ( 48, 1 ), true );
-TEST_( false_at_large, 48, ( 48, 0xfeedbeef ), true );
+TEST_( true__at_one, 48, ( 48, 1 ), true );
+TEST_( true__at_large, 48, ( 48, 0xfeedbeef ), true );
 
 //
 //  Local variables:
