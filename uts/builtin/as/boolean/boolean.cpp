@@ -25,40 +25,24 @@
 
 using namespace libcasm_ir;
 
-static const auto targ
-    = libstdhl::List< Type >{ { libstdhl::get< IntegerType >() } };
-static const auto tres = libstdhl::get< BooleanType >();
-static const auto type = libstdhl::get< RelationType >( tres, targ );
+static const auto type
+    = libstdhl::get< RelationType >( libstdhl::get< BooleanType >(),
+        Types( { libstdhl::get< BooleanType >() } ) );
 
-TEST( libcasm_rt__builtin_as_boolean, AsBoolean_Integer_true )
-{
-    const auto a = IntegerConstant( 1 );
+#define TEST_( NAME, VALUE )                                                   \
+    TEST( libcasm_rt__builtin_as_boolean_boolean, NAME )                       \
+    {                                                                          \
+        const auto arg = BooleanConstant( VALUE );                             \
+                                                                               \
+        const auto res = libcasm_rt::Value::execute(                           \
+            Value::AS_BOOLEAN_BUILTIN, *type, arg );                           \
+                                                                               \
+        EXPECT_TRUE( res == BooleanConstant( VALUE ) );                        \
+    }
 
-    const auto r
-        = libcasm_rt::Value::execute( Value::AS_BOOLEAN_BUILTIN, *type, a );
-
-    EXPECT_TRUE( r == BooleanConstant( true ) );
-}
-
-TEST( libcasm_rt__builtin_as_boolean, AsBoolean_Integer_false )
-{
-    const auto a = IntegerConstant( 0 );
-
-    const auto r
-        = libcasm_rt::Value::execute( Value::AS_BOOLEAN_BUILTIN, *type, a );
-
-    EXPECT_TRUE( r == BooleanConstant( false ) );
-}
-
-TEST( libcasm_rt__builtin_as_boolean, AsBoolean_Integer_undef )
-{
-    const auto a = IntegerConstant();
-
-    const auto r
-        = libcasm_rt::Value::execute( Value::AS_BOOLEAN_BUILTIN, *type, a );
-
-    EXPECT_TRUE( r == BooleanConstant() );
-}
+TEST_( undef_to_undef, );
+TEST_( false_to_false, false );
+TEST_( true_to_true, true );
 
 //
 //  Local variables:

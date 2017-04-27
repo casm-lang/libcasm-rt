@@ -84,7 +84,39 @@ libcasm_ir::Constant Builtin::execute(
     const libcasm_ir::AsBooleanBuiltin& builtin,
     const Builtin::Arguments& operands )
 {
-    return libcasm_ir::VoidConstant();
+    assert( operands.size() == 1 );
+    const auto& arg = operands[ 0 ];
+
+    if( arg.defined() )
+    {
+        switch( arg.type().id() )
+        {
+            case libcasm_ir::Type::BOOLEAN:
+            {
+                return arg;
+            }
+            case libcasm_ir::Type::INTEGER:
+            {
+                const auto c
+                    = static_cast< const libcasm_ir::IntegerConstant& >( arg );
+                return libcasm_ir::BooleanConstant(
+                    c.value() > 0 and not c.value().sign() );
+            }
+            case libcasm_ir::Type::BIT:
+            {
+                const auto c
+                    = static_cast< const libcasm_ir::BitConstant& >( arg );
+                return libcasm_ir::BooleanConstant( c.value() > 0 );
+            }
+            default:
+            {
+                std::domain_error(
+                    "unimplemented '" + builtin.description() + "'" );
+            }
+        }
+    }
+
+    return libcasm_ir::BooleanConstant();
 }
 
 libcasm_ir::Constant Builtin::execute(
