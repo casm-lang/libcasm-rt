@@ -44,8 +44,8 @@ namespace libcasm_rt
      */
     namespace Constant
     {
-      // public:
-      //   static libcsel_ir::Value::Ptr get( libcasm_ir::Value& value );
+        // public:
+        //   static libcsel_ir::Value::Ptr get( libcasm_ir::Value& value );
     };
 }
 

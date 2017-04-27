@@ -43,11 +43,14 @@ using namespace libcasm_rt;
 //     //     case libcasm_ir::Value::BOOLEAN_CONSTANT:
 //     //     {
 //     //         auto ir_cv
-//     //             = libcasm_ir::cast< libcasm_ir::BooleanConstant >( value );
+//     //             = libcasm_ir::cast< libcasm_ir::BooleanConstant >( value
+//     );
 
-//     //         libstdhl::Log::info( "RT:Constant: %s", ir_cv->dump().c_str() );
+//     //         libstdhl::Log::info( "RT:Constant: %s", ir_cv->dump().c_str()
+//     );
 
-//     //         libcsel_ir::Type& el_ty = libcasm_rt::Type::get( value.type() );
+//     //         libcsel_ir::Type& el_ty = libcasm_rt::Type::get( value.type()
+//     );
 
 //     //         const std::vector< libcsel_ir::Constant::Ptr > el_args
 //     //             = { libstdhl::make< libcsel_ir::BitConstant >(
@@ -62,11 +65,13 @@ using namespace libcasm_rt;
 //     //     case libcasm_ir::Value::INTEGER_CONSTANT:
 //     //     {
 //     //         auto ir_cv
-//     //             = libcasm_ir::cast< libcasm_ir::IntegerConstant >( value );
+//     //             = libcasm_ir::cast< libcasm_ir::IntegerConstant >( value
+//     );
 
 //     //         libstdhl::Log::info( "RT:Constant: %s", ir_cv->c_str() );
 
-//     //         libcsel_ir::Type& el_ty = libcasm_rt::Type::get( value.type() );
+//     //         libcsel_ir::Type& el_ty = libcasm_rt::Type::get( value.type()
+//     );
 
 //     //         const std::vector< libcsel_ir::Constant::Ptr > el_args
 //     //             = { libstdhl::make< libcsel_ir::BitConstant >(
@@ -80,12 +85,14 @@ using namespace libcasm_rt;
 //     //     }
 //     //     case libcasm_ir::Value::BIT_CONSTANT:
 //     //     {
-//     //         auto ir_cv = libcasm_ir::cast< libcasm_ir::BitConstant >( value
+//     //         auto ir_cv = libcasm_ir::cast< libcasm_ir::BitConstant >(
+//     value
 //     //         );
 
 //     //         libstdhl::Log::info( "RT:Constant: %s", ir_cv->c_str() );
 
-//     //         libcsel_ir::Type& el_ty = libcasm_rt::Type::get( value.type() );
+//     //         libcsel_ir::Type& el_ty = libcasm_rt::Type::get( value.type()
+//     );
 
 //     //         const std::vector< libcsel_ir::Constant::Ptr > el_args
 //     //             = { libstdhl::make< libcsel_ir::BitConstant >(
@@ -100,7 +107,8 @@ using namespace libcasm_rt;
 //     //     default:
 //     //     {
 //     //         libstdhl::Log::error(
-//     //             " unimplemented constant transformation for '%s' with type "
+//     //             " unimplemented constant transformation for '%s' with type
+//     "
 //     //             "'%s'",
 //     //             value.name(), value.type().description() );
 

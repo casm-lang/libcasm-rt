@@ -25,17 +25,17 @@
 
 using namespace libcasm_ir;
 
-TEST( libcasm_rt__type_integer, IntegerType )
-{
-    const auto ir_ty = IntegerType();
-    const auto el_ty = libcasm_rt::Type::get( ir_ty );
+// TEST( libcasm_rt__type_integer, IntegerType )
+// {
+//     const auto ir_ty = IntegerType();
+//     const auto el_ty = libcasm_rt::Type::get( ir_ty );
 
-    EXPECT_TRUE( el_ty.isStructure() );
-    ASSERT_EQ( el_ty.results().size(), 2 );
+//     EXPECT_TRUE( el_ty.isStructure() );
+//     ASSERT_EQ( el_ty.results().size(), 2 );
 
-    EXPECT_TRUE( el_ty.results()[ 0 ]->isBit() );
-    EXPECT_TRUE( el_ty.results()[ 1 ]->isBit() );
-}
+//     EXPECT_TRUE( el_ty.results()[ 0 ]->isBit() );
+//     EXPECT_TRUE( el_ty.results()[ 1 ]->isBit() );
+// }
 
 //
 //  Local variables:
