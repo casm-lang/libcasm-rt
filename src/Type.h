@@ -37,19 +37,17 @@ namespace libcasm_ir
     class Type;
 }
 
-namespace libcsel_ir
-{
-    class Type;
-}
-
 namespace libcasm_rt
 {
+    /**
+       @extends CasmRT
+    */
     namespace Type
     {
-        libcsel_ir::Type get( const libcasm_ir::Type& type );
+        // libcsel_ir::Type get( const libcasm_ir::Type& type );
 
-        template < typename T >
-        static libcsel_ir::Type* get( libcasm_ir::Type* result );
+        // template < typename T >
+        // static libcsel_ir::Type* get( libcasm_ir::Type* result );
     };
 
     // class Boolean : public Type

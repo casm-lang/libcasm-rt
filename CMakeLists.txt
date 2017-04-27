@@ -33,8 +33,6 @@ foreach( DEPENDENCY
     stdhl
     pass
     casm-ir
-    csel-ir
-    csel-rt
     )
   if( NOT TARGET ${DEPENDENCY} )
     add_subdirectory( ${LIBS}/${DEPENDENCY} lib/${DEPENDENCY} )
@@ -59,8 +57,6 @@ include_directories(
   ${LIBS}/stdhl
   ${LIBS}/pass
   ${LIBS}/casm-ir
-  ${LIBS}/csel-ir
-  ${LIBS}/csel-rt
 )
 
 
@@ -84,13 +80,10 @@ add_executable( ${TARGET}-check
   ${LIBS}/gtest/googletest/src/gtest_main.cc
   ${LIBS}/gtest/googletest/src/gtest-all.cc  
   $<TARGET_OBJECTS:${TARGET}-test>
-  $<TARGET_OBJECTS:csel-rt-test>
 )
 
 target_link_libraries( ${TARGET}-check
   ${TARGET}
-  csel-rt
-  csel-ir
   casm-ir
   pass
   stdhl

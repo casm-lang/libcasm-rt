@@ -36,56 +36,6 @@
 
 #include "../casm-ir/src/Instruction.h"
 
-// template < typename T, typename... TT >
-// struct over_all
-// {
-//     using next = over_all< TT... >;
-
-//     static const constexpr std::size_t size = 1 + next::size;
-
-//     template < typename C >
-//     inline constexpr static C for_each( C cbk, T&& tval, TT&&... ttval )
-//     {
-//         cbk( std::forward< T >( tval ) );
-//         next::for_each( cbk, std::forward< TT >( ttval )... );
-//         return cbk;
-//     }
-
-//     template < typename C >
-//     inline constexpr C operator()( C cbk, T&& tval, TT&&... ttval ) const
-//     {
-//         return for_each(
-//             cbk, std::forward< T >( tval ), std::forward< TT >( ttval )... );
-//     }
-// };
-
-// template < typename T >
-// struct over_all< T >
-// {
-//     static const constexpr std::size_t size = 1;
-
-//     template < typename C >
-//     inline constexpr static C for_each( C cbk, T&& tval )
-//     {
-//         cbk( std::forward< T >( tval ) );
-//         return cbk;
-//     }
-
-//     template < typename C >
-//     inline constexpr C operator()( C cbk, T&& tval ) const
-//     {
-//         return for_each( cbk, std::forward< T >( tval ) );
-//     }
-// };
-//             constexpr auto size = over_all< Args... >::size;
-
-//             std::vector< libcasm_ir::Value::Ptr > operands;
-//             operands.reserve( size );
-
-//             over_all< Args... >::for_each(
-//                 [&]( auto&& val ) { operands( libstdhl::wrap( val ) ); },
-//                 std::forward< Args >( args )... );
-
 namespace libcasm_rt
 {
     namespace Instruction

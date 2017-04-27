@@ -31,12 +31,12 @@
 #include "../casm-ir/src/Type.h"
 #include "../casm-ir/src/Value.h"
 
-#include "../csel-ir/src/CallableUnit.h"
-#include "../csel-ir/src/Instruction.h"
-#include "../csel-ir/src/Intrinsic.h"
-#include "../csel-ir/src/Reference.h"
-#include "../csel-ir/src/Scope.h"
-#include "../csel-ir/src/Statement.h"
+// #include "../csel-ir/src/CallableUnit.h"
+// #include "../csel-ir/src/Instruction.h"
+// #include "../csel-ir/src/Intrinsic.h"
+// #include "../csel-ir/src/Reference.h"
+// #include "../csel-ir/src/Scope.h"
+// #include "../csel-ir/src/Statement.h"
 
 using namespace libcasm_rt;
 

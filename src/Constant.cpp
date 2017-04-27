@@ -29,86 +29,86 @@
 
 #include "../casm-ir/src/Constant.h"
 
-#include "../csel-ir/src/Constant.h"
+// #include "../csel-ir/src/Constant.h"
 
 using namespace libcasm_rt;
 
-libcsel_ir::Value::Ptr Constant::get( libcasm_ir::Value& value )
-{
-    assert( libcasm_ir::isa< libcasm_ir::Constant >( value ) );
+// libcsel_ir::Value::Ptr Constant::get( libcasm_ir::Value& value )
+// {
+//     assert( libcasm_ir::isa< libcasm_ir::Constant >( value ) );
 
-    return libstdhl::make< libcsel_ir::VoidConstant >();
-    // switch( value.id() )
-    // {
-    //     case libcasm_ir::Value::BOOLEAN_CONSTANT:
-    //     {
-    //         auto ir_cv
-    //             = libcasm_ir::cast< libcasm_ir::BooleanConstant >( value );
+//     return libstdhl::make< libcsel_ir::VoidConstant >();
+//     // switch( value.id() )
+//     // {
+//     //     case libcasm_ir::Value::BOOLEAN_CONSTANT:
+//     //     {
+//     //         auto ir_cv
+//     //             = libcasm_ir::cast< libcasm_ir::BooleanConstant >( value );
 
-    //         libstdhl::Log::info( "RT:Constant: %s", ir_cv->dump().c_str() );
+//     //         libstdhl::Log::info( "RT:Constant: %s", ir_cv->dump().c_str() );
 
-    //         libcsel_ir::Type& el_ty = libcasm_rt::Type::get( value.type() );
+//     //         libcsel_ir::Type& el_ty = libcasm_rt::Type::get( value.type() );
 
-    //         const std::vector< libcsel_ir::Constant::Ptr > el_args
-    //             = { libstdhl::make< libcsel_ir::BitConstant >(
-    //                     el_ty.results()[ 0 ], ir_cv->value() ),
-    //                 libstdhl::make< libcsel_ir::BitConstant >(
-    //                     el_ty.results()[ 1 ], ir_cv->defined() ) };
+//     //         const std::vector< libcsel_ir::Constant::Ptr > el_args
+//     //             = { libstdhl::make< libcsel_ir::BitConstant >(
+//     //                     el_ty.results()[ 0 ], ir_cv->value() ),
+//     //                 libstdhl::make< libcsel_ir::BitConstant >(
+//     //                     el_ty.results()[ 1 ], ir_cv->defined() ) };
 
-    //         return std::static_pointer_cast< libcsel_ir::Value >(
-    //             libstdhl::make< libcsel_ir::StructureConstant >(
-    //                 el_ty, el_args ) );
-    //     }
-    //     case libcasm_ir::Value::INTEGER_CONSTANT:
-    //     {
-    //         auto ir_cv
-    //             = libcasm_ir::cast< libcasm_ir::IntegerConstant >( value );
+//     //         return std::static_pointer_cast< libcsel_ir::Value >(
+//     //             libstdhl::make< libcsel_ir::StructureConstant >(
+//     //                 el_ty, el_args ) );
+//     //     }
+//     //     case libcasm_ir::Value::INTEGER_CONSTANT:
+//     //     {
+//     //         auto ir_cv
+//     //             = libcasm_ir::cast< libcasm_ir::IntegerConstant >( value );
 
-    //         libstdhl::Log::info( "RT:Constant: %s", ir_cv->c_str() );
+//     //         libstdhl::Log::info( "RT:Constant: %s", ir_cv->c_str() );
 
-    //         libcsel_ir::Type& el_ty = libcasm_rt::Type::get( value.type() );
+//     //         libcsel_ir::Type& el_ty = libcasm_rt::Type::get( value.type() );
 
-    //         const std::vector< libcsel_ir::Constant::Ptr > el_args
-    //             = { libstdhl::make< libcsel_ir::BitConstant >(
-    //                     el_ty.results()[ 0 ], ir_cv->value() ),
-    //                 libstdhl::make< libcsel_ir::BitConstant >(
-    //                     el_ty.results()[ 1 ], ir_cv->defined() ) };
+//     //         const std::vector< libcsel_ir::Constant::Ptr > el_args
+//     //             = { libstdhl::make< libcsel_ir::BitConstant >(
+//     //                     el_ty.results()[ 0 ], ir_cv->value() ),
+//     //                 libstdhl::make< libcsel_ir::BitConstant >(
+//     //                     el_ty.results()[ 1 ], ir_cv->defined() ) };
 
-    //         return std::static_pointer_cast< libcsel_ir::Value >(
-    //             libstdhl::make< libcsel_ir::StructureConstant >(
-    //                 el_ty, el_args ) );
-    //     }
-    //     case libcasm_ir::Value::BIT_CONSTANT:
-    //     {
-    //         auto ir_cv = libcasm_ir::cast< libcasm_ir::BitConstant >( value
-    //         );
+//     //         return std::static_pointer_cast< libcsel_ir::Value >(
+//     //             libstdhl::make< libcsel_ir::StructureConstant >(
+//     //                 el_ty, el_args ) );
+//     //     }
+//     //     case libcasm_ir::Value::BIT_CONSTANT:
+//     //     {
+//     //         auto ir_cv = libcasm_ir::cast< libcasm_ir::BitConstant >( value
+//     //         );
 
-    //         libstdhl::Log::info( "RT:Constant: %s", ir_cv->c_str() );
+//     //         libstdhl::Log::info( "RT:Constant: %s", ir_cv->c_str() );
 
-    //         libcsel_ir::Type& el_ty = libcasm_rt::Type::get( value.type() );
+//     //         libcsel_ir::Type& el_ty = libcasm_rt::Type::get( value.type() );
 
-    //         const std::vector< libcsel_ir::Constant::Ptr > el_args
-    //             = { libstdhl::make< libcsel_ir::BitConstant >(
-    //                     el_ty.results()[ 0 ], ir_cv->value() ),
-    //                 libstdhl::make< libcsel_ir::BitConstant >(
-    //                     el_ty.results()[ 1 ], ir_cv->defined() ) };
+//     //         const std::vector< libcsel_ir::Constant::Ptr > el_args
+//     //             = { libstdhl::make< libcsel_ir::BitConstant >(
+//     //                     el_ty.results()[ 0 ], ir_cv->value() ),
+//     //                 libstdhl::make< libcsel_ir::BitConstant >(
+//     //                     el_ty.results()[ 1 ], ir_cv->defined() ) };
 
-    //         return std::static_pointer_cast< libcsel_ir::Value >(
-    //             libstdhl::make< libcsel_ir::StructureConstant >(
-    //                 el_ty, el_args ) );
-    //     }
-    //     default:
-    //     {
-    //         libstdhl::Log::error(
-    //             " unimplemented constant transformation for '%s' with type "
-    //             "'%s'",
-    //             value.name(), value.type().description() );
+//     //         return std::static_pointer_cast< libcsel_ir::Value >(
+//     //             libstdhl::make< libcsel_ir::StructureConstant >(
+//     //                 el_ty, el_args ) );
+//     //     }
+//     //     default:
+//     //     {
+//     //         libstdhl::Log::error(
+//     //             " unimplemented constant transformation for '%s' with type "
+//     //             "'%s'",
+//     //             value.name(), value.type().description() );
 
-    //         assert( 0 );
-    //         return libstdhl::make< libcsel_ir::VoidConstant >();
-    //     }
-    // }
-}
+//     //         assert( 0 );
+//     //         return libstdhl::make< libcsel_ir::VoidConstant >();
+//     //     }
+//     // }
+// }
 
 // libcsel_ir::Value* Constant::create( libcsel_ir::Type& type )
 // {

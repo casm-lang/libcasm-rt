@@ -35,16 +35,16 @@
 #include "../casm-ir/src/Instruction.h"
 #include "../casm-ir/src/Value.h"
 
-#include "../csel-ir/src/CallableUnit.h"
-#include "../csel-ir/src/Constant.h"
-#include "../csel-ir/src/Instruction.h"
-#include "../csel-ir/src/Intrinsic.h"
-#include "../csel-ir/src/Reference.h"
-#include "../csel-ir/src/Scope.h"
-#include "../csel-ir/src/Value.h"
+// #include "../csel-ir/src/CallableUnit.h"
+// #include "../csel-ir/src/Constant.h"
+// #include "../csel-ir/src/Instruction.h"
+// #include "../csel-ir/src/Intrinsic.h"
+// #include "../csel-ir/src/Reference.h"
+// #include "../csel-ir/src/Scope.h"
+// #include "../csel-ir/src/Value.h"
 
-#include "../csel-rt/src/CallableUnit.h"
-#include "../csel-rt/src/Instruction.h"
+// #include "../csel-rt/src/CallableUnit.h"
+// #include "../csel-rt/src/Instruction.h"
 
 using namespace libcasm_rt;
 
