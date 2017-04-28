@@ -58,18 +58,52 @@ static inline libcasm_ir::Constant evaluate_through_instr_call(
 libcasm_ir::Constant Builtin::execute( const libcasm_ir::AbortBuiltin& builtin,
     const Builtin::Arguments& operands )
 {
+    throw std::domain_error( "aborting" );
     return libcasm_ir::VoidConstant();
 }
 
 libcasm_ir::Constant Builtin::execute( const libcasm_ir::AssertBuiltin& builtin,
     const Builtin::Arguments& operands )
 {
+    const auto& cond = operands[ 0 ];
+    assert( cond.type().isBoolean() );
+    const auto c = static_cast< const libcasm_ir::BooleanConstant& >( cond );
+
+    if( not c.defined() )
+    {
+        throw std::invalid_argument( "assertion on undefined value" );
+    }
+    else
+    {
+        if( not c.value() )
+        {
+            std::string msg = "assertion failed";
+
+            if( operands.size() == 2 )
+            {
+                const auto& txt = operands[ 1 ];
+                assert( txt.type().isString() );
+                const auto str
+                    = static_cast< const libcasm_ir::StringConstant& >( txt );
+                msg += ": " + str.value();
+            }
+
+            throw std::domain_error( msg );
+        }
+    }
+
     return libcasm_ir::VoidConstant();
 }
 
 libcasm_ir::Constant Builtin::execute( const libcasm_ir::PrintBuiltin& builtin,
     const Builtin::Arguments& operands )
 {
+    const auto& txt = operands[ 0 ];
+    assert( txt.type().isString() );
+    const auto str = static_cast< const libcasm_ir::StringConstant& >( txt );
+
+    std::cout << str.value();
+
     return libcasm_ir::VoidConstant();
 }
 
@@ -77,6 +111,12 @@ libcasm_ir::Constant Builtin::execute(
     const libcasm_ir::PrintLnBuiltin& builtin,
     const Builtin::Arguments& operands )
 {
+    const auto& txt = operands[ 0 ];
+    assert( txt.type().isString() );
+    const auto str = static_cast< const libcasm_ir::StringConstant& >( txt );
+
+    std::cout << str.value() << "\n";
+
     return libcasm_ir::VoidConstant();
 }
 
@@ -84,7 +124,6 @@ libcasm_ir::Constant Builtin::execute(
     const libcasm_ir::AsBooleanBuiltin& builtin,
     const Builtin::Arguments& operands )
 {
-    assert( operands.size() == 1 );
     const auto& arg = operands[ 0 ];
 
     if( arg.defined() )
@@ -123,7 +162,6 @@ libcasm_ir::Constant Builtin::execute(
     const libcasm_ir::AsIntegerBuiltin& builtin,
     const Builtin::Arguments& operands )
 {
-    assert( operands.size() == 1 );
     const auto& arg = operands[ 0 ];
 
     if( arg.defined() )
@@ -174,7 +212,14 @@ libcasm_ir::Constant Builtin::execute(
     const libcasm_ir::AsStringBuiltin& builtin,
     const Builtin::Arguments& operands )
 {
-    return libcasm_ir::VoidConstant();
+    const auto& arg = operands[ 0 ];
+
+    if( arg.defined() )
+    {
+        return libcasm_ir::StringConstant( arg.name() );
+    }
+
+    return libcasm_ir::StringConstant();
 }
 
 libcasm_ir::Constant Builtin::execute(

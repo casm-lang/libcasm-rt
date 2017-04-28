@@ -173,7 +173,10 @@ namespace libcasm_rt
             const libcasm_ir::Type::Ptr& type, const Arguments& operands )
         {
             const T builtin( type );
-            return execute( builtin, operands );
+            assert( builtin.type().arguments().size() == operands.size() );
+            const auto result = execute( builtin, operands );
+            assert( builtin.type().result() == result.type() );
+            return result;
         }
 
         template < typename T >
