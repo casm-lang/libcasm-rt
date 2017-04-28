@@ -49,77 +49,111 @@
 using namespace libcasm_rt;
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::InvInstruction& value ) noexcept
+    const libcasm_ir::InvInstruction& instr ) noexcept
 {
     //    const auto intrinsic = libcasm_rt::Instruction::get( value );
     return libcasm_ir::VoidConstant();
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::AddInstruction& value ) noexcept
+    const libcasm_ir::AddInstruction& instr ) noexcept
+{
+    const auto& left
+        = static_cast< const libcasm_ir::Constant& >( *instr.operands()[ 0 ] );
+    const auto& right
+        = static_cast< const libcasm_ir::Constant& >( *instr.operands()[ 1 ] );
+
+    if( not left.defined() or not right.defined() )
+    {
+        return libcasm_ir::Constant::undef( instr.ptr_type() );
+    }
+
+    switch( instr.type().id() )
+    {
+        case libcasm_ir::Type::INTEGER:
+        {
+            // const auto& lhs
+            //     = static_cast< const libcasm_ir::IntegerConstant& >( left );
+            // const auto& rhs
+            //     = static_cast< const libcasm_ir::IntegerConstant& >( right );
+            // return libcasm_ir::IntegerConstant( lhs.value() + rhs.value() );
+            return libcasm_ir::VoidConstant();
+        }
+        case libcasm_ir::Type::STRING:
+        {
+            const auto& lhs
+                = static_cast< const libcasm_ir::StringConstant& >( left );
+            const auto& rhs
+                = static_cast< const libcasm_ir::StringConstant& >( right );
+            return libcasm_ir::StringConstant( lhs.value() + rhs.value() );
+        }
+        default:
+        {
+            std::domain_error( "unimplemented '" + instr.description() + "'" );
+            return libcasm_ir::VoidConstant();
+        }
+    }
+}
+
+libcasm_ir::Constant Instruction::execute(
+    const libcasm_ir::SubInstruction& instr ) noexcept
 {
     return libcasm_ir::VoidConstant();
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::SubInstruction& value ) noexcept
+    const libcasm_ir::MulInstruction& instr ) noexcept
 {
     return libcasm_ir::VoidConstant();
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::MulInstruction& value ) noexcept
+    const libcasm_ir::ModInstruction& instr ) noexcept
 {
     return libcasm_ir::VoidConstant();
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::ModInstruction& value ) noexcept
+    const libcasm_ir::DivInstruction& instr ) noexcept
 {
     return libcasm_ir::VoidConstant();
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::DivInstruction& value ) noexcept
+    const libcasm_ir::PowInstruction& instr ) noexcept
 {
     return libcasm_ir::VoidConstant();
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::PowInstruction& value ) noexcept
+    const libcasm_ir::AndInstruction& instr ) noexcept
 {
     return libcasm_ir::VoidConstant();
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::AndInstruction& value ) noexcept
+    const libcasm_ir::XorInstruction& instr ) noexcept
 {
     return libcasm_ir::VoidConstant();
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::XorInstruction& value ) noexcept
+    const libcasm_ir::OrInstruction& instr ) noexcept
 {
     return libcasm_ir::VoidConstant();
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::OrInstruction& value ) noexcept
+    const libcasm_ir::ImpInstruction& instr ) noexcept
 {
     return libcasm_ir::VoidConstant();
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::ImpInstruction& value ) noexcept
-{
-    return libcasm_ir::VoidConstant();
-}
-
-libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::NotInstruction& value ) noexcept
+    const libcasm_ir::NotInstruction& instr ) noexcept
 {
     const auto& arg = static_cast< const libcasm_ir::BooleanConstant& >(
-        *value.operands()[ 0 ] );
+        *instr.operands()[ 0 ] );
 
     if( arg.defined() )
     {
@@ -133,12 +167,12 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::EquInstruction& value ) noexcept
+    const libcasm_ir::EquInstruction& instr ) noexcept
 {
     const auto& lhs
-        = static_cast< const libcasm_ir::Constant& >( *value.operands()[ 0 ] );
+        = static_cast< const libcasm_ir::Constant& >( *instr.operands()[ 0 ] );
     const auto& rhs
-        = static_cast< const libcasm_ir::Constant& >( *value.operands()[ 1 ] );
+        = static_cast< const libcasm_ir::Constant& >( *instr.operands()[ 1 ] );
 
     if( lhs.defined() and rhs.defined() )
     {
@@ -155,12 +189,12 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::NeqInstruction& value ) noexcept
+    const libcasm_ir::NeqInstruction& instr ) noexcept
 {
     const auto& lhs
-        = static_cast< const libcasm_ir::Constant& >( *value.lhs() );
+        = static_cast< const libcasm_ir::Constant& >( *instr.lhs() );
     const auto& rhs
-        = static_cast< const libcasm_ir::Constant& >( *value.rhs() );
+        = static_cast< const libcasm_ir::Constant& >( *instr.rhs() );
 
     if( lhs.defined() and rhs.defined() )
     {
@@ -177,33 +211,33 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::LthInstruction& value ) noexcept
+    const libcasm_ir::LthInstruction& instr ) noexcept
 {
     return libcasm_ir::VoidConstant();
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::LeqInstruction& value ) noexcept
+    const libcasm_ir::LeqInstruction& instr ) noexcept
 {
     return libcasm_ir::VoidConstant();
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::GthInstruction& value ) noexcept
+    const libcasm_ir::GthInstruction& instr ) noexcept
 {
     return libcasm_ir::VoidConstant();
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::GeqInstruction& value ) noexcept
+    const libcasm_ir::GeqInstruction& instr ) noexcept
 {
     return libcasm_ir::VoidConstant();
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::CallInstruction& value )
+    const libcasm_ir::CallInstruction& instr )
 {
-    const auto& symbol = *value.operands()[ 0 ];
+    const auto& symbol = *instr.operands()[ 0 ];
 
     switch( symbol.id() )
     {
@@ -213,21 +247,21 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 // libcsel_ir::CallableUnit* Instruction::Not(
-//     libcasm_ir::NotInstruction& value, libcsel_ir::Module* module )
+//     libcasm_ir::NotInstruction& instr, libcsel_ir::Module* module )
 // {
 //     return 0;
-//     // libcasm_ir::Type& ir_ty = value.type();
+//     // libcasm_ir::Type& ir_ty = instr.type();
 //     // assert( not ir_ty.isRelation() );
 
 //     // libcsel_ir::Type& el_ty = *libcsel_ir::Type::Relation(
-//     //     { &libcasm_rt::Type::get( value.type() ) },
-//     //     { &libcasm_rt::Type::get( value.get()->type() ) } );
+//     //     { &libcasm_rt::Type::get( instr.type() ) },
+//     //     { &libcasm_rt::Type::get( instr.get()->type() ) } );
 
 //     // assert( el_ty.isRelation() and el_ty.arguments().size() == 1
 //     //         and el_ty.results().size() == 1 );
 
 //     // libcsel_ir::CallableUnit* el = new libcsel_ir::Intrinsic(
-//     //     value.name(), &el_ty ); // PPA: TODO: add 'el' to context
+//     //     instr.name(), &el_ty ); // PPA: TODO: add 'el' to context
 //     // assert( el );
 
 //     // auto arg = el->in( "arg", el_ty.arguments()[ 0 ] );
@@ -256,7 +290,7 @@ libcasm_ir::Constant Instruction::execute(
 //     );
 
 //     // libcsel_ir::Value* r0 = 0;
-//     // if( value.get()->type().isBit() )
+//     // if( instr.get()->type().isBit() )
 //     // {
 //     //     r0 = stmt->add( new libcsel_ir::NotInstruction( arg_v ) );
 //     // }
@@ -272,22 +306,22 @@ libcasm_ir::Constant Instruction::execute(
 // }
 
 // libcsel_ir::CallableUnit* Instruction::Equ(
-//     libcasm_ir::EquInstruction& value, libcsel_ir::Module* module )
+//     libcasm_ir::EquInstruction& instr, libcsel_ir::Module* module )
 // {
 //     return 0;
-//     // libcasm_ir::Type& ir_ty = value.type();
+//     // libcasm_ir::Type& ir_ty = instr.type();
 //     // assert( not ir_ty.isRelation() );
 
 //     // libcsel_ir::Type& el_ty = *libcsel_ir::Type::Relation(
-//     //     { &libcasm_rt::Type::get( value.type() ) },
-//     //     { &libcasm_rt::Type::get( value.lhs().type() ),
-//     //         &libcasm_rt::Type::get( value.rhs().type() ) } );
+//     //     { &libcasm_rt::Type::get( instr.type() ) },
+//     //     { &libcasm_rt::Type::get( instr.lhs().type() ),
+//     //         &libcasm_rt::Type::get( instr.rhs().type() ) } );
 
 //     // assert( el_ty.isRelation() and el_ty.arguments().size() == 2
 //     //         and el_ty.results().size() == 1 );
 
 //     // libcsel_ir::CallableUnit* el = new libcsel_ir::Intrinsic(
-//     //     value.name(), &el_ty ); // PPA: TODO: add 'el' to context
+//     //     instr.name(), &el_ty ); // PPA: TODO: add 'el' to context
 //     // assert( el );
 
 //     // auto lhs = el->in( "lhs", el_ty.arguments()[ 0 ] );
@@ -348,7 +382,7 @@ libcasm_ir::Constant Instruction::execute(
 
 // template < class INSTR >
 // libcsel_ir::CallableUnit* ArithmeticInstruction< INSTR >::create(
-//     libcasm_ir::Value& value, libcsel_ir::Module* module )
+//     libcasm_ir::Value& instr, libcsel_ir::Module* module )
 // {
 //     assert( libcasm_ir::isa< libcasm_ir::BinaryInstruction >( &value ) );
 //     assert( libcasm_ir::isa< libcasm_ir::ArithmeticInstruction >( &value ) );
@@ -366,7 +400,7 @@ libcasm_ir::Constant Instruction::execute(
 //     libcsel_ir::Structure* tt = libcasm_rt::Type::create( *instr );
 
 //     std::string key
-//         = std::string( "casmrt_" + std::string( &value.name()[ 1 ] ) + "_"
+//         = std::string( "casmrt_" + std::string( &instr.name()[ 1 ] ) + "_"
 //                        + std::string( ta->name() )
 //                        + "_"
 //                        + std::string( tb->name() )
@@ -393,7 +427,7 @@ libcasm_ir::Constant Instruction::execute(
 //     libcsel_ir::Reference* rt = obj->out( "t", tt->type() );
 
 //     libcsel_ir::Scope* scope = 0; // new libcsel_ir::ParallelScope( obj );
-//     if( strcmp( &value.name()[ 1 ], "div" )
+//     if( strcmp( &instr.name()[ 1 ], "div" )
 //         == 0 ) // TODO: EXPERIMENTIAL: DEMO ONLY!!!
 //     {
 //         scope = new libcsel_ir::SequentialScope( obj );
@@ -457,7 +491,7 @@ libcasm_ir::Constant Instruction::execute(
 // // }
 
 // libcsel_ir::CallableUnit* EquInstruction::create(
-//     libcasm_ir::Value& value, libcsel_ir::Module* module )
+//     libcasm_ir::Value& instr, libcsel_ir::Module* module )
 // {
 //     assert( libcasm_ir::isa< libcasm_ir::EquInstruction >( &value ) );
 //     libcasm_ir::EquInstruction* instr = (libcasm_ir::EquInstruction*)&value;
@@ -470,7 +504,7 @@ libcasm_ir::Constant Instruction::execute(
 //     libcsel_ir::Structure* tt = libcasm_rt::Type::create( *instr );
 
 //     std::string key
-//         = std::string( "casmrt_" + std::string( &value.name()[ 1 ] ) + "_"
+//         = std::string( "casmrt_" + std::string( &instr.name()[ 1 ] ) + "_"
 //                        + std::string( ta->name() )
 //                        + "_"
 //                        + std::string( tb->name() )

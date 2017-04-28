@@ -25,24 +25,32 @@
 
 using namespace libcasm_ir;
 
-static const auto id = Value::ID::AS_STRING_BUILTIN;
+static const auto id = Value::ID::ADD_INSTRUCTION;
 
 static const auto type = libstdhl::get< RelationType >(
-    libstdhl::get< StringType >(), Types( { libstdhl::get< StringType >() } ) );
+    libstdhl::get< StringType >(),
+    Types( { libstdhl::get< StringType >(), libstdhl::get< StringType >() } ) );
 
-#define TEST_( NAME, VALUE )                                                   \
+#define TEST_( NAME, RES, LHS, RHS )                                           \
     TEST( libcasm_rt__builtin_as_string_string, NAME )                         \
     {                                                                          \
-        const auto arg = StringConstant( VALUE );                              \
-        const auto res = libcasm_rt::Value::execute( id, *type, arg );         \
+        const auto lhs = StringConstant( LHS );                                \
+        const auto rhs = StringConstant( RHS );                                \
+        const auto res = libcasm_rt::Value::execute( id, *type, lhs, rhs );    \
+        EXPECT_TRUE( res == StringConstant( RES ) );                           \
         EXPECT_STREQ( res.description().c_str(),                               \
-            StringConstant( VALUE ).description().c_str() );                   \
+            StringConstant( RES ).description().c_str() );                     \
     }
 
-TEST_( undef, );
-TEST_( empty, "" );
-TEST_( short, "foo" );
-TEST_( long, "This is a very long text in this unit test case!" );
+TEST_( undef__at__undef__undef, , , );
+TEST_( undef__at__empty__undef, , "", );
+TEST_( undef__at__undef__empty, , , "" );
+TEST_( undef__at__text___undef, , "foo", );
+TEST_( undef__at__undef__text_, , , "foo" );
+
+TEST_( empty__at__empty__empty, "", "", "" );
+TEST_( text2__at__text___text_, "foofoo", "foo", "foo" );
+TEST_( long___at__short__short, "foobar;bazqux", "foobar", ";bazqux" );
 
 //
 //  Local variables:
