@@ -307,11 +307,11 @@ libcasm_ir::Constant Value::execute( const libcasm_ir::Value::ID id,
         //
         // General Builtins
         //
-        
+
         case libcasm_ir::Value::ID::IS_SYMBOLIC_BUILTIN:
         {
-            return libcasm_rt::Builtin::execute< libcasm_ir::IsSymbolicBuiltin >(
-                type, operands );
+            return libcasm_rt::Builtin::
+                execute< libcasm_ir::IsSymbolicBuiltin >( type, operands );
         }
 
         case libcasm_ir::Value::ID::ABORT_BUILTIN:
@@ -555,58 +555,59 @@ libcasm_ir::Constant Value::execute( const libcasm_ir::Value::ID id,
         // Invalid Non-Constant Value IDs to execute
         //
 
-        case libcasm_ir::Value::ID::VALUE:
-        case libcasm_ir::Value::ID::VALUE_LIST:
-        case libcasm_ir::Value::ID::USER:
-        case libcasm_ir::Value::ID::SPECIFICATION:
-        case libcasm_ir::Value::ID::AGENT:
-        case libcasm_ir::Value::ID::RULE:
-        case libcasm_ir::Value::ID::DERIVED:
-        case libcasm_ir::Value::ID::FUNCTION:
-        case libcasm_ir::Value::ID::ENUMERATION:
-        case libcasm_ir::Value::ID::BLOCK:
-        case libcasm_ir::Value::ID::EXECUTION_SEMANTICS_BLOCK:
-        case libcasm_ir::Value::ID::PARALLEL_BLOCK:
-        case libcasm_ir::Value::ID::SEQUENTIAL_BLOCK:
-        case libcasm_ir::Value::ID::STATEMENT:
-        case libcasm_ir::Value::ID::TRIVIAL_STATEMENT:
-        case libcasm_ir::Value::ID::BRANCH_STATEMENT:
-        case libcasm_ir::Value::ID::CONSTANT:
-        case libcasm_ir::Value::ID::VOID_CONSTANT:
-        case libcasm_ir::Value::ID::RULE_REFERENCE_CONSTANT:
-        case libcasm_ir::Value::ID::BOOLEAN_CONSTANT:
-        case libcasm_ir::Value::ID::INTEGER_CONSTANT:
-        case libcasm_ir::Value::ID::BIT_CONSTANT:
-        case libcasm_ir::Value::ID::STRING_CONSTANT:
-        case libcasm_ir::Value::ID::FLOATING_CONSTANT:
-        case libcasm_ir::Value::ID::RATIONAL_CONSTANT:
-        case libcasm_ir::Value::ID::ENUMERATION_CONSTANT:
-        case libcasm_ir::Value::ID::IDENTIFIER:
-        case libcasm_ir::Value::ID::INSTRUCTION:
-        case libcasm_ir::Value::ID::UNARY_INSTRUCTION:
-        case libcasm_ir::Value::ID::BINARY_INSTRUCTION:
-        case libcasm_ir::Value::ID::SELECT_INSTRUCTION:
-        case libcasm_ir::Value::ID::SKIP_INSTRUCTION:
-        case libcasm_ir::Value::ID::FORK_INSTRUCTION:
-        case libcasm_ir::Value::ID::MERGE_INSTRUCTION:
-        case libcasm_ir::Value::ID::LOOKUP_INSTRUCTION:
-        case libcasm_ir::Value::ID::UPDATE_INSTRUCTION:
-        case libcasm_ir::Value::ID::LOCATION_INSTRUCTION:
-        case libcasm_ir::Value::ID::LOCAL_INSTRUCTION:
-        case libcasm_ir::Value::ID::OPERATOR_INSTRUCTION:
-        case libcasm_ir::Value::ID::ARITHMETIC_INSTRUCTION:
-        case libcasm_ir::Value::ID::COMPARE_INSTRUCTION:
-        case libcasm_ir::Value::ID::LOGICAL_INSTRUCTION:
-        case libcasm_ir::Value::ID::BUILTIN:
-        case libcasm_ir::Value::ID::GENERAL_BUILTIN:
-        case libcasm_ir::Value::ID::OUTPUT_BUILTIN:
-        case libcasm_ir::Value::ID::CASTING_BUILTIN:
-        case libcasm_ir::Value::ID::STRINGIFY_BUILTIN:
-        case libcasm_ir::Value::ID::OPERATOR_BUILTIN:
-        case libcasm_ir::Value::ID::ARITHMETIC_BUILTIN:
-        case libcasm_ir::Value::ID::COMPARE_BUILTIN:
-        case libcasm_ir::Value::ID::BIT_BUILTIN:
-        // case libcasm_ir::Value::ID::MATH_BUILTIN:
+        case libcasm_ir::Value::ID::VALUE:         // [[fallthrough]]
+        case libcasm_ir::Value::ID::VALUE_LIST:    // [[fallthrough]]
+        case libcasm_ir::Value::ID::USER:          // [[fallthrough]]
+        case libcasm_ir::Value::ID::SPECIFICATION: // [[fallthrough]]
+        case libcasm_ir::Value::ID::AGENT:         // [[fallthrough]]
+        case libcasm_ir::Value::ID::RULE:          // [[fallthrough]]
+        case libcasm_ir::Value::ID::DERIVED:       // [[fallthrough]]
+        case libcasm_ir::Value::ID::FUNCTION:      // [[fallthrough]]
+        case libcasm_ir::Value::ID::ENUMERATION:   // [[fallthrough]]
+        case libcasm_ir::Value::ID::BLOCK:         // [[fallthrough]]
+        case libcasm_ir::Value::ID::
+            EXECUTION_SEMANTICS_BLOCK:                       // [[fallthrough]]
+        case libcasm_ir::Value::ID::PARALLEL_BLOCK:          // [[fallthrough]]
+        case libcasm_ir::Value::ID::SEQUENTIAL_BLOCK:        // [[fallthrough]]
+        case libcasm_ir::Value::ID::STATEMENT:               // [[fallthrough]]
+        case libcasm_ir::Value::ID::TRIVIAL_STATEMENT:       // [[fallthrough]]
+        case libcasm_ir::Value::ID::BRANCH_STATEMENT:        // [[fallthrough]]
+        case libcasm_ir::Value::ID::CONSTANT:                // [[fallthrough]]
+        case libcasm_ir::Value::ID::VOID_CONSTANT:           // [[fallthrough]]
+        case libcasm_ir::Value::ID::RULE_REFERENCE_CONSTANT: // [[fallthrough]]
+        case libcasm_ir::Value::ID::BOOLEAN_CONSTANT:        // [[fallthrough]]
+        case libcasm_ir::Value::ID::INTEGER_CONSTANT:        // [[fallthrough]]
+        case libcasm_ir::Value::ID::BIT_CONSTANT:            // [[fallthrough]]
+        case libcasm_ir::Value::ID::STRING_CONSTANT:         // [[fallthrough]]
+        case libcasm_ir::Value::ID::FLOATING_CONSTANT:       // [[fallthrough]]
+        case libcasm_ir::Value::ID::RATIONAL_CONSTANT:       // [[fallthrough]]
+        case libcasm_ir::Value::ID::ENUMERATION_CONSTANT:    // [[fallthrough]]
+        case libcasm_ir::Value::ID::IDENTIFIER:              // [[fallthrough]]
+        case libcasm_ir::Value::ID::INSTRUCTION:             // [[fallthrough]]
+        case libcasm_ir::Value::ID::UNARY_INSTRUCTION:       // [[fallthrough]]
+        case libcasm_ir::Value::ID::BINARY_INSTRUCTION:      // [[fallthrough]]
+        case libcasm_ir::Value::ID::SELECT_INSTRUCTION:      // [[fallthrough]]
+        case libcasm_ir::Value::ID::SKIP_INSTRUCTION:        // [[fallthrough]]
+        case libcasm_ir::Value::ID::FORK_INSTRUCTION:        // [[fallthrough]]
+        case libcasm_ir::Value::ID::MERGE_INSTRUCTION:       // [[fallthrough]]
+        case libcasm_ir::Value::ID::LOOKUP_INSTRUCTION:      // [[fallthrough]]
+        case libcasm_ir::Value::ID::UPDATE_INSTRUCTION:      // [[fallthrough]]
+        case libcasm_ir::Value::ID::LOCATION_INSTRUCTION:    // [[fallthrough]]
+        case libcasm_ir::Value::ID::LOCAL_INSTRUCTION:       // [[fallthrough]]
+        case libcasm_ir::Value::ID::OPERATOR_INSTRUCTION:    // [[fallthrough]]
+        case libcasm_ir::Value::ID::ARITHMETIC_INSTRUCTION:  // [[fallthrough]]
+        case libcasm_ir::Value::ID::COMPARE_INSTRUCTION:     // [[fallthrough]]
+        case libcasm_ir::Value::ID::LOGICAL_INSTRUCTION:     // [[fallthrough]]
+        case libcasm_ir::Value::ID::BUILTIN:                 // [[fallthrough]]
+        case libcasm_ir::Value::ID::GENERAL_BUILTIN:         // [[fallthrough]]
+        case libcasm_ir::Value::ID::OUTPUT_BUILTIN:          // [[fallthrough]]
+        case libcasm_ir::Value::ID::CASTING_BUILTIN:         // [[fallthrough]]
+        case libcasm_ir::Value::ID::STRINGIFY_BUILTIN:       // [[fallthrough]]
+        case libcasm_ir::Value::ID::OPERATOR_BUILTIN:        // [[fallthrough]]
+        case libcasm_ir::Value::ID::ARITHMETIC_BUILTIN:      // [[fallthrough]]
+        case libcasm_ir::Value::ID::COMPARE_BUILTIN:         // [[fallthrough]]
+        case libcasm_ir::Value::ID::BIT_BUILTIN:             // [[fallthrough]]
+        // case libcasm_ir::Value::ID::MATH_BUILTIN: // [[fallthrough]]
         case libcasm_ir::Value::ID::_SIZE_:
         {
             // invalid for constant instruction evaluation
