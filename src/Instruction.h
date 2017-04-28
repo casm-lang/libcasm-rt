@@ -41,74 +41,73 @@ namespace libcasm_rt
     namespace Instruction
     {
         libcasm_ir::Constant execute(
-            const libcasm_ir::SymbolicInstruction& value ) noexcept;
+            const libcasm_ir::InvInstruction& instr ) noexcept;
 
         libcasm_ir::Constant execute(
-            const libcasm_ir::InvInstruction& value ) noexcept;
+            const libcasm_ir::AddInstruction& instr ) noexcept;
 
         libcasm_ir::Constant execute(
-            const libcasm_ir::AddInstruction& value ) noexcept;
+            const libcasm_ir::SubInstruction& instr ) noexcept;
 
         libcasm_ir::Constant execute(
-            const libcasm_ir::SubInstruction& value ) noexcept;
+            const libcasm_ir::MulInstruction& instr ) noexcept;
 
         libcasm_ir::Constant execute(
-            const libcasm_ir::MulInstruction& value ) noexcept;
+            const libcasm_ir::ModInstruction& instr ) noexcept;
 
         libcasm_ir::Constant execute(
-            const libcasm_ir::ModInstruction& value ) noexcept;
+            const libcasm_ir::DivInstruction& instr ) noexcept;
 
         libcasm_ir::Constant execute(
-            const libcasm_ir::DivInstruction& value ) noexcept;
+            const libcasm_ir::PowInstruction& instr ) noexcept;
 
         libcasm_ir::Constant execute(
-            const libcasm_ir::PowInstruction& value ) noexcept;
+            const libcasm_ir::AndInstruction& instr ) noexcept;
 
         libcasm_ir::Constant execute(
-            const libcasm_ir::AndInstruction& value ) noexcept;
+            const libcasm_ir::XorInstruction& instr ) noexcept;
 
         libcasm_ir::Constant execute(
-            const libcasm_ir::XorInstruction& value ) noexcept;
+            const libcasm_ir::OrInstruction& instr ) noexcept;
 
         libcasm_ir::Constant execute(
-            const libcasm_ir::OrInstruction& value ) noexcept;
+            const libcasm_ir::ImpInstruction& instr ) noexcept;
 
         libcasm_ir::Constant execute(
-            const libcasm_ir::ImpInstruction& value ) noexcept;
+            const libcasm_ir::NotInstruction& instr ) noexcept;
 
         libcasm_ir::Constant execute(
-            const libcasm_ir::NotInstruction& value ) noexcept;
+            const libcasm_ir::EquInstruction& instr ) noexcept;
 
         libcasm_ir::Constant execute(
-            const libcasm_ir::EquInstruction& value ) noexcept;
+            const libcasm_ir::NeqInstruction& instr ) noexcept;
 
         libcasm_ir::Constant execute(
-            const libcasm_ir::NeqInstruction& value ) noexcept;
+            const libcasm_ir::LthInstruction& instr ) noexcept;
 
         libcasm_ir::Constant execute(
-            const libcasm_ir::LthInstruction& value ) noexcept;
+            const libcasm_ir::LeqInstruction& instr ) noexcept;
 
         libcasm_ir::Constant execute(
-            const libcasm_ir::LeqInstruction& value ) noexcept;
+            const libcasm_ir::GthInstruction& instr ) noexcept;
 
         libcasm_ir::Constant execute(
-            const libcasm_ir::GthInstruction& value ) noexcept;
+            const libcasm_ir::GeqInstruction& instr ) noexcept;
 
         libcasm_ir::Constant execute(
-            const libcasm_ir::GeqInstruction& value ) noexcept;
-
-        libcasm_ir::Constant execute(
-            const libcasm_ir::CallInstruction& value );
+            const libcasm_ir::CallInstruction& instr );
 
         template < typename T, typename... Args >
         inline libcasm_ir::Constant execute( Args&&... args )
         {
             const T instr( std::forward< Args >( args )... );
-            return execute( instr );
+            const auto result = execute( instr );
+            assert( instr.type().result() == result.type() );
+            return result;
         }
 
         libcasm_ir::Constant::Ptr execute(
-            const libcasm_ir::Instruction& value );
+            const libcasm_ir::Instruction& instr );
     };
 }
 

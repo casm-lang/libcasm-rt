@@ -56,12 +56,6 @@ libcasm_ir::Constant Value::execute( const libcasm_ir::Value::ID id,
         // General Instruction
         //
 
-        case libcasm_ir::Value::ID::SYMBOLIC_INSTRUCTION:
-        {
-            // TODO
-            return libcasm_ir::BooleanConstant( false );
-        }
-
         case libcasm_ir::Value::ID::CALL_INSTRUCTION:
         {
             // TODO
@@ -313,6 +307,12 @@ libcasm_ir::Constant Value::execute( const libcasm_ir::Value::ID id,
         //
         // General Builtins
         //
+        
+        case libcasm_ir::Value::ID::IS_SYMBOLIC_BUILTIN:
+        {
+            return libcasm_rt::Builtin::execute< libcasm_ir::IsSymbolicBuiltin >(
+                type, operands );
+        }
 
         case libcasm_ir::Value::ID::ABORT_BUILTIN:
         {
@@ -585,7 +585,6 @@ libcasm_ir::Constant Value::execute( const libcasm_ir::Value::ID id,
         case libcasm_ir::Value::ID::INSTRUCTION:
         case libcasm_ir::Value::ID::UNARY_INSTRUCTION:
         case libcasm_ir::Value::ID::BINARY_INSTRUCTION:
-        case libcasm_ir::Value::ID::ASSERT_INSTRUCTION:
         case libcasm_ir::Value::ID::SELECT_INSTRUCTION:
         case libcasm_ir::Value::ID::SKIP_INSTRUCTION:
         case libcasm_ir::Value::ID::FORK_INSTRUCTION:

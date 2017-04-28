@@ -49,12 +49,6 @@
 using namespace libcasm_rt;
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::SymbolicInstruction& value ) noexcept
-{
-    return libcasm_ir::VoidConstant();
-}
-
-libcasm_ir::Constant Instruction::execute(
     const libcasm_ir::InvInstruction& value ) noexcept
 {
     //    const auto intrinsic = libcasm_rt::Instruction::get( value );
@@ -124,19 +118,62 @@ libcasm_ir::Constant Instruction::execute(
 libcasm_ir::Constant Instruction::execute(
     const libcasm_ir::NotInstruction& value ) noexcept
 {
-    return libcasm_ir::VoidConstant();
+    const auto& arg = static_cast< const libcasm_ir::BooleanConstant& >(
+        *value.operands()[ 0 ] );
+
+    if( arg.defined() )
+    {
+        return libcasm_ir::BooleanConstant( not arg.value() );
+    }
+    else
+    {
+
+        return libcasm_ir::BooleanConstant();
+    }
 }
 
 libcasm_ir::Constant Instruction::execute(
     const libcasm_ir::EquInstruction& value ) noexcept
 {
-    return libcasm_ir::VoidConstant();
+    const auto& lhs
+        = static_cast< const libcasm_ir::Constant& >( *value.operands()[ 0 ] );
+    const auto& rhs
+        = static_cast< const libcasm_ir::Constant& >( *value.operands()[ 1 ] );
+
+    if( lhs.defined() and rhs.defined() )
+    {
+        return libcasm_ir::BooleanConstant( lhs == rhs );
+    }
+    else if( lhs.defined() or rhs.defined() )
+    {
+        return libcasm_ir::BooleanConstant( false );
+    }
+    else
+    {
+        return libcasm_ir::BooleanConstant( true );
+    }
 }
 
 libcasm_ir::Constant Instruction::execute(
     const libcasm_ir::NeqInstruction& value ) noexcept
 {
-    return libcasm_ir::VoidConstant();
+    const auto& lhs
+        = static_cast< const libcasm_ir::Constant& >( *value.lhs() );
+    const auto& rhs
+        = static_cast< const libcasm_ir::Constant& >( *value.rhs() );
+
+    if( lhs.defined() and rhs.defined() )
+    {
+        return libcasm_ir::BooleanConstant( lhs != rhs );
+    }
+    else if( lhs.defined() or rhs.defined() )
+    {
+        return libcasm_ir::BooleanConstant( true );
+    }
+    else
+    {
+        return libcasm_ir::BooleanConstant( false );
+    }
 }
 
 libcasm_ir::Constant Instruction::execute(

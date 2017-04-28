@@ -42,6 +42,10 @@ namespace libcasm_rt
     {
         using Arguments = std::vector< libcasm_ir::Constant >;
 
+        libcasm_ir::Constant execute(
+            const libcasm_ir::IsSymbolicBuiltin& builtin,
+            const Arguments& operands );
+
         libcasm_ir::Constant execute( const libcasm_ir::AbortBuiltin& builtin,
             const Arguments& operands );
 

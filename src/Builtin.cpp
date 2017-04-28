@@ -55,6 +55,14 @@ static inline libcasm_ir::Constant evaluate_through_instr_call(
     return Instruction::execute( instr );
 }
 
+libcasm_ir::Constant Builtin::execute(
+    const libcasm_ir::IsSymbolicBuiltin& value,
+    const Builtin::Arguments& operands )
+{
+    const auto& arg = operands[ 0 ];
+    return libcasm_ir::BooleanConstant( arg.symbolic() );
+}
+
 libcasm_ir::Constant Builtin::execute( const libcasm_ir::AbortBuiltin& builtin,
     const Builtin::Arguments& operands )
 {
