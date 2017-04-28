@@ -25,18 +25,19 @@
 
 using namespace libcasm_ir;
 
-const auto type = libstdhl::get< RelationType >( libstdhl::get< StringType >(),
-    Types( { libstdhl::get< BooleanType >() } ) );
+static const auto id = Value::ID::AS_STRING_BUILTIN;
+
+static const auto type
+    = libstdhl::get< RelationType >( libstdhl::get< StringType >(),
+        Types( { libstdhl::get< BooleanType >() } ) );
 
 #define TEST_( NAME, TO, FROM )                                                \
     TEST( libcasm_rt__builtin_as_string_boolean, NAME )                        \
     {                                                                          \
         const auto arg = BooleanConstant( FROM );                              \
-                                                                               \
-        const auto res = libcasm_rt::Value::execute(                           \
-            Value::AS_STRING_BUILTIN, *type, arg );                            \
-                                                                               \
-        EXPECT_TRUE( res == StringConstant( TO ) );                            \
+        const auto res = libcasm_rt::Value::execute( id, *type, arg );         \
+        EXPECT_STREQ( res.description().c_str(),                               \
+            StringConstant( TO ).description().c_str() );                      \
     }
 
 TEST_( undef_at_undef, , );

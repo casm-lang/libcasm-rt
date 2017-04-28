@@ -28,6 +28,8 @@ using namespace libcasm_ir;
 static const auto definition = libstdhl::make< Enumeration >(
     "ENUM", std::initializer_list< std::string >{ "A", "B", "C" } );
 
+static const auto id = Value::ID::AS_INTEGER_BUILTIN;
+
 static const auto type
     = libstdhl::get< RelationType >( libstdhl::get< IntegerType >(),
         Types( { libstdhl::make< EnumerationType >( definition ) } ) );
@@ -42,10 +44,7 @@ TEST( libcasm_rt__builtin_as_integer_enumeration, invalid_constant )
     TEST( libcasm_rt__builtin_as_integer_enumeration, NAME )                   \
     {                                                                          \
         const auto arg = EnumerationConstant FROM;                             \
-                                                                               \
-        const auto res = libcasm_rt::Value::execute(                           \
-            Value::AS_INTEGER_BUILTIN, *type, arg );                           \
-                                                                               \
+        const auto res = libcasm_rt::Value::execute( id, *type, arg );         \
         EXPECT_STREQ( res.description().c_str(),                               \
             IntegerConstant( TO ).description().c_str() );                     \
     }

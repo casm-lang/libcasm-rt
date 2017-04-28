@@ -25,26 +25,23 @@
 
 using namespace libcasm_ir;
 
-static const auto id = Value::ID::AS_INTEGER_BUILTIN;
+static const auto id = Value::ID::AS_STRING_BUILTIN;
 
-static const auto type
-    = libstdhl::get< RelationType >( libstdhl::get< IntegerType >(),
-        Types( { libstdhl::get< IntegerType >() } ) );
+static const auto type = libstdhl::get< RelationType >(
+    libstdhl::get< StringType >(), Types( { libstdhl::get< StringType >() } ) );
 
 #define TEST_( NAME, VALUE )                                                   \
-    TEST( libcasm_rt__builtin_as_integer_integer, NAME )                       \
+    TEST( libcasm_rt__builtin_as_string_string, NAME )                         \
     {                                                                          \
-        const auto arg = IntegerConstant( VALUE );                             \
+        const auto arg = StringConstant( VALUE );                              \
         const auto res = libcasm_rt::Value::execute( id, *type, arg );         \
-        EXPECT_TRUE( res == IntegerConstant( VALUE ) );                        \
+        EXPECT_TRUE( res == StringConstant( VALUE ) );                         \
     }
 
-TEST_( undef_at_undef, );
-TEST_( zero__at_zero, 0 );
-TEST_( pos1__at_pos1, 1 );
-TEST_( neg1__at_neg1, -1 );
-TEST_( posX__at_posX, 123456789 );
-TEST_( negX__at_negX, -123456789 );
+TEST_( undef, );
+TEST_( empty, "" );
+TEST_( short, "foo" );
+TEST_( long, "This is a very long text in this unit test case!" );
 
 //
 //  Local variables:

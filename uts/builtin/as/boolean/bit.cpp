@@ -25,18 +25,17 @@
 
 using namespace libcasm_ir;
 
+static const auto id = Value::ID::AS_BOOLEAN_BUILTIN;
+
 #define TEST_( NAME, SIZE, FROM, TO )                                          \
     TEST( libcasm_rt__builtin_as_boolean_bit, SIZE##NAME )                     \
     {                                                                          \
         const auto arg = BitConstant FROM;                                     \
-                                                                               \
         const auto type                                                        \
             = libstdhl::get< RelationType >( libstdhl::get< BooleanType >(),   \
                 Types( { libstdhl::get< BitType >( SIZE ) } ) );               \
                                                                                \
-        const auto res = libcasm_rt::Value::execute(                           \
-            Value::AS_BOOLEAN_BUILTIN, *type, arg );                           \
-                                                                               \
+        const auto res = libcasm_rt::Value::execute( id, *type, arg );         \
         EXPECT_TRUE( res == BooleanConstant( TO ) );                           \
     }
 

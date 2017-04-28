@@ -25,26 +25,24 @@
 
 using namespace libcasm_ir;
 
-static const auto id = Value::ID::AS_INTEGER_BUILTIN;
+static const auto id = Value::ID::AS_STRING_BUILTIN;
 
 static const auto type
-    = libstdhl::get< RelationType >( libstdhl::get< IntegerType >(),
-        Types( { libstdhl::get< IntegerType >() } ) );
+    = libstdhl::get< RelationType >( libstdhl::get< StringType >(),
+        Types( { libstdhl::get< RationalType >() } ) );
 
-#define TEST_( NAME, VALUE )                                                   \
-    TEST( libcasm_rt__builtin_as_integer_integer, NAME )                       \
+#define TEST_( NAME, TO, FROM )                                                \
+    TEST( libcasm_rt__builtin_as_string_rational, NAME )                       \
     {                                                                          \
-        const auto arg = IntegerConstant( VALUE );                             \
+        const auto arg = RationalConstant( FROM );                             \
         const auto res = libcasm_rt::Value::execute( id, *type, arg );         \
-        EXPECT_TRUE( res == IntegerConstant( VALUE ) );                        \
+        EXPECT_STREQ( res.description().c_str(),                               \
+            StringConstant( TO ).description().c_str() );                      \
     }
 
-TEST_( undef_at_undef, );
-TEST_( zero__at_zero, 0 );
-TEST_( pos1__at_pos1, 1 );
-TEST_( neg1__at_neg1, -1 );
-TEST_( posX__at_posX, 123456789 );
-TEST_( negX__at_negX, -123456789 );
+TEST_( undef_at_undef, , );
+TEST_( zero_at_zero, "0/0", "0" );
+TEST_( one__at_one, "1/1", "1" );
 
 //
 //  Local variables:

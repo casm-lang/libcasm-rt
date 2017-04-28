@@ -25,21 +25,18 @@
 
 using namespace libcasm_ir;
 
-const auto type = libstdhl::get< RelationType >(
+static const auto id = Value::ID::PRINT_BUILTIN;
+
+static const auto type = libstdhl::get< RelationType >(
     libstdhl::get< VoidType >(), Types( { libstdhl::get< StringType >() } ) );
 
 #define TEST_( NAME, TO, FROM )                                                \
     TEST( libcasm_rt__builtin_print, NAME )                                    \
     {                                                                          \
         const auto arg = StringConstant( FROM );                               \
-                                                                               \
         testing::internal::CaptureStdout();                                    \
-                                                                               \
-        const auto res                                                         \
-            = libcasm_rt::Value::execute( Value::PRINT_BUILTIN, *type, arg );  \
-                                                                               \
+        const auto res = libcasm_rt::Value::execute( id, *type, arg );         \
         const auto output = testing::internal::GetCapturedStdout();            \
-                                                                               \
         EXPECT_TRUE( res == VoidConstant() );                                  \
         EXPECT_STREQ( output.c_str(), TO );                                    \
         /*printf( "%s\n", output.c_str() );*/                                  \

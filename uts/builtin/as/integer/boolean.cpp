@@ -25,17 +25,17 @@
 
 using namespace libcasm_ir;
 
-const auto type = libstdhl::get< RelationType >( libstdhl::get< IntegerType >(),
-    Types( { libstdhl::get< BooleanType >() } ) );
+static const auto id = Value::ID::AS_INTEGER_BUILTIN;
+
+static const auto type
+    = libstdhl::get< RelationType >( libstdhl::get< IntegerType >(),
+        Types( { libstdhl::get< BooleanType >() } ) );
 
 #define TEST_( NAME, TO, FROM )                                                \
     TEST( libcasm_rt__builtin_as_integer_boolean, NAME )                       \
     {                                                                          \
         const auto arg = BooleanConstant( FROM );                              \
-                                                                               \
-        const auto res = libcasm_rt::Value::execute(                           \
-            Value::AS_INTEGER_BUILTIN, *type, arg );                           \
-                                                                               \
+        const auto res = libcasm_rt::Value::execute( id, *type, arg );         \
         EXPECT_TRUE( res == IntegerConstant( TO ) );                           \
     }
 

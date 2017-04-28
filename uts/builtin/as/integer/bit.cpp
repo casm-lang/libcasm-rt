@@ -25,18 +25,16 @@
 
 using namespace libcasm_ir;
 
+static const auto id = Value::ID::AS_INTEGER_BUILTIN;
+
 #define TEST_( NAME, SIZE, TO, FROM )                                          \
     TEST( libcasm_rt__builtin_as_integer_bit, SIZE##NAME )                     \
     {                                                                          \
         const auto arg = BitConstant FROM;                                     \
-                                                                               \
         const auto type                                                        \
             = libstdhl::get< RelationType >( libstdhl::get< IntegerType >(),   \
                 Types( { libstdhl::get< BitType >( SIZE ) } ) );               \
-                                                                               \
-        const auto res = libcasm_rt::Value::execute(                           \
-            Value::AS_INTEGER_BUILTIN, *type, arg );                           \
-                                                                               \
+        const auto res = libcasm_rt::Value::execute( id, *type, arg );         \
         EXPECT_TRUE( res == IntegerConstant( TO ) );                           \
     }
 
