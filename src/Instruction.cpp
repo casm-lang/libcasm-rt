@@ -72,12 +72,11 @@ libcasm_ir::Constant Instruction::execute(
     {
         case libcasm_ir::Type::INTEGER:
         {
-            // const auto& lhs
-            //     = static_cast< const libcasm_ir::IntegerConstant& >( left );
-            // const auto& rhs
-            //     = static_cast< const libcasm_ir::IntegerConstant& >( right );
-            // return libcasm_ir::IntegerConstant( lhs.value() + rhs.value() );
-            return libcasm_ir::VoidConstant();
+            const auto& lhs
+                = static_cast< const libcasm_ir::IntegerConstant& >( left );
+            const auto& rhs
+                = static_cast< const libcasm_ir::IntegerConstant& >( right );
+            return libcasm_ir::IntegerConstant( lhs.value() + rhs.value() );
         }
         case libcasm_ir::Type::STRING:
         {
