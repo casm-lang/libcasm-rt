@@ -32,7 +32,7 @@ static const auto type = libstdhl::get< RelationType >(
     Types( { libstdhl::get< StringType >(), libstdhl::get< StringType >() } ) );
 
 #define TEST_( NAME, RES, LHS, RHS )                                           \
-    TEST( libcasm_rt__builtin_as_string_string, NAME )                         \
+    TEST( libcasm_rt__instruction_add_string_string, NAME )                    \
     {                                                                          \
         const auto lhs = StringConstant( LHS );                                \
         const auto rhs = StringConstant( RHS );                                \
