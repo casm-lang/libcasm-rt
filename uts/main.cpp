@@ -23,6 +23,14 @@
 
 #include "uts/main.h"
 
+TEST( libcasm_rt__main, empty )
+{
+}
+
+BENCHMARK( libcasm_rt__main, empty, 10, 10 )
+{
+}
+
 //
 //  Local variables:
 //  mode: c++
