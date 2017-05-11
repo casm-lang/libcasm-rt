@@ -41,37 +41,33 @@
 using namespace libcasm_rt;
 
 static inline libcasm_ir::Constant evaluate_through_instr_call(
-    const libcasm_ir::Builtin& builtin, const Builtin::Arguments& operands )
+    const libcasm_ir::Builtin& builtin, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
-    std::vector< libcasm_ir::Value::Ptr > arguments;
-    for( auto operand : operands )
-    {
-        arguments.emplace_back( libstdhl::wrap( (libcasm_ir::Value&)operand ) );
-    }
-
-    const auto symbol = libstdhl::wrap( (libcasm_ir::Value&)builtin );
-    libcasm_ir::CallInstruction instr( symbol, arguments );
-
-    return Instruction::execute( instr );
+    assert( 0 );
+    // const auto symbol = libstdhl::wrap( (libcasm_ir::Value&)builtin );
+    // libcasm_ir::CallInstruction instr( symbol, arguments );
+    // return Instruction::execute( instr );
+    return libcasm_ir::VoidConstant();
 }
 
 libcasm_ir::Constant Builtin::execute(
     const libcasm_ir::IsSymbolicBuiltin& value,
-    const Builtin::Arguments& operands )
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     const auto& arg = operands[ 0 ];
     return libcasm_ir::BooleanConstant( arg.symbolic() );
 }
 
 libcasm_ir::Constant Builtin::execute( const libcasm_ir::AbortBuiltin& builtin,
-    const Builtin::Arguments& operands )
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     throw std::domain_error( "aborting" );
     return libcasm_ir::VoidConstant();
 }
 
 libcasm_ir::Constant Builtin::execute( const libcasm_ir::AssertBuiltin& builtin,
-    const Builtin::Arguments& operands )
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     const auto& cond = operands[ 0 ];
     assert( cond.type().isBoolean() );
@@ -87,7 +83,7 @@ libcasm_ir::Constant Builtin::execute( const libcasm_ir::AssertBuiltin& builtin,
         {
             std::string msg = "assertion failed";
 
-            if( operands.size() == 2 )
+            if( size == 2 )
             {
                 const auto& txt = operands[ 1 ];
                 assert( txt.type().isString() );
@@ -104,7 +100,7 @@ libcasm_ir::Constant Builtin::execute( const libcasm_ir::AssertBuiltin& builtin,
 }
 
 libcasm_ir::Constant Builtin::execute( const libcasm_ir::PrintBuiltin& builtin,
-    const Builtin::Arguments& operands )
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     const auto& txt = operands[ 0 ];
     assert( txt.type().isString() );
@@ -117,7 +113,7 @@ libcasm_ir::Constant Builtin::execute( const libcasm_ir::PrintBuiltin& builtin,
 
 libcasm_ir::Constant Builtin::execute(
     const libcasm_ir::PrintLnBuiltin& builtin,
-    const Builtin::Arguments& operands )
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     const auto& txt = operands[ 0 ];
     assert( txt.type().isString() );
@@ -130,7 +126,7 @@ libcasm_ir::Constant Builtin::execute(
 
 libcasm_ir::Constant Builtin::execute(
     const libcasm_ir::AsBooleanBuiltin& builtin,
-    const Builtin::Arguments& operands )
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     const auto& arg = operands[ 0 ];
 
@@ -168,7 +164,7 @@ libcasm_ir::Constant Builtin::execute(
 
 libcasm_ir::Constant Builtin::execute(
     const libcasm_ir::AsIntegerBuiltin& builtin,
-    const Builtin::Arguments& operands )
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     const auto& arg = operands[ 0 ];
 
@@ -211,14 +207,14 @@ libcasm_ir::Constant Builtin::execute(
 }
 
 libcasm_ir::Constant Builtin::execute( const libcasm_ir::AsBitBuiltin& builtin,
-    const Builtin::Arguments& operands )
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
 libcasm_ir::Constant Builtin::execute(
     const libcasm_ir::AsStringBuiltin& builtin,
-    const Builtin::Arguments& operands )
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     const auto& arg = operands[ 0 ];
 
@@ -232,194 +228,194 @@ libcasm_ir::Constant Builtin::execute(
 
 libcasm_ir::Constant Builtin::execute(
     const libcasm_ir::AsFloatingBuiltin& builtin,
-    const Builtin::Arguments& operands )
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
 libcasm_ir::Constant Builtin::execute(
     const libcasm_ir::AsRationalBuiltin& builtin,
-    const Builtin::Arguments& operands )
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
 libcasm_ir::Constant Builtin::execute(
     const libcasm_ir::AsEnumerationBuiltin& builtin,
-    const Builtin::Arguments& operands )
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::DecBuiltin& builtin, const Builtin::Arguments& operands )
+libcasm_ir::Constant Builtin::execute( const libcasm_ir::DecBuiltin& builtin,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::HexBuiltin& builtin, const Builtin::Arguments& operands )
+libcasm_ir::Constant Builtin::execute( const libcasm_ir::HexBuiltin& builtin,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::OctBuiltin& builtin, const Builtin::Arguments& operands )
+libcasm_ir::Constant Builtin::execute( const libcasm_ir::OctBuiltin& builtin,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::BinBuiltin& builtin, const Builtin::Arguments& operands )
+libcasm_ir::Constant Builtin::execute( const libcasm_ir::BinBuiltin& builtin,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::AdduBuiltin& builtin, const Builtin::Arguments& operands )
+libcasm_ir::Constant Builtin::execute( const libcasm_ir::AdduBuiltin& builtin,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::AddsBuiltin& builtin, const Builtin::Arguments& operands )
+libcasm_ir::Constant Builtin::execute( const libcasm_ir::AddsBuiltin& builtin,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::SubuBuiltin& builtin, const Builtin::Arguments& operands )
+libcasm_ir::Constant Builtin::execute( const libcasm_ir::SubuBuiltin& builtin,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::SubsBuiltin& builtin, const Builtin::Arguments& operands )
+libcasm_ir::Constant Builtin::execute( const libcasm_ir::SubsBuiltin& builtin,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::MuluBuiltin& builtin, const Builtin::Arguments& operands )
+libcasm_ir::Constant Builtin::execute( const libcasm_ir::MuluBuiltin& builtin,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::MulsBuiltin& builtin, const Builtin::Arguments& operands )
+libcasm_ir::Constant Builtin::execute( const libcasm_ir::MulsBuiltin& builtin,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::LesuBuiltin& builtin, const Builtin::Arguments& operands )
+libcasm_ir::Constant Builtin::execute( const libcasm_ir::LesuBuiltin& builtin,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::LessBuiltin& builtin, const Builtin::Arguments& operands )
+libcasm_ir::Constant Builtin::execute( const libcasm_ir::LessBuiltin& builtin,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::LequBuiltin& builtin, const Builtin::Arguments& operands )
+libcasm_ir::Constant Builtin::execute( const libcasm_ir::LequBuiltin& builtin,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::LeqsBuiltin& builtin, const Builtin::Arguments& operands )
+libcasm_ir::Constant Builtin::execute( const libcasm_ir::LeqsBuiltin& builtin,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::GreuBuiltin& builtin, const Builtin::Arguments& operands )
+libcasm_ir::Constant Builtin::execute( const libcasm_ir::GreuBuiltin& builtin,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::GresBuiltin& builtin, const Builtin::Arguments& operands )
+libcasm_ir::Constant Builtin::execute( const libcasm_ir::GresBuiltin& builtin,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::GequBuiltin& builtin, const Builtin::Arguments& operands )
+libcasm_ir::Constant Builtin::execute( const libcasm_ir::GequBuiltin& builtin,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::GeqsBuiltin& builtin, const Builtin::Arguments& operands )
+libcasm_ir::Constant Builtin::execute( const libcasm_ir::GeqsBuiltin& builtin,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::ZextBuiltin& builtin, const Builtin::Arguments& operands )
+libcasm_ir::Constant Builtin::execute( const libcasm_ir::ZextBuiltin& builtin,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::SextBuiltin& builtin, const Builtin::Arguments& operands )
+libcasm_ir::Constant Builtin::execute( const libcasm_ir::SextBuiltin& builtin,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
 libcasm_ir::Constant Builtin::execute( const libcasm_ir::TruncBuiltin& builtin,
-    const Builtin::Arguments& operands )
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::ShlBuiltin& builtin, const Builtin::Arguments& operands )
+libcasm_ir::Constant Builtin::execute( const libcasm_ir::ShlBuiltin& builtin,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::ShrBuiltin& builtin, const Builtin::Arguments& operands )
+libcasm_ir::Constant Builtin::execute( const libcasm_ir::ShrBuiltin& builtin,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::AshrBuiltin& builtin, const Builtin::Arguments& operands )
+libcasm_ir::Constant Builtin::execute( const libcasm_ir::AshrBuiltin& builtin,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::ClzBuiltin& builtin, const Builtin::Arguments& operands )
+libcasm_ir::Constant Builtin::execute( const libcasm_ir::ClzBuiltin& builtin,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::CloBuiltin& builtin, const Builtin::Arguments& operands )
+libcasm_ir::Constant Builtin::execute( const libcasm_ir::CloBuiltin& builtin,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::ClsBuiltin& builtin, const Builtin::Arguments& operands )
+libcasm_ir::Constant Builtin::execute( const libcasm_ir::ClsBuiltin& builtin,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     return libcasm_ir::VoidConstant();
 }
 
 // libcasm_ir::Constant Builtin::execute( const libcasm_ir::PowBuiltin& builtin,
-// const Builtin::Arguments& operands )
+// const libcasm_ir::Constant* operands, const std::size_t size )
 // {
 // }
 
 // libcasm_ir::Constant Builtin::execute( const libcasm_ir::RandBuiltin&
-// builtin, const Builtin::Arguments& operands )
+// builtin, const libcasm_ir::Constant* operands, const std::size_t size )
 // {
 // }
 

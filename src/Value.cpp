@@ -47,8 +47,8 @@
 using namespace libcasm_rt;
 
 libcasm_ir::Constant Value::execute( const libcasm_ir::Value::ID id,
-    const libcasm_ir::Type::Ptr& type,
-    const std::vector< libcasm_ir::Constant >& operands )
+    const libcasm_ir::Type::Ptr& type, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
     switch( id )
     {
@@ -68,91 +68,51 @@ libcasm_ir::Constant Value::execute( const libcasm_ir::Value::ID id,
 
         case libcasm_ir::Value::ID::INV_INSTRUCTION:
         {
-            assert( operands.size() == 1 );
-
-            const auto operand
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
-
+            assert( size == 1 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::InvInstruction >( operand );
+                execute< libcasm_ir::InvInstruction >( operands, size );
         }
 
         case libcasm_ir::Value::ID::ADD_INSTRUCTION:
         {
-            assert( operands.size() == 2 );
-
-            const auto lhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
-            const auto rhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
-
+            assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::AddInstruction >( lhs, rhs );
+                execute< libcasm_ir::AddInstruction >( operands, size );
         }
 
         case libcasm_ir::Value::ID::SUB_INSTRUCTION:
         {
-            assert( operands.size() == 2 );
-
-            const auto lhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
-            const auto rhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
-
+            assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::SubInstruction >( lhs, rhs );
+                execute< libcasm_ir::SubInstruction >( operands, size );
         }
 
         case libcasm_ir::Value::ID::MUL_INSTRUCTION:
         {
-            assert( operands.size() == 2 );
-
-            const auto lhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
-            const auto rhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
-
+            assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::MulInstruction >( lhs, rhs );
+                execute< libcasm_ir::MulInstruction >( operands, size );
         }
 
         case libcasm_ir::Value::ID::DIV_INSTRUCTION:
         {
-            assert( operands.size() == 2 );
-
-            const auto lhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
-            const auto rhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
-
+            assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::DivInstruction >( lhs, rhs );
+                execute< libcasm_ir::DivInstruction >( operands, size );
         }
 
         case libcasm_ir::Value::ID::POW_INSTRUCTION:
         {
-            assert( operands.size() == 2 );
-
-            const auto lhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
-            const auto rhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
-
+            assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::PowInstruction >( lhs, rhs );
+                execute< libcasm_ir::PowInstruction >( operands, size );
         }
 
         case libcasm_ir::Value::ID::MOD_INSTRUCTION:
         {
-            assert( operands.size() == 2 );
-
-            const auto lhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
-            const auto rhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
-
+            assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::ModInstruction >( lhs, rhs );
+                execute< libcasm_ir::ModInstruction >( operands, size );
         }
 
         //
@@ -161,80 +121,44 @@ libcasm_ir::Constant Value::execute( const libcasm_ir::Value::ID id,
 
         case libcasm_ir::Value::ID::EQU_INSTRUCTION:
         {
-            assert( operands.size() == 2 );
-
-            const auto lhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
-            const auto rhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
-
+            assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::EquInstruction >( lhs, rhs );
+                execute< libcasm_ir::EquInstruction >( operands, size );
         }
 
         case libcasm_ir::Value::ID::NEQ_INSTRUCTION:
         {
-            assert( operands.size() == 2 );
-
-            const auto lhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
-            const auto rhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
-
+            assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::NeqInstruction >( lhs, rhs );
+                execute< libcasm_ir::NeqInstruction >( operands, size );
         }
 
         case libcasm_ir::Value::ID::LTH_INSTRUCTION:
         {
-            assert( operands.size() == 2 );
-
-            const auto lhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
-            const auto rhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
-
+            assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::LthInstruction >( lhs, rhs );
+                execute< libcasm_ir::LthInstruction >( operands, size );
         }
 
         case libcasm_ir::Value::ID::LEQ_INSTRUCTION:
         {
-            assert( operands.size() == 2 );
-
-            const auto lhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
-            const auto rhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
-
+            assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::LeqInstruction >( lhs, rhs );
+                execute< libcasm_ir::LeqInstruction >( operands, size );
         }
 
         case libcasm_ir::Value::ID::GTH_INSTRUCTION:
         {
-            assert( operands.size() == 2 );
-
-            const auto lhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
-            const auto rhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
-
+            assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::GthInstruction >( lhs, rhs );
+                execute< libcasm_ir::GthInstruction >( operands, size );
         }
 
         case libcasm_ir::Value::ID::GEQ_INSTRUCTION:
         {
-            assert( operands.size() == 2 );
-
-            const auto lhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
-            const auto rhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
-
+            assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::GeqInstruction >( lhs, rhs );
+                execute< libcasm_ir::GeqInstruction >( operands, size );
         }
 
         //
@@ -243,65 +167,37 @@ libcasm_ir::Constant Value::execute( const libcasm_ir::Value::ID id,
 
         case libcasm_ir::Value::ID::OR_INSTRUCTION:
         {
-            assert( operands.size() == 2 );
-
-            const auto lhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
-            const auto rhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
-
+            assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::OrInstruction >( lhs, rhs );
+                execute< libcasm_ir::OrInstruction >( operands, size );
         }
 
         case libcasm_ir::Value::ID::IMP_INSTRUCTION:
         {
-            assert( operands.size() == 2 );
-
-            const auto lhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
-            const auto rhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
-
+            assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::ImpInstruction >( lhs, rhs );
+                execute< libcasm_ir::ImpInstruction >( operands, size );
         }
 
         case libcasm_ir::Value::ID::XOR_INSTRUCTION:
         {
-            assert( operands.size() == 2 );
-
-            const auto lhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
-            const auto rhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
-
+            assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::XorInstruction >( lhs, rhs );
+                execute< libcasm_ir::XorInstruction >( operands, size );
         }
 
         case libcasm_ir::Value::ID::AND_INSTRUCTION:
         {
-            assert( operands.size() == 2 );
-
-            const auto lhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
-            const auto rhs
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 1 ] );
-
+            assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::XorInstruction >( lhs, rhs );
+                execute< libcasm_ir::XorInstruction >( operands, size );
         }
 
         case libcasm_ir::Value::ID::NOT_INSTRUCTION:
         {
-            assert( operands.size() == 1 );
-
-            const auto operand
-                = libstdhl::wrap( (libcasm_ir::Value&)operands[ 0 ] );
-
+            assert( size == 1 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::NotInstruction >( operand );
+                execute< libcasm_ir::NotInstruction >( operands, size );
         }
 
         //
@@ -311,19 +207,20 @@ libcasm_ir::Constant Value::execute( const libcasm_ir::Value::ID id,
         case libcasm_ir::Value::ID::IS_SYMBOLIC_BUILTIN:
         {
             return libcasm_rt::Builtin::
-                execute< libcasm_ir::IsSymbolicBuiltin >( type, operands );
+                execute< libcasm_ir::IsSymbolicBuiltin >(
+                    type, operands, size );
         }
 
         case libcasm_ir::Value::ID::ABORT_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::AbortBuiltin >(
-                type, operands );
+                type, operands, size );
         }
 
         case libcasm_ir::Value::ID::ASSERT_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::AssertBuiltin >(
-                type, operands );
+                type, operands, size );
         }
 
         //
@@ -333,12 +230,12 @@ libcasm_ir::Constant Value::execute( const libcasm_ir::Value::ID id,
         case libcasm_ir::Value::ID::PRINT_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::PrintBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::PRINTLN_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::PrintLnBuiltin >(
-                type, operands );
+                type, operands, size );
         }
 
         //
@@ -348,37 +245,40 @@ libcasm_ir::Constant Value::execute( const libcasm_ir::Value::ID id,
         case libcasm_ir::Value::ID::AS_BOOLEAN_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::AsBooleanBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::AS_INTEGER_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::AsIntegerBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::AS_BIT_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::AsBitBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::AS_STRING_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::AsStringBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::AS_FLOATING_BUILTIN:
         {
             return libcasm_rt::Builtin::
-                execute< libcasm_ir::AsFloatingBuiltin >( type, operands );
+                execute< libcasm_ir::AsFloatingBuiltin >(
+                    type, operands, size );
         }
         case libcasm_ir::Value::ID::AS_RATIONAL_BUILTIN:
         {
             return libcasm_rt::Builtin::
-                execute< libcasm_ir::AsRationalBuiltin >( type, operands );
+                execute< libcasm_ir::AsRationalBuiltin >(
+                    type, operands, size );
         }
         case libcasm_ir::Value::ID::AS_ENUMERATION_BUILTIN:
         {
             return libcasm_rt::Builtin::
-                execute< libcasm_ir::AsEnumerationBuiltin >( type, operands );
+                execute< libcasm_ir::AsEnumerationBuiltin >(
+                    type, operands, size );
         }
 
         //
@@ -388,22 +288,22 @@ libcasm_ir::Constant Value::execute( const libcasm_ir::Value::ID id,
         case libcasm_ir::Value::ID::DEC_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::DecBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::HEX_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::HexBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::OCT_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::OctBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::BIN_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::BinBuiltin >(
-                type, operands );
+                type, operands, size );
         }
 
         //
@@ -413,32 +313,32 @@ libcasm_ir::Constant Value::execute( const libcasm_ir::Value::ID id,
         case libcasm_ir::Value::ID::ADDU_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::AdduBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::ADDS_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::AddsBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::SUBU_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::SubuBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::SUBS_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::SubsBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::MULU_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::MuluBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::MULS_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::MulsBuiltin >(
-                type, operands );
+                type, operands, size );
         }
 
         //
@@ -448,42 +348,42 @@ libcasm_ir::Constant Value::execute( const libcasm_ir::Value::ID id,
         case libcasm_ir::Value::ID::LESU_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::LesuBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::LESS_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::LessBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::LEQU_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::LequBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::LEQS_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::LeqsBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::GREU_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::GreuBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::GRES_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::GresBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::GEQU_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::GequBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::GEQS_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::GeqsBuiltin >(
-                type, operands );
+                type, operands, size );
         }
 
         //
@@ -493,47 +393,47 @@ libcasm_ir::Constant Value::execute( const libcasm_ir::Value::ID id,
         case libcasm_ir::Value::ID::ZEXT_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::ZextBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::SEXT_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::SextBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::TRUNC_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::TruncBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::SHL_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::ShlBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::SHR_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::ShrBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::ASHR_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::AshrBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::CLZ_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::ClzBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::CLO_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::CloBuiltin >(
-                type, operands );
+                type, operands, size );
         }
         case libcasm_ir::Value::ID::CLS_BUILTIN:
         {
             return libcasm_rt::Builtin::execute< libcasm_ir::ClsBuiltin >(
-                type, operands );
+                type, operands, size );
         }
 
         // //
@@ -543,12 +443,12 @@ libcasm_ir::Constant Value::execute( const libcasm_ir::Value::ID id,
         // case libcasm_ir::Value::ID::POW_BUILTIN:
         // {
         //     return libcasm_rt::Builtin::execute< libcasm_ir::PowBuiltin >(
-        //         type, operands );
+        //         type, operands, size );
         // }
         // case libcasm_ir::Value::ID::RAND_BUILTIN:
         // {
         //     return libcasm_rt::Builtin::execute< libcasm_ir::RandBuiltin >(
-        //         type, operands );
+        //         type, operands, size );
         // }
 
         //

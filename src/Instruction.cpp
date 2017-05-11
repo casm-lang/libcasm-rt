@@ -51,17 +51,15 @@ using namespace libcasm_rt;
 libcasm_ir::Constant Instruction::execute(
     const libcasm_ir::InvInstruction& instr ) noexcept
 {
-    //    const auto intrinsic = libcasm_rt::Instruction::get( value );
+    // const auto intrinsic = libcasm_rt::Instruction::get( value );
     return libcasm_ir::VoidConstant();
 }
 
 libcasm_ir::Constant Instruction::execute(
     const libcasm_ir::AddInstruction& instr ) noexcept
 {
-    const auto& left
-        = static_cast< const libcasm_ir::Constant& >( *instr.operands()[ 0 ] );
-    const auto& right
-        = static_cast< const libcasm_ir::Constant& >( *instr.operands()[ 1 ] );
+    const auto& left = instr.constants()[ 0 ];
+    const auto& right = instr.constants()[ 1 ];
 
     if( not left.defined() or not right.defined() )
     {
@@ -151,12 +149,14 @@ libcasm_ir::Constant Instruction::execute(
 libcasm_ir::Constant Instruction::execute(
     const libcasm_ir::NotInstruction& instr ) noexcept
 {
-    const auto& arg = static_cast< const libcasm_ir::BooleanConstant& >(
-        *instr.operands()[ 0 ] );
+    const auto& arg = instr.constants()[ 0 ];
 
     if( arg.defined() )
     {
-        return libcasm_ir::BooleanConstant( not arg.value() );
+        const auto& v
+            = static_cast< const libcasm_ir::BooleanConstant& >( arg );
+
+        return libcasm_ir::BooleanConstant( not v.value() );
     }
     else
     {
@@ -168,10 +168,8 @@ libcasm_ir::Constant Instruction::execute(
 libcasm_ir::Constant Instruction::execute(
     const libcasm_ir::EquInstruction& instr ) noexcept
 {
-    const auto& lhs
-        = static_cast< const libcasm_ir::Constant& >( *instr.operands()[ 0 ] );
-    const auto& rhs
-        = static_cast< const libcasm_ir::Constant& >( *instr.operands()[ 1 ] );
+    const auto& lhs = instr.constants()[ 0 ];
+    const auto& rhs = instr.constants()[ 1 ];
 
     if( lhs.defined() and rhs.defined() )
     {
@@ -190,10 +188,8 @@ libcasm_ir::Constant Instruction::execute(
 libcasm_ir::Constant Instruction::execute(
     const libcasm_ir::NeqInstruction& instr ) noexcept
 {
-    const auto& lhs
-        = static_cast< const libcasm_ir::Constant& >( *instr.lhs() );
-    const auto& rhs
-        = static_cast< const libcasm_ir::Constant& >( *instr.rhs() );
+    const auto& lhs = instr.constants()[ 0 ];
+    const auto& rhs = instr.constants()[ 1 ];
 
     if( lhs.defined() and rhs.defined() )
     {
@@ -236,7 +232,7 @@ libcasm_ir::Constant Instruction::execute(
 libcasm_ir::Constant Instruction::execute(
     const libcasm_ir::CallInstruction& instr )
 {
-    const auto& symbol = *instr.operands()[ 0 ];
+    const auto& symbol = instr.constants()[ 0 ];
 
     switch( symbol.id() )
     {
