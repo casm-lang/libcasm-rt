@@ -143,7 +143,8 @@ libcasm_ir::Constant Builtin::execute(
                 const auto c
                     = static_cast< const libcasm_ir::IntegerConstant& >( arg );
                 return libcasm_ir::BooleanConstant(
-                    c.value() > 0 and not c.value().sign() );
+                    static_cast< const libstdhl::Type& >( c.value() ) > 0
+                    and not c.value().sign() );
             }
             case libcasm_ir::Type::BIT:
             {
