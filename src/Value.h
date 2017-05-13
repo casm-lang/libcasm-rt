@@ -44,12 +44,12 @@ namespace libcasm_rt
      */
     namespace Value
     {
-        libcasm_ir::Constant execute( const libcasm_ir::Value::ID id,
+        libcasm_ir::Constant execute_( const libcasm_ir::Value::ID id,
             const libcasm_ir::Type::Ptr& type,
             const libcasm_ir::Constant* operands, const std::size_t size );
 
         template < typename... Args >
-        inline libcasm_ir::Constant execute( libcasm_ir::Value::ID ID,
+        inline libcasm_ir::Constant execute( const libcasm_ir::Value::ID id,
             const libcasm_ir::Type::Ptr& type,
             Args&&... args )
         {
@@ -58,16 +58,23 @@ namespace libcasm_rt
             const std::array< libcasm_ir::Constant, size > operands
                 = { { std::forward< Args >( args )... } };
 
-            return execute( ID, type, operands.data(), size );
+            return execute_( id, type, operands.data(), size );
+        }
+
+        template <>
+        inline libcasm_ir::Constant execute(
+            libcasm_ir::Value::ID id, const libcasm_ir::Type::Ptr& type )
+        {
+            return execute_( id, type, nullptr, 0 );
         }
 
         template < typename... Args >
-        inline libcasm_ir::Constant execute( libcasm_ir::Value::ID ID,
+        inline libcasm_ir::Constant execute( const libcasm_ir::Value::ID id,
             const libcasm_ir::Type& reftype,
             Args&&... args )
         {
             const auto type = libstdhl::wrap( (libcasm_ir::Type&)reftype );
-            return execute( ID, type, std::forward< Args >( args )... );
+            return execute( id, type, std::forward< Args >( args )... );
         }
     };
 }

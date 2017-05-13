@@ -46,7 +46,7 @@
 
 using namespace libcasm_rt;
 
-libcasm_ir::Constant Value::execute( const libcasm_ir::Value::ID id,
+libcasm_ir::Constant Value::execute_( const libcasm_ir::Value::ID id,
     const libcasm_ir::Type::Ptr& type, const libcasm_ir::Constant* operands,
     const std::size_t size )
 {

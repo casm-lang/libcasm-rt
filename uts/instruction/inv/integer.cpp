@@ -25,45 +25,36 @@
 
 using namespace libcasm_ir;
 
-static const auto id = Value::ID::ADD_INSTRUCTION;
+static const auto id = Value::ID::INV_INSTRUCTION;
 
-static const auto type = libstdhl::get< RelationType >(
-    libstdhl::get< IntegerType >(),
-    Types(
-        { libstdhl::get< IntegerType >(), libstdhl::get< IntegerType >() } ) );
+static const auto type
+    = libstdhl::get< RelationType >( libstdhl::get< IntegerType >(),
+        Types( { libstdhl::get< IntegerType >() } ) );
 
-#define CALC_( LHS, RHS )                                                      \
-    const auto lhs = IntegerConstant( LHS );                                   \
-    const auto rhs = IntegerConstant( RHS );                                   \
-    const auto res = libcasm_rt::Value::execute( id, *type, lhs, rhs );
+#define CALC_( ARG )                                                           \
+    const auto arg = IntegerConstant( ARG );                                   \
+    const auto res = libcasm_rt::Value::execute( id, *type, arg );
 
-#define TEST_( NAME, RES, LHS, RHS )                                           \
-    TEST( libcasm_rt__instruction_add_integer_integer, NAME )                  \
+#define TEST_( NAME, RES, ARG )                                                \
+    TEST( libcasm_rt__instruction_inv_integer, NAME )                          \
     {                                                                          \
-        CALC_( LHS, RHS );                                                     \
+        CALC_( ARG );                                                          \
         EXPECT_TRUE( res == IntegerConstant( RES ) );                          \
         EXPECT_STREQ( res.description().c_str(),                               \
             IntegerConstant( RES ).description().c_str() );                    \
     }
 
-BENCHMARK(
-    libcasm_rt__instruction_add_integer_integer, one_word_no_wrap, 10, 10 )
+BENCHMARK( libcasm_rt__instruction_inv_integer, example, 10, 10 )
 {
-    CALC_( 123, 456 );
+    CALC_( 123 );
 }
 
-TEST_( undef__at__undef__undef, , , );
-TEST_( undef__at__zero___undef, , 0, );
-TEST_( undef__at__undef__zero_, , , 0 );
-TEST_( undef__at__pos1___undef, , 1, );
-TEST_( undef__at__undef__pos1_, , , 1 );
-TEST_( undef__at__neg1___undef, , -1, );
-TEST_( undef__at__undef__neg1_, , , -1 );
-
-TEST_( pos__at_pos__pos, 35, 12, 23 );
-TEST_( pos__at_pos__neg, -11, 12, -23 );
-TEST_( pos__at_neg__neg, -35, -12, -23 );
-TEST_( pos__at_neg__pos, 11, -12, 23 );
+TEST_( undef__at__undef, , );
+TEST_( zero___at__zero_, 0, 0 );
+TEST_( neg1___at__pos1_, -1, 1 );
+TEST_( pos1___at__neg1_, 1, -1 );
+TEST_( short__at__short, -123, 123 );
+TEST_( long___at__long_, 123456789, -123456789 );
 
 //
 //  Local variables:
