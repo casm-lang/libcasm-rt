@@ -154,7 +154,7 @@ libcasm_ir::Constant Builtin::execute(
             }
             default:
             {
-                std::domain_error(
+                throw std::domain_error(
                     "unimplemented '" + builtin.description() + "'" );
             }
         }
@@ -198,7 +198,7 @@ libcasm_ir::Constant Builtin::execute(
             }
             default:
             {
-                std::domain_error(
+                throw std::domain_error(
                     "unimplemented '" + builtin.description() + "'" );
             }
         }
