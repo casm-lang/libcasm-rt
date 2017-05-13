@@ -464,6 +464,7 @@ libcasm_ir::Constant Value::execute_( const libcasm_ir::Value::ID id,
         case libcasm_ir::Value::ID::DERIVED:       // [[fallthrough]]
         case libcasm_ir::Value::ID::FUNCTION:      // [[fallthrough]]
         case libcasm_ir::Value::ID::ENUMERATION:   // [[fallthrough]]
+        case libcasm_ir::Value::ID::RANGE:         // [[fallthrough]]
         case libcasm_ir::Value::ID::BLOCK:         // [[fallthrough]]
         case libcasm_ir::Value::ID::
             EXECUTION_SEMANTICS_BLOCK:                       // [[fallthrough]]
@@ -482,6 +483,7 @@ libcasm_ir::Constant Value::execute_( const libcasm_ir::Value::ID id,
         case libcasm_ir::Value::ID::FLOATING_CONSTANT:       // [[fallthrough]]
         case libcasm_ir::Value::ID::RATIONAL_CONSTANT:       // [[fallthrough]]
         case libcasm_ir::Value::ID::ENUMERATION_CONSTANT:    // [[fallthrough]]
+        case libcasm_ir::Value::ID::RANGE_CONSTANT:          // [[fallthrough]]
         case libcasm_ir::Value::ID::IDENTIFIER:              // [[fallthrough]]
         case libcasm_ir::Value::ID::INSTRUCTION:             // [[fallthrough]]
         case libcasm_ir::Value::ID::UNARY_INSTRUCTION:       // [[fallthrough]]
