@@ -40,59 +40,41 @@ namespace libcasm_rt
 {
     namespace Instruction
     {
-        libcasm_ir::Constant execute(
-            const libcasm_ir::InvInstruction& instr ) noexcept;
+        libcasm_ir::Constant execute( const libcasm_ir::InvInstruction& instr );
 
-        libcasm_ir::Constant execute(
-            const libcasm_ir::AddInstruction& instr ) noexcept;
+        libcasm_ir::Constant execute( const libcasm_ir::AddInstruction& instr );
 
-        libcasm_ir::Constant execute(
-            const libcasm_ir::SubInstruction& instr ) noexcept;
+        libcasm_ir::Constant execute( const libcasm_ir::SubInstruction& instr );
 
-        libcasm_ir::Constant execute(
-            const libcasm_ir::MulInstruction& instr ) noexcept;
+        libcasm_ir::Constant execute( const libcasm_ir::MulInstruction& instr );
 
-        libcasm_ir::Constant execute(
-            const libcasm_ir::ModInstruction& instr ) noexcept;
+        libcasm_ir::Constant execute( const libcasm_ir::ModInstruction& instr );
 
-        libcasm_ir::Constant execute(
-            const libcasm_ir::DivInstruction& instr ) noexcept;
+        libcasm_ir::Constant execute( const libcasm_ir::DivInstruction& instr );
 
-        libcasm_ir::Constant execute(
-            const libcasm_ir::PowInstruction& instr ) noexcept;
+        libcasm_ir::Constant execute( const libcasm_ir::PowInstruction& instr );
 
-        libcasm_ir::Constant execute(
-            const libcasm_ir::AndInstruction& instr ) noexcept;
+        libcasm_ir::Constant execute( const libcasm_ir::AndInstruction& instr );
 
-        libcasm_ir::Constant execute(
-            const libcasm_ir::XorInstruction& instr ) noexcept;
+        libcasm_ir::Constant execute( const libcasm_ir::XorInstruction& instr );
 
-        libcasm_ir::Constant execute(
-            const libcasm_ir::OrInstruction& instr ) noexcept;
+        libcasm_ir::Constant execute( const libcasm_ir::OrInstruction& instr );
 
-        libcasm_ir::Constant execute(
-            const libcasm_ir::ImpInstruction& instr ) noexcept;
+        libcasm_ir::Constant execute( const libcasm_ir::ImpInstruction& instr );
 
-        libcasm_ir::Constant execute(
-            const libcasm_ir::NotInstruction& instr ) noexcept;
+        libcasm_ir::Constant execute( const libcasm_ir::NotInstruction& instr );
 
-        libcasm_ir::Constant execute(
-            const libcasm_ir::EquInstruction& instr ) noexcept;
+        libcasm_ir::Constant execute( const libcasm_ir::EquInstruction& instr );
 
-        libcasm_ir::Constant execute(
-            const libcasm_ir::NeqInstruction& instr ) noexcept;
+        libcasm_ir::Constant execute( const libcasm_ir::NeqInstruction& instr );
 
-        libcasm_ir::Constant execute(
-            const libcasm_ir::LthInstruction& instr ) noexcept;
+        libcasm_ir::Constant execute( const libcasm_ir::LthInstruction& instr );
 
-        libcasm_ir::Constant execute(
-            const libcasm_ir::LeqInstruction& instr ) noexcept;
+        libcasm_ir::Constant execute( const libcasm_ir::LeqInstruction& instr );
 
-        libcasm_ir::Constant execute(
-            const libcasm_ir::GthInstruction& instr ) noexcept;
+        libcasm_ir::Constant execute( const libcasm_ir::GthInstruction& instr );
 
-        libcasm_ir::Constant execute(
-            const libcasm_ir::GeqInstruction& instr ) noexcept;
+        libcasm_ir::Constant execute( const libcasm_ir::GeqInstruction& instr );
 
         libcasm_ir::Constant execute(
             const libcasm_ir::CallInstruction& instr );

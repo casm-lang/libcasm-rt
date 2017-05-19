@@ -49,7 +49,7 @@
 using namespace libcasm_rt;
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::InvInstruction& instr ) noexcept
+    const libcasm_ir::InvInstruction& instr )
 {
     const auto& arg = instr.constants()[ 0 ];
 
@@ -93,7 +93,7 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::AddInstruction& instr ) noexcept
+    const libcasm_ir::AddInstruction& instr )
 {
     const auto& lhs = instr.constants()[ 0 ];
     const auto& rhs = instr.constants()[ 1 ];
@@ -135,7 +135,7 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::SubInstruction& instr ) noexcept
+    const libcasm_ir::SubInstruction& instr )
 {
     const auto& lhs = instr.constants()[ 0 ];
     const auto& rhs = instr.constants()[ 1 ];
@@ -168,7 +168,7 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::MulInstruction& instr ) noexcept
+    const libcasm_ir::MulInstruction& instr )
 {
     const auto& lhs = instr.constants()[ 0 ];
     const auto& rhs = instr.constants()[ 1 ];
@@ -201,7 +201,7 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::ModInstruction& instr ) noexcept
+    const libcasm_ir::ModInstruction& instr )
 {
     const auto& lhs = instr.constants()[ 0 ];
     const auto& rhs = instr.constants()[ 1 ];
@@ -239,7 +239,7 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::DivInstruction& instr ) noexcept
+    const libcasm_ir::DivInstruction& instr )
 {
     const auto& lhs = instr.constants()[ 0 ];
     const auto& rhs = instr.constants()[ 1 ];
@@ -277,13 +277,14 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::PowInstruction& instr ) noexcept
+    const libcasm_ir::PowInstruction& instr )
 {
+    throw std::domain_error( "unimplemented '" + instr.description() + "'" );
     return libcasm_ir::VoidConstant();
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::AndInstruction& instr ) noexcept
+    const libcasm_ir::AndInstruction& instr )
 {
     const auto& lhs = instr.constants()[ 0 ];
     const auto& rhs = instr.constants()[ 1 ];
@@ -312,7 +313,7 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::XorInstruction& instr ) noexcept
+    const libcasm_ir::XorInstruction& instr )
 {
     const auto& lhs = instr.constants()[ 0 ];
     const auto& rhs = instr.constants()[ 1 ];
@@ -333,7 +334,7 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::OrInstruction& instr ) noexcept
+    const libcasm_ir::OrInstruction& instr )
 {
     const auto& lhs = instr.constants()[ 0 ];
     const auto& rhs = instr.constants()[ 1 ];
@@ -361,7 +362,7 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::ImpInstruction& instr ) noexcept
+    const libcasm_ir::ImpInstruction& instr )
 {
     const auto& lhs = instr.constants()[ 0 ];
     const auto& rhs = instr.constants()[ 1 ];
@@ -389,7 +390,7 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::NotInstruction& instr ) noexcept
+    const libcasm_ir::NotInstruction& instr )
 {
     const auto& arg = instr.constants()[ 0 ];
 
@@ -432,7 +433,7 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::EquInstruction& instr ) noexcept
+    const libcasm_ir::EquInstruction& instr )
 {
     const auto& lhs = instr.constants()[ 0 ];
     const auto& rhs = instr.constants()[ 1 ];
@@ -452,7 +453,7 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::NeqInstruction& instr ) noexcept
+    const libcasm_ir::NeqInstruction& instr )
 {
     const auto& lhs = instr.constants()[ 0 ];
     const auto& rhs = instr.constants()[ 1 ];
@@ -472,7 +473,7 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::LthInstruction& instr ) noexcept
+    const libcasm_ir::LthInstruction& instr )
 {
     const auto& lhs = instr.constants()[ 0 ];
     const auto& rhs = instr.constants()[ 1 ];
@@ -506,7 +507,7 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::LeqInstruction& instr ) noexcept
+    const libcasm_ir::LeqInstruction& instr )
 {
     const auto& lhs = instr.constants()[ 0 ];
     const auto& rhs = instr.constants()[ 1 ];
@@ -546,7 +547,7 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::GthInstruction& instr ) noexcept
+    const libcasm_ir::GthInstruction& instr )
 {
     const auto& lhs = instr.constants()[ 0 ];
     const auto& rhs = instr.constants()[ 1 ];
@@ -580,7 +581,7 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::GeqInstruction& instr ) noexcept
+    const libcasm_ir::GeqInstruction& instr )
 {
     const auto& lhs = instr.constants()[ 0 ];
     const auto& rhs = instr.constants()[ 1 ];
@@ -628,6 +629,7 @@ libcasm_ir::Constant Instruction::execute(
     // {
     // }
 
+    throw std::domain_error( "unimplemented '" + instr.description() + "'" );
     return libcasm_ir::VoidConstant();
 }
 
