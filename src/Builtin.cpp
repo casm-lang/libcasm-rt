@@ -516,7 +516,43 @@ libcasm_ir::Constant Builtin::execute( const libcasm_ir::BinBuiltin& builtin,
 libcasm_ir::Constant Builtin::execute( const libcasm_ir::AdduBuiltin& builtin,
     const libcasm_ir::Constant* operands, const std::size_t size )
 {
-    return libcasm_ir::VoidConstant();
+    const auto& lhs = operands[ 0 ];
+    const auto& rhs = operands[ 1 ];
+
+    if( not lhs.defined() or not rhs.defined() )
+    {
+        return libcasm_ir::Constant::undef( lhs.ptr_type() );
+    }
+
+    switch( lhs.type().id() )
+    {
+        case libcasm_ir::Type::INTEGER:
+        {
+            const auto& lval
+                = static_cast< const libcasm_ir::IntegerConstant& >( lhs )
+                      .value();
+            const auto& rval
+                = static_cast< const libcasm_ir::IntegerConstant& >( rhs )
+                      .value();
+
+            return libcasm_ir::IntegerConstant( lval + rval );
+        }
+        case libcasm_ir::Type::BIT:
+        {
+            const auto& lval = static_cast< const libcasm_ir::StringConstant& >(
+                lhs ).value();
+            const auto& rval = static_cast< const libcasm_ir::StringConstant& >(
+                rhs ).value();
+
+            return libcasm_ir::StringConstant( lval + rval );
+        }
+        default:
+        {
+            throw std::domain_error(
+                "unimplemented '" + builtin.description() + "'" );
+            return libcasm_ir::VoidConstant();
+        }
+    }
 }
 
 libcasm_ir::Constant Builtin::execute( const libcasm_ir::AddsBuiltin& builtin,
