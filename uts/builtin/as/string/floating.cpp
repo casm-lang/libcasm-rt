@@ -32,7 +32,7 @@ static const auto type
         Types( { libstdhl::get< FloatingType >() } ) );
 
 #define TEST_( NAME, TO, FROM )                                                \
-    TEST( libcasm_rt__builtin_as_string_floating, NAME )                       \
+    TEST( DISABLED_libcasm_rt__builtin_as_string_floating, NAME )              \
     {                                                                          \
         const auto arg = FloatingConstant( FROM );                             \
         const auto res = libcasm_rt::Value::execute( id, *type, arg );         \

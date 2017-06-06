@@ -32,7 +32,7 @@ static const auto type
         Types( { libstdhl::get< RationalType >() } ) );
 
 #define TEST_( NAME, TO, FROM )                                                \
-    TEST( libcasm_rt__builtin_as_string_rational, NAME )                       \
+    TEST( DISABLED_libcasm_rt__builtin_as_string_rational, NAME )              \
     {                                                                          \
         const auto arg = RationalConstant( FROM );                             \
         const auto res = libcasm_rt::Value::execute( id, *type, arg );         \

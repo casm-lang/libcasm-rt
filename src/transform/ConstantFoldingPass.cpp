@@ -30,7 +30,7 @@
 #include "../casm-ir/src/Visitor.h"
 #include "../casm-ir/src/analyze/ConsistencyCheckPass.h"
 
-#include "../casm-rt/src/Instruction.h"
+#include "../Instruction.h"
 
 using namespace libcasm_ir;
 
