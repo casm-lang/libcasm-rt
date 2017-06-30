@@ -23,6 +23,8 @@
 
 #include "uts/main.h"
 
+#include "../casm-ir/src/Exception.h"
+
 using namespace libcasm_ir;
 
 static const auto id = Value::ID::ASSERT_BUILTIN;
@@ -34,14 +36,14 @@ TEST( libcasm_rt__builtin_assert, undef )
 {
     const auto arg = BooleanConstant();
     EXPECT_THROW( libcasm_rt::Value::execute( id, *type, arg );
-                  , std::invalid_argument );
+                  , UndefinedConstantException );
 }
 
 TEST( libcasm_rt__builtin_assert, false )
 {
     const auto arg = BooleanConstant( false );
     EXPECT_THROW( libcasm_rt::Value::execute( id, *type, arg );
-                  , std::domain_error );
+                  , AssertionException );
 }
 
 TEST( libcasm_rt__builtin_assert, true )
@@ -60,7 +62,7 @@ TEST( libcasm_rt__builtin_assert, undef_with_msg_undef )
     const auto arg = BooleanConstant();
     const auto msg = StringConstant();
     EXPECT_THROW( libcasm_rt::Value::execute( id, *type2, arg, msg );
-                  , std::invalid_argument );
+                  , UndefinedConstantException );
 }
 
 TEST( libcasm_rt__builtin_assert, false_with_msg_undef )
@@ -68,7 +70,7 @@ TEST( libcasm_rt__builtin_assert, false_with_msg_undef )
     const auto arg = BooleanConstant( false );
     const auto msg = StringConstant();
     EXPECT_THROW( libcasm_rt::Value::execute( id, *type2, arg, msg );
-                  , std::domain_error );
+                  , AssertionException );
 }
 
 TEST( libcasm_rt__builtin_assert, true_with_msg_undef )
@@ -84,7 +86,7 @@ TEST( libcasm_rt__builtin_assert, undef_with_msg_txt )
     const auto arg = BooleanConstant();
     const auto msg = StringConstant( "foo bar baz qux" );
     EXPECT_THROW( libcasm_rt::Value::execute( id, *type2, arg, msg );
-                  , std::invalid_argument );
+                  , UndefinedConstantException );
 }
 
 TEST( libcasm_rt__builtin_assert, false_with_msg_txt )
@@ -92,7 +94,7 @@ TEST( libcasm_rt__builtin_assert, false_with_msg_txt )
     const auto arg = BooleanConstant( false );
     const auto msg = StringConstant( "foo bar baz qux" );
     EXPECT_THROW( libcasm_rt::Value::execute( id, *type2, arg, msg );
-                  , std::domain_error );
+                  , AssertionException );
 }
 
 TEST( libcasm_rt__builtin_assert, true_with_msg_txt )

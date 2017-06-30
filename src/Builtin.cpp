@@ -28,6 +28,7 @@
 #include "../stdhl/cpp/Log.h"
 
 #include "../casm-ir/src/Builtin.h"
+#include "../casm-ir/src/Exception.h"
 #include "../casm-ir/src/Type.h"
 #include "../casm-ir/src/Value.h"
 
@@ -62,7 +63,7 @@ libcasm_ir::Constant Builtin::execute(
 libcasm_ir::Constant Builtin::execute( const libcasm_ir::AbortBuiltin& builtin,
     const libcasm_ir::Constant* operands, const std::size_t size )
 {
-    throw std::domain_error( "aborting" );
+    throw libcasm_ir::AbortException( "aborting" );
     return libcasm_ir::VoidConstant();
 }
 
@@ -75,7 +76,8 @@ libcasm_ir::Constant Builtin::execute( const libcasm_ir::AssertBuiltin& builtin,
 
     if( not c.defined() )
     {
-        throw std::invalid_argument( "assertion on undefined value" );
+        throw libcasm_ir::UndefinedConstantException(
+            "assertion on undefined value" );
     }
     else
     {
@@ -92,7 +94,7 @@ libcasm_ir::Constant Builtin::execute( const libcasm_ir::AssertBuiltin& builtin,
                 msg += ": " + str.value();
             }
 
-            throw std::domain_error( msg );
+            throw libcasm_ir::AssertionException( msg );
         }
     }
 
@@ -154,7 +156,7 @@ libcasm_ir::Constant Builtin::execute(
             }
             default:
             {
-                throw std::domain_error(
+                throw libcasm_ir::InternalException(
                     "unimplemented '" + builtin.description() + "'" );
             }
         }
@@ -199,7 +201,7 @@ libcasm_ir::Constant Builtin::execute(
             }
             default:
             {
-                throw std::domain_error(
+                throw libcasm_ir::InternalException(
                     "unimplemented '" + builtin.description() + "'" );
             }
         }
@@ -306,7 +308,7 @@ libcasm_ir::Constant Builtin::execute( const libcasm_ir::DecBuiltin& builtin,
             }
             default:
             {
-                throw std::domain_error(
+                throw libcasm_ir::InternalException(
                     "unimplemented '" + builtin.description() + "'" );
             }
         }
@@ -372,7 +374,7 @@ libcasm_ir::Constant Builtin::execute( const libcasm_ir::HexBuiltin& builtin,
             }
             default:
             {
-                throw std::domain_error(
+                throw libcasm_ir::InternalException(
                     "unimplemented '" + builtin.description() + "'" );
             }
         }
@@ -438,7 +440,7 @@ libcasm_ir::Constant Builtin::execute( const libcasm_ir::OctBuiltin& builtin,
             }
             default:
             {
-                throw std::domain_error(
+                throw libcasm_ir::InternalException(
                     "unimplemented '" + builtin.description() + "'" );
             }
         }
@@ -504,7 +506,7 @@ libcasm_ir::Constant Builtin::execute( const libcasm_ir::BinBuiltin& builtin,
             }
             default:
             {
-                throw std::domain_error(
+                throw libcasm_ir::InternalException(
                     "unimplemented '" + builtin.description() + "'" );
             }
         }
@@ -548,7 +550,7 @@ libcasm_ir::Constant Builtin::execute( const libcasm_ir::AdduBuiltin& builtin,
         }
         default:
         {
-            throw std::domain_error(
+            throw libcasm_ir::InternalException(
                 "unimplemented '" + builtin.description() + "'" );
             return libcasm_ir::VoidConstant();
         }

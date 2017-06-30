@@ -23,6 +23,8 @@
 
 #include "uts/main.h"
 
+#include "../casm-ir/src/Exception.h"
+
 using namespace libcasm_ir;
 
 static const auto id = Value::ID::ABORT_BUILTIN;
@@ -32,7 +34,7 @@ static const auto type
 
 TEST( libcasm_rt__builtin_abort, call )
 {
-    EXPECT_THROW( libcasm_rt::Value::execute( id, *type );, std::domain_error );
+    EXPECT_THROW( libcasm_rt::Value::execute( id, *type );, AbortException );
 }
 
 //

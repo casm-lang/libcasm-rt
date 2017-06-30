@@ -32,6 +32,7 @@
 #include "../stdhl/cpp/Log.h"
 
 #include "../casm-ir/src/Constant.h"
+#include "../casm-ir/src/Exception.h"
 #include "../casm-ir/src/Instruction.h"
 #include "../casm-ir/src/Value.h"
 
@@ -85,7 +86,7 @@ libcasm_ir::Constant Instruction::execute(
         }
         default:
         {
-            throw std::domain_error(
+            throw libcasm_ir::InternalException(
                 "unimplemented '" + instr.description() + "'" );
             return libcasm_ir::VoidConstant();
         }
@@ -127,7 +128,7 @@ libcasm_ir::Constant Instruction::execute(
         }
         default:
         {
-            throw std::domain_error(
+            throw libcasm_ir::InternalException(
                 "unimplemented '" + instr.description() + "'" );
             return libcasm_ir::VoidConstant();
         }
@@ -160,7 +161,7 @@ libcasm_ir::Constant Instruction::execute(
         }
         default:
         {
-            throw std::domain_error(
+            throw libcasm_ir::InternalException(
                 "unimplemented '" + instr.description() + "'" );
             return libcasm_ir::VoidConstant();
         }
@@ -193,7 +194,7 @@ libcasm_ir::Constant Instruction::execute(
         }
         default:
         {
-            throw std::domain_error(
+            throw libcasm_ir::InternalException(
                 "unimplemented '" + instr.description() + "'" );
             return libcasm_ir::VoidConstant();
         }
@@ -231,7 +232,7 @@ libcasm_ir::Constant Instruction::execute(
         }
         default:
         {
-            throw std::domain_error(
+            throw libcasm_ir::InternalException(
                 "unimplemented '" + instr.description() + "'" );
             return libcasm_ir::VoidConstant();
         }
@@ -269,7 +270,7 @@ libcasm_ir::Constant Instruction::execute(
         }
         default:
         {
-            throw std::domain_error(
+            throw libcasm_ir::InternalException(
                 "unimplemented '" + instr.description() + "'" );
             return libcasm_ir::VoidConstant();
         }
@@ -279,7 +280,8 @@ libcasm_ir::Constant Instruction::execute(
 libcasm_ir::Constant Instruction::execute(
     const libcasm_ir::PowInstruction& instr )
 {
-    throw std::domain_error( "unimplemented '" + instr.description() + "'" );
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + instr.description() + "'" );
     return libcasm_ir::VoidConstant();
 }
 
@@ -425,7 +427,7 @@ libcasm_ir::Constant Instruction::execute(
         }
         default:
         {
-            throw std::domain_error(
+            throw libcasm_ir::InternalException(
                 "unimplemented '" + instr.description() + "'" );
             return libcasm_ir::VoidConstant();
         }
@@ -499,7 +501,7 @@ libcasm_ir::Constant Instruction::execute(
         }
         default:
         {
-            throw std::domain_error(
+            throw libcasm_ir::InternalException(
                 "unimplemented '" + instr.description() + "'" );
             return libcasm_ir::VoidConstant();
         }
@@ -530,7 +532,7 @@ libcasm_ir::Constant Instruction::execute(
             }
             default:
             {
-                throw std::domain_error(
+                throw libcasm_ir::InternalException(
                     "unimplemented '" + instr.description() + "'" );
                 return libcasm_ir::VoidConstant();
             }
@@ -573,7 +575,7 @@ libcasm_ir::Constant Instruction::execute(
         }
         default:
         {
-            throw std::domain_error(
+            throw libcasm_ir::InternalException(
                 "unimplemented '" + instr.description() + "'" );
             return libcasm_ir::VoidConstant();
         }
@@ -604,7 +606,7 @@ libcasm_ir::Constant Instruction::execute(
             }
             default:
             {
-                throw std::domain_error(
+                throw libcasm_ir::InternalException(
                     "unimplemented '" + instr.description() + "'" );
                 return libcasm_ir::VoidConstant();
             }
@@ -629,7 +631,8 @@ libcasm_ir::Constant Instruction::execute(
     // {
     // }
 
-    throw std::domain_error( "unimplemented '" + instr.description() + "'" );
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + instr.description() + "'" );
     return libcasm_ir::VoidConstant();
 }
 
