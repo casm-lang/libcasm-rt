@@ -70,49 +70,55 @@ libcasm_ir::Constant Value::execute_( const libcasm_ir::Value::ID id,
         {
             assert( size == 1 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::InvInstruction >( operands, size );
+                execute< libcasm_ir::InvInstruction >( type, operands[ 0 ] );
         }
 
         case libcasm_ir::Value::ID::ADD_INSTRUCTION:
         {
             assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::AddInstruction >( operands, size );
+                execute< libcasm_ir::AddInstruction >(
+                    type, operands[ 0 ], operands[ 1 ] );
         }
 
         case libcasm_ir::Value::ID::SUB_INSTRUCTION:
         {
             assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::SubInstruction >( operands, size );
+                execute< libcasm_ir::SubInstruction >(
+                    type, operands[ 0 ], operands[ 1 ] );
         }
 
         case libcasm_ir::Value::ID::MUL_INSTRUCTION:
         {
             assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::MulInstruction >( operands, size );
+                execute< libcasm_ir::MulInstruction >(
+                    type, operands[ 0 ], operands[ 1 ] );
         }
 
         case libcasm_ir::Value::ID::DIV_INSTRUCTION:
         {
             assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::DivInstruction >( operands, size );
+                execute< libcasm_ir::DivInstruction >(
+                    type, operands[ 0 ], operands[ 1 ] );
         }
 
         case libcasm_ir::Value::ID::POW_INSTRUCTION:
         {
             assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::PowInstruction >( operands, size );
+                execute< libcasm_ir::PowInstruction >(
+                    type, operands[ 0 ], operands[ 1 ] );
         }
 
         case libcasm_ir::Value::ID::MOD_INSTRUCTION:
         {
             assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::ModInstruction >( operands, size );
+                execute< libcasm_ir::ModInstruction >(
+                    type, operands[ 0 ], operands[ 1 ] );
         }
 
         //
@@ -123,42 +129,48 @@ libcasm_ir::Constant Value::execute_( const libcasm_ir::Value::ID id,
         {
             assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::EquInstruction >( operands, size );
+                execute< libcasm_ir::EquInstruction >(
+                    type, operands[ 0 ], operands[ 1 ] );
         }
 
         case libcasm_ir::Value::ID::NEQ_INSTRUCTION:
         {
             assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::NeqInstruction >( operands, size );
+                execute< libcasm_ir::NeqInstruction >(
+                    type, operands[ 0 ], operands[ 1 ] );
         }
 
         case libcasm_ir::Value::ID::LTH_INSTRUCTION:
         {
             assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::LthInstruction >( operands, size );
+                execute< libcasm_ir::LthInstruction >(
+                    type, operands[ 0 ], operands[ 1 ] );
         }
 
         case libcasm_ir::Value::ID::LEQ_INSTRUCTION:
         {
             assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::LeqInstruction >( operands, size );
+                execute< libcasm_ir::LeqInstruction >(
+                    type, operands[ 0 ], operands[ 1 ] );
         }
 
         case libcasm_ir::Value::ID::GTH_INSTRUCTION:
         {
             assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::GthInstruction >( operands, size );
+                execute< libcasm_ir::GthInstruction >(
+                    type, operands[ 0 ], operands[ 1 ] );
         }
 
         case libcasm_ir::Value::ID::GEQ_INSTRUCTION:
         {
             assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::GeqInstruction >( operands, size );
+                execute< libcasm_ir::GeqInstruction >(
+                    type, operands[ 0 ], operands[ 1 ] );
         }
 
         //
@@ -169,35 +181,39 @@ libcasm_ir::Constant Value::execute_( const libcasm_ir::Value::ID id,
         {
             assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::OrInstruction >( operands, size );
+                execute< libcasm_ir::OrInstruction >(
+                    type, operands[ 0 ], operands[ 1 ] );
         }
 
         case libcasm_ir::Value::ID::IMP_INSTRUCTION:
         {
             assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::ImpInstruction >( operands, size );
+                execute< libcasm_ir::ImpInstruction >(
+                    type, operands[ 0 ], operands[ 1 ] );
         }
 
         case libcasm_ir::Value::ID::XOR_INSTRUCTION:
         {
             assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::XorInstruction >( operands, size );
+                execute< libcasm_ir::XorInstruction >(
+                    type, operands[ 0 ], operands[ 1 ] );
         }
 
         case libcasm_ir::Value::ID::AND_INSTRUCTION:
         {
             assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::XorInstruction >( operands, size );
+                execute< libcasm_ir::XorInstruction >(
+                    type, operands[ 0 ], operands[ 1 ] );
         }
 
         case libcasm_ir::Value::ID::NOT_INSTRUCTION:
         {
             assert( size == 1 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::NotInstruction >( operands, size );
+                execute< libcasm_ir::NotInstruction >( type, operands[ 0 ] );
         }
 
         //

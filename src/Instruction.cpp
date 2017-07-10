@@ -50,28 +50,26 @@
 using namespace libcasm_rt;
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::InvInstruction& instr )
+    const libcasm_ir::InvInstruction& instr, const libcasm_ir::Constant& lhs )
 {
-    const auto& arg = instr.constants()[ 0 ];
-
-    if( not arg.defined() )
+    if( not lhs.defined() )
     {
-        return libcasm_ir::Constant::undef( arg.ptr_type() );
+        return libcasm_ir::Constant::undef( lhs.ptr_type() );
     }
 
-    switch( arg.type().id() )
+    switch( lhs.type().id() )
     {
         case libcasm_ir::Type::INTEGER:
         {
             const auto& val = static_cast< const libcasm_ir::IntegerConstant& >(
-                arg ).value();
+                lhs ).value();
 
             return libcasm_ir::IntegerConstant( -val );
         }
         case libcasm_ir::Type::FLOATING:
         {
             const auto& val
-                = static_cast< const libcasm_ir::FloatingConstant& >( arg )
+                = static_cast< const libcasm_ir::FloatingConstant& >( lhs )
                       .value();
 
             return libcasm_ir::FloatingConstant( -val );
@@ -79,7 +77,7 @@ libcasm_ir::Constant Instruction::execute(
         case libcasm_ir::Type::RATIONAL:
         {
             const auto& val
-                = static_cast< const libcasm_ir::RationalConstant& >( arg )
+                = static_cast< const libcasm_ir::RationalConstant& >( lhs )
                       .value();
 
             return libcasm_ir::RationalConstant( -val );
@@ -94,11 +92,10 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::AddInstruction& instr )
+    const libcasm_ir::AddInstruction& instr,
+    const libcasm_ir::Constant& lhs,
+    const libcasm_ir::Constant& rhs )
 {
-    const auto& lhs = instr.constants()[ 0 ];
-    const auto& rhs = instr.constants()[ 1 ];
-
     if( not lhs.defined() or not rhs.defined() )
     {
         return libcasm_ir::Constant::undef( instr.ptr_type() );
@@ -136,11 +133,10 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::SubInstruction& instr )
+    const libcasm_ir::SubInstruction& instr,
+    const libcasm_ir::Constant& lhs,
+    const libcasm_ir::Constant& rhs )
 {
-    const auto& lhs = instr.constants()[ 0 ];
-    const auto& rhs = instr.constants()[ 1 ];
-
     if( not lhs.defined() or not rhs.defined() )
     {
         return libcasm_ir::Constant::undef( instr.ptr_type() );
@@ -169,11 +165,10 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::MulInstruction& instr )
+    const libcasm_ir::MulInstruction& instr,
+    const libcasm_ir::Constant& lhs,
+    const libcasm_ir::Constant& rhs )
 {
-    const auto& lhs = instr.constants()[ 0 ];
-    const auto& rhs = instr.constants()[ 1 ];
-
     if( not lhs.defined() or not rhs.defined() )
     {
         return libcasm_ir::Constant::undef( instr.ptr_type() );
@@ -202,11 +197,10 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::ModInstruction& instr )
+    const libcasm_ir::ModInstruction& instr,
+    const libcasm_ir::Constant& lhs,
+    const libcasm_ir::Constant& rhs )
 {
-    const auto& lhs = instr.constants()[ 0 ];
-    const auto& rhs = instr.constants()[ 1 ];
-
     if( not lhs.defined() or not rhs.defined() )
     {
         return libcasm_ir::Constant::undef( instr.ptr_type() );
@@ -240,11 +234,10 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::DivInstruction& instr )
+    const libcasm_ir::DivInstruction& instr,
+    const libcasm_ir::Constant& lhs,
+    const libcasm_ir::Constant& rhs )
 {
-    const auto& lhs = instr.constants()[ 0 ];
-    const auto& rhs = instr.constants()[ 1 ];
-
     if( not lhs.defined() or not rhs.defined() )
     {
         return libcasm_ir::Constant::undef( instr.ptr_type() );
@@ -278,7 +271,9 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::PowInstruction& instr )
+    const libcasm_ir::PowInstruction& instr,
+    const libcasm_ir::Constant& lhs,
+    const libcasm_ir::Constant& rhs )
 {
     throw libcasm_ir::InternalException(
         "unimplemented '" + instr.description() + "'" );
@@ -286,11 +281,10 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::AndInstruction& instr )
+    const libcasm_ir::AndInstruction& instr,
+    const libcasm_ir::Constant& lhs,
+    const libcasm_ir::Constant& rhs )
 {
-    const auto& lhs = instr.constants()[ 0 ];
-    const auto& rhs = instr.constants()[ 1 ];
-
     const auto& lval
         = static_cast< const libcasm_ir::BooleanConstant& >( lhs ).value();
     const auto& rval
@@ -315,11 +309,10 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::XorInstruction& instr )
+    const libcasm_ir::XorInstruction& instr,
+    const libcasm_ir::Constant& lhs,
+    const libcasm_ir::Constant& rhs )
 {
-    const auto& lhs = instr.constants()[ 0 ];
-    const auto& rhs = instr.constants()[ 1 ];
-
     const auto& lval
         = static_cast< const libcasm_ir::BooleanConstant& >( lhs ).value();
     const auto& rval
@@ -336,11 +329,10 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::OrInstruction& instr )
+    const libcasm_ir::OrInstruction& instr,
+    const libcasm_ir::Constant& lhs,
+    const libcasm_ir::Constant& rhs )
 {
-    const auto& lhs = instr.constants()[ 0 ];
-    const auto& rhs = instr.constants()[ 1 ];
-
     const auto& lval
         = static_cast< const libcasm_ir::BooleanConstant& >( lhs ).value();
     const auto& rval
@@ -364,11 +356,10 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::ImpInstruction& instr )
+    const libcasm_ir::ImpInstruction& instr,
+    const libcasm_ir::Constant& lhs,
+    const libcasm_ir::Constant& rhs )
 {
-    const auto& lhs = instr.constants()[ 0 ];
-    const auto& rhs = instr.constants()[ 1 ];
-
     const auto& lval
         = static_cast< const libcasm_ir::BooleanConstant& >( lhs ).value();
     const auto& rval
@@ -392,28 +383,26 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::NotInstruction& instr )
+    const libcasm_ir::NotInstruction& instr, const libcasm_ir::Constant& lhs )
 {
-    const auto& arg = instr.constants()[ 0 ];
-
-    if( not arg.defined() )
+    if( not lhs.defined() )
     {
         return libcasm_ir::Constant::undef( instr.ptr_type() );
     }
 
-    switch( arg.type().id() )
+    switch( lhs.type().id() )
     {
         case libcasm_ir::Type::BOOLEAN:
         {
             const auto& val = static_cast< const libcasm_ir::BooleanConstant& >(
-                arg ).value();
+                lhs ).value();
 
             return libcasm_ir::BooleanConstant( not val );
         }
         case libcasm_ir::Type::INTEGER:
         {
             const auto& val = static_cast< const libcasm_ir::IntegerConstant& >(
-                arg ).value();
+                lhs ).value();
 
             return libcasm_ir::BooleanConstant(
                 static_cast< const libstdhl::Type& >( val ) == 0 );
@@ -421,9 +410,9 @@ libcasm_ir::Constant Instruction::execute(
         case libcasm_ir::Type::BIT:
         {
             const auto& val
-                = static_cast< const libcasm_ir::BitConstant& >( arg ).value();
+                = static_cast< const libcasm_ir::BitConstant& >( lhs ).value();
 
-            return libcasm_ir::BitConstant( arg.ptr_type(), ~val );
+            return libcasm_ir::BitConstant( lhs.ptr_type(), ~val );
         }
         default:
         {
@@ -435,11 +424,10 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::EquInstruction& instr )
+    const libcasm_ir::EquInstruction& instr,
+    const libcasm_ir::Constant& lhs,
+    const libcasm_ir::Constant& rhs )
 {
-    const auto& lhs = instr.constants()[ 0 ];
-    const auto& rhs = instr.constants()[ 1 ];
-
     if( lhs.defined() and rhs.defined() )
     {
         return libcasm_ir::BooleanConstant( lhs == rhs );
@@ -455,11 +443,10 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::NeqInstruction& instr )
+    const libcasm_ir::NeqInstruction& instr,
+    const libcasm_ir::Constant& lhs,
+    const libcasm_ir::Constant& rhs )
 {
-    const auto& lhs = instr.constants()[ 0 ];
-    const auto& rhs = instr.constants()[ 1 ];
-
     if( lhs.defined() and rhs.defined() )
     {
         return libcasm_ir::BooleanConstant( lhs != rhs );
@@ -475,10 +462,10 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::LthInstruction& instr )
+    const libcasm_ir::LthInstruction& instr,
+    const libcasm_ir::Constant& lhs,
+    const libcasm_ir::Constant& rhs )
 {
-    const auto& lhs = instr.constants()[ 0 ];
-    const auto& rhs = instr.constants()[ 1 ];
     assert( lhs.type() == rhs.type() );
 
     if( not lhs.defined() or not rhs.defined() )
@@ -509,10 +496,10 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::LeqInstruction& instr )
+    const libcasm_ir::LeqInstruction& instr,
+    const libcasm_ir::Constant& lhs,
+    const libcasm_ir::Constant& rhs )
 {
-    const auto& lhs = instr.constants()[ 0 ];
-    const auto& rhs = instr.constants()[ 1 ];
     assert( lhs.type() == rhs.type() );
 
     if( lhs.defined() and rhs.defined() )
@@ -549,10 +536,10 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::GthInstruction& instr )
+    const libcasm_ir::GthInstruction& instr,
+    const libcasm_ir::Constant& lhs,
+    const libcasm_ir::Constant& rhs )
 {
-    const auto& lhs = instr.constants()[ 0 ];
-    const auto& rhs = instr.constants()[ 1 ];
     assert( lhs.type() == rhs.type() );
 
     if( not lhs.defined() or not rhs.defined() )
@@ -583,10 +570,10 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::GeqInstruction& instr )
+    const libcasm_ir::GeqInstruction& instr,
+    const libcasm_ir::Constant& lhs,
+    const libcasm_ir::Constant& rhs )
 {
-    const auto& lhs = instr.constants()[ 0 ];
-    const auto& rhs = instr.constants()[ 1 ];
     assert( lhs.type() == rhs.type() );
 
     if( lhs.defined() and rhs.defined() )
@@ -623,7 +610,9 @@ libcasm_ir::Constant Instruction::execute(
 }
 
 libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::CallInstruction& instr )
+    const libcasm_ir::CallInstruction& instr,
+    const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
     // TODO
     // const auto& symbol = instr.constants()[ 0 ];
