@@ -42,8 +42,8 @@ TEST( libcasm_rt__instruction_equ, EquInstruction_true )
     const auto a = IntegerConstant( 123 );
     const auto b = IntegerConstant( 123 );
 
-    const auto r
-        = libcasm_rt::Value::execute( Value::EQU_INSTRUCTION, *type, a, b );
+    const auto r = libcasm_rt::Value::execute(
+        Value::EQU_INSTRUCTION, type->result(), a, b );
 
     EXPECT_TRUE( r.type().isBoolean() );
     EXPECT_TRUE( r == BooleanConstant( true ) );
@@ -54,8 +54,8 @@ TEST( libcasm_rt__instruction_equ, EquInstruction_false )
     const auto a = IntegerConstant( 0 );
     const auto b = IntegerConstant( 10 );
 
-    const auto r
-        = libcasm_rt::Value::execute( Value::EQU_INSTRUCTION, *type, a, b );
+    const auto r = libcasm_rt::Value::execute(
+        Value::EQU_INSTRUCTION, type->result(), a, b );
 
     EXPECT_TRUE( r.type().isBoolean() );
     EXPECT_TRUE( r == BooleanConstant( false ) );
@@ -66,8 +66,8 @@ TEST( libcasm_rt__instruction_equ, EquInstruction_undef_true )
     const auto a = IntegerConstant();
     const auto b = IntegerConstant();
 
-    const auto r
-        = libcasm_rt::Value::execute( Value::EQU_INSTRUCTION, *type, a, b );
+    const auto r = libcasm_rt::Value::execute(
+        Value::EQU_INSTRUCTION, type->result(), a, b );
 
     EXPECT_TRUE( r.type().isBoolean() );
     EXPECT_TRUE( r == BooleanConstant( true ) );
@@ -78,8 +78,8 @@ TEST( libcasm_rt__instruction_equ, EquInstruction_undef_false )
     const auto a = IntegerConstant();
     const auto b = IntegerConstant( 321 );
 
-    const auto r
-        = libcasm_rt::Value::execute( Value::EQU_INSTRUCTION, *type, a, b );
+    const auto r = libcasm_rt::Value::execute(
+        Value::EQU_INSTRUCTION, type->result(), a, b );
 
     EXPECT_TRUE( r.type().isBoolean() );
     EXPECT_TRUE( r == BooleanConstant( false ) );

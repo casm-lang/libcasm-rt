@@ -285,9 +285,9 @@ libcasm_ir::Constant Instruction::execute(
     const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
-    const auto& lval
+    const u1 lval
         = static_cast< const libcasm_ir::BooleanConstant& >( lhs ).value();
-    const auto& rval
+    const u1 rval
         = static_cast< const libcasm_ir::BooleanConstant& >( rhs ).value();
 
     if( lhs.defined() and rhs.defined() )
@@ -313,9 +313,9 @@ libcasm_ir::Constant Instruction::execute(
     const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
-    const auto& lval
+    const u1 lval
         = static_cast< const libcasm_ir::BooleanConstant& >( lhs ).value();
-    const auto& rval
+    const u1 rval
         = static_cast< const libcasm_ir::BooleanConstant& >( rhs ).value();
 
     if( lhs.defined() and rhs.defined() )
@@ -333,9 +333,9 @@ libcasm_ir::Constant Instruction::execute(
     const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
-    const auto& lval
+    const u1 lval
         = static_cast< const libcasm_ir::BooleanConstant& >( lhs ).value();
-    const auto& rval
+    const u1 rval
         = static_cast< const libcasm_ir::BooleanConstant& >( rhs ).value();
 
     if( lhs.defined() and rhs.defined() )
@@ -360,9 +360,9 @@ libcasm_ir::Constant Instruction::execute(
     const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
-    const auto& lval
+    const u1 lval
         = static_cast< const libcasm_ir::BooleanConstant& >( lhs ).value();
-    const auto& rval
+    const u1 rval
         = static_cast< const libcasm_ir::BooleanConstant& >( rhs ).value();
 
     if( lhs.defined() and rhs.defined() )
@@ -394,7 +394,7 @@ libcasm_ir::Constant Instruction::execute(
     {
         case libcasm_ir::Type::BOOLEAN:
         {
-            const auto& val = static_cast< const libcasm_ir::BooleanConstant& >(
+            const u1 val = static_cast< const libcasm_ir::BooleanConstant& >(
                 lhs ).value();
 
             return libcasm_ir::BooleanConstant( not val );
