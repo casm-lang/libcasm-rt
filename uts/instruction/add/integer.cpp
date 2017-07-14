@@ -35,7 +35,8 @@ static const auto type = libstdhl::get< RelationType >(
 #define CALC_( LHS, RHS )                                                      \
     const auto lhs = IntegerConstant( LHS );                                   \
     const auto rhs = IntegerConstant( RHS );                                   \
-    const auto res = libcasm_rt::Value::execute( id, *type, lhs, rhs );
+    Constant res;                                                              \
+    libcasm_rt::Value::execute( id, *type, res, lhs, rhs );
 
 #define TEST_( NAME, RES, LHS, RHS )                                           \
     TEST( libcasm_rt__instruction_add_integer_integer, NAME )                  \

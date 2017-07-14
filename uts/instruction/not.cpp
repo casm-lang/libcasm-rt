@@ -38,8 +38,8 @@ TEST( libcasm_rt__instruction_not, NotInstruction_0 )
 {
     const auto a = IntegerConstant( 123 );
 
-    const auto r
-        = libcasm_rt::Value::execute( Value::NOT_INSTRUCTION, *type, a );
+    Constant r;
+    libcasm_rt::Value::execute( Value::NOT_INSTRUCTION, *type, r, a );
 
     EXPECT_TRUE( r.type().isBoolean() );
     EXPECT_TRUE( r == BooleanConstant( false ) );
@@ -49,8 +49,8 @@ TEST( libcasm_rt__instruction_not, NotInstruction_1 )
 {
     const auto a = IntegerConstant( 0 );
 
-    const auto r
-        = libcasm_rt::Value::execute( Value::NOT_INSTRUCTION, *type, a );
+    Constant r;
+    libcasm_rt::Value::execute( Value::NOT_INSTRUCTION, *type, r, a );
 
     EXPECT_TRUE( r.type().isBoolean() );
     EXPECT_TRUE( r == BooleanConstant( true ) );
@@ -60,8 +60,8 @@ TEST( libcasm_rt__instruction_not, NotInstruction_2 )
 {
     const auto a = IntegerConstant();
 
-    const auto r
-        = libcasm_rt::Value::execute( Value::NOT_INSTRUCTION, *type, a );
+    Constant r;
+    libcasm_rt::Value::execute( Value::NOT_INSTRUCTION, *type, r, a );
 
     EXPECT_TRUE( r.type().isBoolean() );
     EXPECT_TRUE( r == BooleanConstant() );

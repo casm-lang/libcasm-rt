@@ -25,11 +25,11 @@
 
 using namespace libcasm_ir;
 
-// | EQU      | undef | x : Type | sym  |
-// |----------+-------+----------+------|
-// | undef    | true  | false    | sym' |
-// | y : Type | false | x == y   | sym' |
-// | sym      | sym'  | sym'     | sym' |
+// | GEQ         | undef | x : Integer | sym  |
+// |-------------+-------+-------------+------|
+// | undef       | true  | undef       | sym' |
+// | y : Integer | undef | x >= y      | sym' |
+// | sym         | sym'  | sym'        | sym' |
 
 static const auto targ = libstdhl::List< Type >{
     { libstdhl::get< IntegerType >(), libstdhl::get< IntegerType >() }
@@ -37,56 +37,69 @@ static const auto targ = libstdhl::List< Type >{
 static const auto tres = libstdhl::get< BooleanType >();
 static const auto type = libstdhl::get< RelationType >( tres, targ );
 
-TEST( libcasm_rt__instruction_equ, EquInstruction_true )
+TEST( libcasm_rt__instruction_geq, GeqInstruction_true )
 {
     const auto a = IntegerConstant( 123 );
-    const auto b = IntegerConstant( 123 );
+    const auto b = IntegerConstant( -123 );
 
     Constant r;
     libcasm_rt::Value::execute(
-        Value::EQU_INSTRUCTION, type->result(), r, a, b );
+        Value::GEQ_INSTRUCTION, type->result(), r, a, b );
 
     EXPECT_TRUE( r.type().isBoolean() );
     EXPECT_TRUE( r == BooleanConstant( true ) );
 }
 
-TEST( libcasm_rt__instruction_equ, EquInstruction_false )
+TEST( libcasm_rt__instruction_geq, GeqInstruction_false )
 {
-    const auto a = IntegerConstant( 0 );
-    const auto b = IntegerConstant( 10 );
+    const auto a = IntegerConstant( -123 );
+    const auto b = IntegerConstant( 123 );
 
     Constant r;
     libcasm_rt::Value::execute(
-        Value::EQU_INSTRUCTION, type->result(), r, a, b );
+        Value::GEQ_INSTRUCTION, type->result(), r, a, b );
 
     EXPECT_TRUE( r.type().isBoolean() );
     EXPECT_TRUE( r == BooleanConstant( false ) );
 }
 
-TEST( libcasm_rt__instruction_equ, EquInstruction_undef_true )
+TEST( libcasm_rt__instruction_geq, GeqInstruction_undef_lhs )
+{
+    const auto a = IntegerConstant( 123 );
+    const auto b = IntegerConstant();
+
+    Constant r;
+    libcasm_rt::Value::execute(
+        Value::GEQ_INSTRUCTION, type->result(), r, a, b );
+
+    EXPECT_TRUE( r.type().isBoolean() );
+    EXPECT_TRUE( r == BooleanConstant() );
+}
+
+TEST( libcasm_rt__instruction_geq, GeqInstruction_undef_rhs )
+{
+    const auto a = IntegerConstant();
+    const auto b = IntegerConstant( 123 );
+
+    Constant r;
+    libcasm_rt::Value::execute(
+        Value::GEQ_INSTRUCTION, type->result(), r, a, b );
+
+    EXPECT_TRUE( r.type().isBoolean() );
+    EXPECT_TRUE( r == BooleanConstant() );
+}
+
+TEST( libcasm_rt__instruction_geq, GeqInstruction_undef_both )
 {
     const auto a = IntegerConstant();
     const auto b = IntegerConstant();
 
     Constant r;
     libcasm_rt::Value::execute(
-        Value::EQU_INSTRUCTION, type->result(), r, a, b );
+        Value::GEQ_INSTRUCTION, type->result(), r, a, b );
 
     EXPECT_TRUE( r.type().isBoolean() );
     EXPECT_TRUE( r == BooleanConstant( true ) );
-}
-
-TEST( libcasm_rt__instruction_equ, EquInstruction_undef_false )
-{
-    const auto a = IntegerConstant();
-    const auto b = IntegerConstant( 321 );
-
-    Constant r;
-    libcasm_rt::Value::execute(
-        Value::EQU_INSTRUCTION, type->result(), r, a, b );
-
-    EXPECT_TRUE( r.type().isBoolean() );
-    EXPECT_TRUE( r == BooleanConstant( false ) );
 }
 
 //

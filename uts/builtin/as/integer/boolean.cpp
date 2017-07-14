@@ -35,7 +35,8 @@ static const auto type
     TEST( libcasm_rt__builtin_as_integer_boolean, NAME )                       \
     {                                                                          \
         const auto arg = BooleanConstant( FROM );                              \
-        const auto res = libcasm_rt::Value::execute( id, *type, arg );         \
+        Constant res;                                                          \
+        libcasm_rt::Value::execute( id, *type, res, arg );                     \
         EXPECT_TRUE( res == IntegerConstant( TO ) );                           \
     }
 

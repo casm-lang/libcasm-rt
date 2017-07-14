@@ -34,7 +34,8 @@ static const auto id = Value::ID::AS_STRING_BUILTIN;
         const auto type                                                        \
             = libstdhl::get< RelationType >( libstdhl::get< StringType >(),    \
                 Types( { libstdhl::get< BitType >( SIZE ) } ) );               \
-        const auto res = libcasm_rt::Value::execute( id, *type, arg );         \
+        Constant res;                                                          \
+        libcasm_rt::Value::execute( id, *type, res, arg );                     \
         EXPECT_STREQ( res.description().c_str(),                               \
             StringConstant( TO ).description().c_str() );                      \
     }

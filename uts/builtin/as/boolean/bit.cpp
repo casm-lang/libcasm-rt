@@ -35,7 +35,8 @@ static const auto id = Value::ID::AS_BOOLEAN_BUILTIN;
             = libstdhl::get< RelationType >( libstdhl::get< BooleanType >(),   \
                 Types( { libstdhl::get< BitType >( SIZE ) } ) );               \
                                                                                \
-        const auto res = libcasm_rt::Value::execute( id, *type, arg );         \
+        Constant res;                                                          \
+        libcasm_rt::Value::execute( id, *type, res, arg );                     \
         EXPECT_TRUE( res == BooleanConstant( TO ) );                           \
     }
 

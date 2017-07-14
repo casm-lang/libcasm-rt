@@ -35,21 +35,24 @@ static const auto type = libstdhl::get< RelationType >(
 TEST( libcasm_rt__builtin_assert, undef )
 {
     const auto arg = BooleanConstant();
-    EXPECT_THROW( libcasm_rt::Value::execute( id, *type, arg );
+    Constant res;
+    EXPECT_THROW( libcasm_rt::Value::execute( id, *type, res, arg );
                   , UndefinedConstantException );
 }
 
 TEST( libcasm_rt__builtin_assert, false )
 {
     const auto arg = BooleanConstant( false );
-    EXPECT_THROW( libcasm_rt::Value::execute( id, *type, arg );
+    Constant res;
+    EXPECT_THROW( libcasm_rt::Value::execute( id, *type, res, arg );
                   , AssertionException );
 }
 
 TEST( libcasm_rt__builtin_assert, true )
 {
     const auto arg = BooleanConstant( true );
-    const auto res = libcasm_rt::Value::execute( id, *type, arg );
+    Constant res;
+    libcasm_rt::Value::execute( id, *type, res, arg );
     EXPECT_TRUE( res == VoidConstant() );
 }
 
@@ -61,7 +64,8 @@ TEST( libcasm_rt__builtin_assert, undef_with_msg_undef )
 {
     const auto arg = BooleanConstant();
     const auto msg = StringConstant();
-    EXPECT_THROW( libcasm_rt::Value::execute( id, *type2, arg, msg );
+    Constant res;
+    EXPECT_THROW( libcasm_rt::Value::execute( id, *type2, res, arg, msg );
                   , UndefinedConstantException );
 }
 
@@ -69,7 +73,8 @@ TEST( libcasm_rt__builtin_assert, false_with_msg_undef )
 {
     const auto arg = BooleanConstant( false );
     const auto msg = StringConstant();
-    EXPECT_THROW( libcasm_rt::Value::execute( id, *type2, arg, msg );
+    Constant res;
+    EXPECT_THROW( libcasm_rt::Value::execute( id, *type2, res, arg, msg );
                   , AssertionException );
 }
 
@@ -77,7 +82,8 @@ TEST( libcasm_rt__builtin_assert, true_with_msg_undef )
 {
     const auto arg = BooleanConstant( true );
     const auto msg = StringConstant();
-    const auto res = libcasm_rt::Value::execute( id, *type2, arg, msg );
+    Constant res;
+    libcasm_rt::Value::execute( id, *type2, res, arg, msg );
     EXPECT_TRUE( res == VoidConstant() );
 }
 
@@ -85,7 +91,8 @@ TEST( libcasm_rt__builtin_assert, undef_with_msg_txt )
 {
     const auto arg = BooleanConstant();
     const auto msg = StringConstant( "foo bar baz qux" );
-    EXPECT_THROW( libcasm_rt::Value::execute( id, *type2, arg, msg );
+    Constant res;
+    EXPECT_THROW( libcasm_rt::Value::execute( id, *type2, res, arg, msg );
                   , UndefinedConstantException );
 }
 
@@ -93,7 +100,8 @@ TEST( libcasm_rt__builtin_assert, false_with_msg_txt )
 {
     const auto arg = BooleanConstant( false );
     const auto msg = StringConstant( "foo bar baz qux" );
-    EXPECT_THROW( libcasm_rt::Value::execute( id, *type2, arg, msg );
+    Constant res;
+    EXPECT_THROW( libcasm_rt::Value::execute( id, *type2, res, arg, msg );
                   , AssertionException );
 }
 
@@ -101,7 +109,8 @@ TEST( libcasm_rt__builtin_assert, true_with_msg_txt )
 {
     const auto arg = BooleanConstant( true );
     const auto msg = StringConstant( "foo bar baz qux" );
-    const auto res = libcasm_rt::Value::execute( id, *type2, arg, msg );
+    Constant res;
+    libcasm_rt::Value::execute( id, *type2, res, arg, msg );
     EXPECT_TRUE( res == VoidConstant() );
 }
 

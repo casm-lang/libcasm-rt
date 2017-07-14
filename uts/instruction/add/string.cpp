@@ -36,7 +36,8 @@ static const auto type = libstdhl::get< RelationType >(
     {                                                                          \
         const auto lhs = StringConstant( LHS );                                \
         const auto rhs = StringConstant( RHS );                                \
-        const auto res = libcasm_rt::Value::execute( id, *type, lhs, rhs );    \
+        Constant res;                                                          \
+        libcasm_rt::Value::execute( id, *type, res, lhs, rhs );                \
         EXPECT_TRUE( res == StringConstant( RES ) );                           \
         EXPECT_STREQ( res.description().c_str(),                               \
             StringConstant( RES ).description().c_str() );                     \

@@ -44,37 +44,43 @@ namespace libcasm_rt
      */
     namespace Value
     {
-        libcasm_ir::Constant execute_( const libcasm_ir::Value::ID id,
-            const libcasm_ir::Type::Ptr& type,
+        /**
+           unary instruction/built-in call
+         */
+        void execute( const libcasm_ir::Value::ID id,
+            const libcasm_ir::Type::Ptr& type, libcasm_ir::Constant& res,
+            const libcasm_ir::Constant& lhs );
+
+        /**
+           binary instruction/built-in call
+         */
+        void execute( const libcasm_ir::Value::ID id,
+            const libcasm_ir::Type::Ptr& type, libcasm_ir::Constant& res,
+            const libcasm_ir::Constant& lhs, const libcasm_ir::Constant& rhs );
+
+        /**
+           n-ary instruction/built-in call
+         */
+        void execute( const libcasm_ir::Value::ID id,
+            const libcasm_ir::Type::Ptr& type, libcasm_ir::Constant& res,
             const libcasm_ir::Constant* operands, const std::size_t size );
 
-        template < typename... Args >
-        inline libcasm_ir::Constant execute( const libcasm_ir::Value::ID id,
-            const libcasm_ir::Type::Ptr& type,
-            Args&&... args )
+        /**
+           0-ary built-in call
+        */
+        inline void execute( const libcasm_ir::Value::ID id,
+            const libcasm_ir::Type::Ptr& type, libcasm_ir::Constant& res )
         {
-            constexpr auto size = libstdhl::Variadic< Args... >::size;
-
-            const std::array< libcasm_ir::Constant, size > operands
-                = { { std::forward< Args >( args )... } };
-
-            return execute_( id, type, operands.data(), size );
-        }
-
-        template <>
-        inline libcasm_ir::Constant execute(
-            libcasm_ir::Value::ID id, const libcasm_ir::Type::Ptr& type )
-        {
-            return execute_( id, type, nullptr, 0 );
+            execute( id, type, res, nullptr, 0 );
         }
 
         template < typename... Args >
-        inline libcasm_ir::Constant execute( const libcasm_ir::Value::ID id,
-            const libcasm_ir::Type& reftype,
+        inline void execute( const libcasm_ir::Value::ID id,
+            const libcasm_ir::Type& reftype, libcasm_ir::Constant& res,
             Args&&... args )
         {
             const auto type = libstdhl::wrap( (libcasm_ir::Type&)reftype );
-            return execute( id, type, std::forward< Args >( args )... );
+            execute( id, type, res, std::forward< Args >( args )... );
         }
     };
 }

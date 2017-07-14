@@ -35,7 +35,8 @@ static const auto type
     TEST( libcasm_rt__builtin_as_string_integer, NAME )                        \
     {                                                                          \
         const auto arg = IntegerConstant( FROM );                              \
-        const auto res = libcasm_rt::Value::execute( id, *type, arg );         \
+        Constant res;                                                          \
+        libcasm_rt::Value::execute( id, *type, res, arg );                     \
         EXPECT_STREQ( res.description().c_str(),                               \
             StringConstant( TO ).description().c_str() );                      \
     }

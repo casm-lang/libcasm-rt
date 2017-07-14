@@ -44,7 +44,8 @@ TEST( libcasm_rt__builtin_as_integer_enumeration, invalid_constant )
     TEST( libcasm_rt__builtin_as_integer_enumeration, NAME )                   \
     {                                                                          \
         const auto arg = EnumerationConstant FROM;                             \
-        const auto res = libcasm_rt::Value::execute( id, *type, arg );         \
+        Constant res;                                                          \
+        libcasm_rt::Value::execute( id, *type, res, arg );                     \
         EXPECT_STREQ( res.description().c_str(),                               \
             IntegerConstant( TO ).description().c_str() );                     \
     }

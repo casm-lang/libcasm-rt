@@ -42,33 +42,33 @@
 using namespace libcasm_rt;
 
 static inline libcasm_ir::Constant evaluate_through_instr_call(
-    const libcasm_ir::Builtin& builtin, const libcasm_ir::Constant* operands,
-    const std::size_t size )
+    const libcasm_ir::Builtin& builtin, libcasm_ir::Constant& res,
+    const libcasm_ir::Constant* operands, const std::size_t size )
 {
     assert( 0 );
     // const auto symbol = libstdhl::wrap( (libcasm_ir::Value&)builtin );
     // libcasm_ir::CallInstruction instr( symbol, arguments );
-    // return Instruction::execute( instr );
-    return libcasm_ir::VoidConstant();
+    // Instruction::execute( instr );
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::IsSymbolicBuiltin& value,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::IsSymbolicBuiltin& value,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
     const auto& arg = operands[ 0 ];
-    return libcasm_ir::BooleanConstant( arg.symbolic() );
+    res = libcasm_ir::BooleanConstant( arg.symbolic() );
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::AbortBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::AbortBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
     throw libcasm_ir::AbortException( "aborting" );
-    return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::AssertBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::AssertBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
     const auto& cond = operands[ 0 ];
     assert( cond.type().isBoolean() );
@@ -98,11 +98,12 @@ libcasm_ir::Constant Builtin::execute( const libcasm_ir::AssertBuiltin& builtin,
         }
     }
 
-    return libcasm_ir::VoidConstant();
+    res = libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::PrintBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::PrintBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
     const auto& txt = operands[ 0 ];
     assert( txt.type().isString() );
@@ -110,12 +111,12 @@ libcasm_ir::Constant Builtin::execute( const libcasm_ir::PrintBuiltin& builtin,
 
     std::cout << str.value();
 
-    return libcasm_ir::VoidConstant();
+    res = libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::PrintLnBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::PrintLnBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
     const auto& txt = operands[ 0 ];
     assert( txt.type().isString() );
@@ -123,12 +124,12 @@ libcasm_ir::Constant Builtin::execute(
 
     std::cout << str.value() << "\n";
 
-    return libcasm_ir::VoidConstant();
+    res = libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::AsBooleanBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::AsBooleanBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
     const auto& arg = operands[ 0 ];
 
@@ -138,7 +139,8 @@ libcasm_ir::Constant Builtin::execute(
         {
             case libcasm_ir::Type::BOOLEAN:
             {
-                return arg;
+                res = arg;
+                break;
             }
             case libcasm_ir::Type::INTEGER:
             {
@@ -147,13 +149,14 @@ libcasm_ir::Constant Builtin::execute(
 
                 if( c.value().trivial() )
                 {
-                    return libcasm_ir::BooleanConstant(
+                    res = libcasm_ir::BooleanConstant(
                         c.value().value() > 0 and not c.value().sign() );
                 }
                 else
                 {
-                    return libcasm_ir::BooleanConstant( true );
+                    res = libcasm_ir::BooleanConstant( true );
                 }
+                break;
             }
             case libcasm_ir::Type::BIT:
             {
@@ -162,12 +165,13 @@ libcasm_ir::Constant Builtin::execute(
 
                 if( c.value().trivial() )
                 {
-                    return libcasm_ir::BooleanConstant( c.value().value() > 0 );
+                    res = libcasm_ir::BooleanConstant( c.value().value() > 0 );
                 }
                 else
                 {
-                    return libcasm_ir::BooleanConstant( true );
+                    res = libcasm_ir::BooleanConstant( true );
                 }
+                break;
             }
             default:
             {
@@ -176,13 +180,15 @@ libcasm_ir::Constant Builtin::execute(
             }
         }
     }
-
-    return libcasm_ir::BooleanConstant();
+    else
+    {
+        res = libcasm_ir::BooleanConstant();
+    }
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::AsIntegerBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::AsIntegerBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
     const auto& arg = operands[ 0 ];
 
@@ -192,19 +198,22 @@ libcasm_ir::Constant Builtin::execute(
         {
             case libcasm_ir::Type::INTEGER:
             {
-                return arg;
+                res = arg;
+                break;
             }
             case libcasm_ir::Type::BOOLEAN:
             {
                 const auto c
                     = static_cast< const libcasm_ir::BooleanConstant& >( arg );
-                return libcasm_ir::IntegerConstant( c.value() ? 1 : 0 );
+                res = libcasm_ir::IntegerConstant( c.value() ? 1 : 0 );
+                break;
             }
             case libcasm_ir::Type::BIT:
             {
                 const auto c
                     = static_cast< const libcasm_ir::BitConstant& >( arg );
-                return libcasm_ir::IntegerConstant( c );
+                res = libcasm_ir::IntegerConstant( c );
+                break;
             }
             case libcasm_ir::Type::ENUMERATION:
             {
@@ -212,9 +221,10 @@ libcasm_ir::Constant Builtin::execute(
                     = static_cast< const libcasm_ir::EnumerationConstant& >(
                         arg );
 
-                return libcasm_ir::IntegerConstant(
+                res = libcasm_ir::IntegerConstant(
                     static_cast< const libstdhl::Type::Integer& >(
                         c.value().value() ) );
+                break;
             }
             default:
             {
@@ -223,119 +233,63 @@ libcasm_ir::Constant Builtin::execute(
             }
         }
     }
-
-    return libcasm_ir::IntegerConstant();
+    else
+    {
+        res = libcasm_ir::IntegerConstant();
+    }
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::AsBitBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::AsBitBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
-    return libcasm_ir::VoidConstant();
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + builtin.description() + "'" );
 }
 
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::AsStringBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::AsStringBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
     const auto& arg = operands[ 0 ];
 
     if( arg.defined() )
     {
-        return libcasm_ir::StringConstant( arg.name() );
+        res = libcasm_ir::StringConstant( arg.name() );
     }
-
-    return libcasm_ir::StringConstant();
-}
-
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::AsFloatingBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
-{
-    return libcasm_ir::VoidConstant();
-}
-
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::AsRationalBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
-{
-    return libcasm_ir::VoidConstant();
-}
-
-libcasm_ir::Constant Builtin::execute(
-    const libcasm_ir::AsEnumerationBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
-{
-    return libcasm_ir::VoidConstant();
-}
-
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::DecBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
-{
-    const auto& arg = operands[ 0 ];
-
-    if( arg.defined() )
+    else
     {
-        switch( arg.type().id() )
-        {
-            case libcasm_ir::Type::BOOLEAN:
-            {
-                const auto& c
-                    = static_cast< const libcasm_ir::BooleanConstant& >( arg );
-                return libcasm_ir::StringConstant( c.value() ? "1" : "0" );
-            }
-            case libcasm_ir::Type::INTEGER:
-            {
-                const auto& c
-                    = static_cast< const libcasm_ir::IntegerConstant& >( arg )
-                          .value();
-                return libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::DECIMAL >() );
-            }
-            case libcasm_ir::Type::BIT:
-            {
-                const auto& c = static_cast< const libcasm_ir::BitConstant& >(
-                    arg ).value();
-                return libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::DECIMAL >() );
-            }
-            case libcasm_ir::Type::FLOATING:
-            {
-                const auto& c
-                    = static_cast< const libcasm_ir::FloatingConstant& >( arg )
-                          .value();
-                return libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::DECIMAL >() );
-            }
-            case libcasm_ir::Type::RATIONAL:
-            {
-                const auto& c
-                    = static_cast< const libcasm_ir::RationalConstant& >( arg )
-                          .value();
-                return libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::DECIMAL >() );
-            }
-            case libcasm_ir::Type::ENUMERATION:
-            {
-                const auto& c
-                    = static_cast< const libcasm_ir::EnumerationConstant& >(
-                        arg )
-                          .value();
-                return libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::DECIMAL >() );
-            }
-            default:
-            {
-                throw libcasm_ir::InternalException(
-                    "unimplemented '" + builtin.description() + "'" );
-            }
-        }
+        res = libcasm_ir::StringConstant();
     }
-
-    return libcasm_ir::StringConstant();
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::HexBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::AsFloatingBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
+{
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + builtin.description() + "'" );
+}
+
+void Builtin::execute( const libcasm_ir::AsRationalBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
+{
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + builtin.description() + "'" );
+}
+
+void Builtin::execute( const libcasm_ir::AsEnumerationBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
+{
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + builtin.description() + "'" );
+}
+
+void Builtin::execute( const libcasm_ir::DecBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
     const auto& arg = operands[ 0 ];
 
@@ -347,38 +301,43 @@ libcasm_ir::Constant Builtin::execute( const libcasm_ir::HexBuiltin& builtin,
             {
                 const auto& c
                     = static_cast< const libcasm_ir::BooleanConstant& >( arg );
-                return libcasm_ir::StringConstant( c.value() ? "1" : "0" );
+                res = libcasm_ir::StringConstant( c.value() ? "1" : "0" );
+                break;
             }
             case libcasm_ir::Type::INTEGER:
             {
                 const auto& c
                     = static_cast< const libcasm_ir::IntegerConstant& >( arg )
                           .value();
-                return libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::HEXADECIMAL >() );
+                res = libcasm_ir::StringConstant(
+                    c.to< libstdhl::Type::Radix::DECIMAL >() );
+                break;
             }
             case libcasm_ir::Type::BIT:
             {
                 const auto& c = static_cast< const libcasm_ir::BitConstant& >(
                     arg ).value();
-                return libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::HEXADECIMAL >() );
+                res = libcasm_ir::StringConstant(
+                    c.to< libstdhl::Type::Radix::DECIMAL >() );
+                break;
             }
             case libcasm_ir::Type::FLOATING:
             {
                 const auto& c
                     = static_cast< const libcasm_ir::FloatingConstant& >( arg )
                           .value();
-                return libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::HEXADECIMAL >() );
+                res = libcasm_ir::StringConstant(
+                    c.to< libstdhl::Type::Radix::DECIMAL >() );
+                break;
             }
             case libcasm_ir::Type::RATIONAL:
             {
                 const auto& c
                     = static_cast< const libcasm_ir::RationalConstant& >( arg )
                           .value();
-                return libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::HEXADECIMAL >() );
+                res = libcasm_ir::StringConstant(
+                    c.to< libstdhl::Type::Radix::DECIMAL >() );
+                break;
             }
             case libcasm_ir::Type::ENUMERATION:
             {
@@ -386,8 +345,9 @@ libcasm_ir::Constant Builtin::execute( const libcasm_ir::HexBuiltin& builtin,
                     = static_cast< const libcasm_ir::EnumerationConstant& >(
                         arg )
                           .value();
-                return libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::HEXADECIMAL >() );
+                res = libcasm_ir::StringConstant(
+                    c.to< libstdhl::Type::Radix::DECIMAL >() );
+                break;
             }
             default:
             {
@@ -396,12 +356,15 @@ libcasm_ir::Constant Builtin::execute( const libcasm_ir::HexBuiltin& builtin,
             }
         }
     }
-
-    return libcasm_ir::StringConstant();
+    else
+    {
+        res = libcasm_ir::StringConstant();
+    }
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::OctBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::HexBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
     const auto& arg = operands[ 0 ];
 
@@ -413,38 +376,43 @@ libcasm_ir::Constant Builtin::execute( const libcasm_ir::OctBuiltin& builtin,
             {
                 const auto& c
                     = static_cast< const libcasm_ir::BooleanConstant& >( arg );
-                return libcasm_ir::StringConstant( c.value() ? "1" : "0" );
+                res = libcasm_ir::StringConstant( c.value() ? "1" : "0" );
+                break;
             }
             case libcasm_ir::Type::INTEGER:
             {
                 const auto& c
                     = static_cast< const libcasm_ir::IntegerConstant& >( arg )
                           .value();
-                return libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::OCTAL >() );
+                res = libcasm_ir::StringConstant(
+                    c.to< libstdhl::Type::Radix::HEXADECIMAL >() );
+                break;
             }
             case libcasm_ir::Type::BIT:
             {
                 const auto& c = static_cast< const libcasm_ir::BitConstant& >(
                     arg ).value();
-                return libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::OCTAL >() );
+                res = libcasm_ir::StringConstant(
+                    c.to< libstdhl::Type::Radix::HEXADECIMAL >() );
+                break;
             }
             case libcasm_ir::Type::FLOATING:
             {
                 const auto& c
                     = static_cast< const libcasm_ir::FloatingConstant& >( arg )
                           .value();
-                return libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::OCTAL >() );
+                res = libcasm_ir::StringConstant(
+                    c.to< libstdhl::Type::Radix::HEXADECIMAL >() );
+                break;
             }
             case libcasm_ir::Type::RATIONAL:
             {
                 const auto& c
                     = static_cast< const libcasm_ir::RationalConstant& >( arg )
                           .value();
-                return libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::OCTAL >() );
+                res = libcasm_ir::StringConstant(
+                    c.to< libstdhl::Type::Radix::HEXADECIMAL >() );
+                break;
             }
             case libcasm_ir::Type::ENUMERATION:
             {
@@ -452,8 +420,9 @@ libcasm_ir::Constant Builtin::execute( const libcasm_ir::OctBuiltin& builtin,
                     = static_cast< const libcasm_ir::EnumerationConstant& >(
                         arg )
                           .value();
-                return libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::OCTAL >() );
+                res = libcasm_ir::StringConstant(
+                    c.to< libstdhl::Type::Radix::HEXADECIMAL >() );
+                break;
             }
             default:
             {
@@ -462,12 +431,15 @@ libcasm_ir::Constant Builtin::execute( const libcasm_ir::OctBuiltin& builtin,
             }
         }
     }
-
-    return libcasm_ir::StringConstant();
+    else
+    {
+        res = libcasm_ir::StringConstant();
+    }
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::BinBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::OctBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
     const auto& arg = operands[ 0 ];
 
@@ -479,38 +451,43 @@ libcasm_ir::Constant Builtin::execute( const libcasm_ir::BinBuiltin& builtin,
             {
                 const auto& c
                     = static_cast< const libcasm_ir::BooleanConstant& >( arg );
-                return libcasm_ir::StringConstant( c.value() ? "1" : "0" );
+                res = libcasm_ir::StringConstant( c.value() ? "1" : "0" );
+                break;
             }
             case libcasm_ir::Type::INTEGER:
             {
                 const auto& c
                     = static_cast< const libcasm_ir::IntegerConstant& >( arg )
                           .value();
-                return libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::BINARY >() );
+                res = libcasm_ir::StringConstant(
+                    c.to< libstdhl::Type::Radix::OCTAL >() );
+                break;
             }
             case libcasm_ir::Type::BIT:
             {
                 const auto& c = static_cast< const libcasm_ir::BitConstant& >(
                     arg ).value();
-                return libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::BINARY >() );
+                res = libcasm_ir::StringConstant(
+                    c.to< libstdhl::Type::Radix::OCTAL >() );
+                break;
             }
             case libcasm_ir::Type::FLOATING:
             {
                 const auto& c
                     = static_cast< const libcasm_ir::FloatingConstant& >( arg )
                           .value();
-                return libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::BINARY >() );
+                res = libcasm_ir::StringConstant(
+                    c.to< libstdhl::Type::Radix::OCTAL >() );
+                break;
             }
             case libcasm_ir::Type::RATIONAL:
             {
                 const auto& c
                     = static_cast< const libcasm_ir::RationalConstant& >( arg )
                           .value();
-                return libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::BINARY >() );
+                res = libcasm_ir::StringConstant(
+                    c.to< libstdhl::Type::Radix::OCTAL >() );
+                break;
             }
             case libcasm_ir::Type::ENUMERATION:
             {
@@ -518,8 +495,9 @@ libcasm_ir::Constant Builtin::execute( const libcasm_ir::BinBuiltin& builtin,
                     = static_cast< const libcasm_ir::EnumerationConstant& >(
                         arg )
                           .value();
-                return libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::BINARY >() );
+                res = libcasm_ir::StringConstant(
+                    c.to< libstdhl::Type::Radix::OCTAL >() );
+                break;
             }
             default:
             {
@@ -528,19 +506,98 @@ libcasm_ir::Constant Builtin::execute( const libcasm_ir::BinBuiltin& builtin,
             }
         }
     }
-
-    return libcasm_ir::StringConstant();
+    else
+    {
+        res = libcasm_ir::StringConstant();
+    }
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::AdduBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::BinBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
+{
+    const auto& arg = operands[ 0 ];
+
+    if( arg.defined() )
+    {
+        switch( arg.type().id() )
+        {
+            case libcasm_ir::Type::BOOLEAN:
+            {
+                const auto& c
+                    = static_cast< const libcasm_ir::BooleanConstant& >( arg );
+                res = libcasm_ir::StringConstant( c.value() ? "1" : "0" );
+                break;
+            }
+            case libcasm_ir::Type::INTEGER:
+            {
+                const auto& c
+                    = static_cast< const libcasm_ir::IntegerConstant& >( arg )
+                          .value();
+                res = libcasm_ir::StringConstant(
+                    c.to< libstdhl::Type::Radix::BINARY >() );
+                break;
+            }
+            case libcasm_ir::Type::BIT:
+            {
+                const auto& c = static_cast< const libcasm_ir::BitConstant& >(
+                    arg ).value();
+                res = libcasm_ir::StringConstant(
+                    c.to< libstdhl::Type::Radix::BINARY >() );
+                break;
+            }
+            case libcasm_ir::Type::FLOATING:
+            {
+                const auto& c
+                    = static_cast< const libcasm_ir::FloatingConstant& >( arg )
+                          .value();
+                res = libcasm_ir::StringConstant(
+                    c.to< libstdhl::Type::Radix::BINARY >() );
+                break;
+            }
+            case libcasm_ir::Type::RATIONAL:
+            {
+                const auto& c
+                    = static_cast< const libcasm_ir::RationalConstant& >( arg )
+                          .value();
+                res = libcasm_ir::StringConstant(
+                    c.to< libstdhl::Type::Radix::BINARY >() );
+                break;
+            }
+            case libcasm_ir::Type::ENUMERATION:
+            {
+                const auto& c
+                    = static_cast< const libcasm_ir::EnumerationConstant& >(
+                        arg )
+                          .value();
+                res = libcasm_ir::StringConstant(
+                    c.to< libstdhl::Type::Radix::BINARY >() );
+                break;
+            }
+            default:
+            {
+                throw libcasm_ir::InternalException(
+                    "unimplemented '" + builtin.description() + "'" );
+            }
+        }
+    }
+    else
+    {
+        res = libcasm_ir::StringConstant();
+    }
+}
+
+void Builtin::execute( const libcasm_ir::AdduBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
     const auto& lhs = operands[ 0 ];
     const auto& rhs = operands[ 1 ];
 
     if( not lhs.defined() or not rhs.defined() )
     {
-        return libcasm_ir::Constant::undef( lhs.type().ptr_type() );
+        res = libcasm_ir::Constant::undef( lhs.type().ptr_type() );
+        return;
     }
 
     switch( lhs.type().id() )
@@ -554,7 +611,8 @@ libcasm_ir::Constant Builtin::execute( const libcasm_ir::AdduBuiltin& builtin,
                 = static_cast< const libcasm_ir::IntegerConstant& >( rhs )
                       .value();
 
-            return libcasm_ir::IntegerConstant( lval + rval );
+            res = libcasm_ir::IntegerConstant( lval + rval );
+            break;
         }
         case libcasm_ir::Type::BIT:
         {
@@ -563,156 +621,202 @@ libcasm_ir::Constant Builtin::execute( const libcasm_ir::AdduBuiltin& builtin,
             const auto& rval = static_cast< const libcasm_ir::StringConstant& >(
                 rhs ).value();
 
-            return libcasm_ir::StringConstant( lval + rval );
+            res = libcasm_ir::StringConstant( lval + rval );
+            break;
         }
         default:
         {
             throw libcasm_ir::InternalException(
                 "unimplemented '" + builtin.description() + "'" );
-            return libcasm_ir::VoidConstant();
         }
     }
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::AddsBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::AddsBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
-    return libcasm_ir::VoidConstant();
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + builtin.description() + "'" );
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::SubuBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::SubuBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
-    return libcasm_ir::VoidConstant();
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + builtin.description() + "'" );
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::SubsBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::SubsBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
-    return libcasm_ir::VoidConstant();
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + builtin.description() + "'" );
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::MuluBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::MuluBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
-    return libcasm_ir::VoidConstant();
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + builtin.description() + "'" );
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::MulsBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::MulsBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
-    return libcasm_ir::VoidConstant();
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + builtin.description() + "'" );
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::LesuBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::LesuBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
-    return libcasm_ir::VoidConstant();
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + builtin.description() + "'" );
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::LessBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::LessBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
-    return libcasm_ir::VoidConstant();
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + builtin.description() + "'" );
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::LequBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::LequBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
-    return libcasm_ir::VoidConstant();
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + builtin.description() + "'" );
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::LeqsBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::LeqsBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
-    return libcasm_ir::VoidConstant();
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + builtin.description() + "'" );
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::GreuBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::GreuBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
-    return libcasm_ir::VoidConstant();
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + builtin.description() + "'" );
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::GresBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::GresBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
-    return libcasm_ir::VoidConstant();
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + builtin.description() + "'" );
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::GequBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::GequBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
-    return libcasm_ir::VoidConstant();
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + builtin.description() + "'" );
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::GeqsBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::GeqsBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
-    return libcasm_ir::VoidConstant();
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + builtin.description() + "'" );
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::ZextBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::ZextBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
-    return libcasm_ir::VoidConstant();
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + builtin.description() + "'" );
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::SextBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::SextBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
-    return libcasm_ir::VoidConstant();
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + builtin.description() + "'" );
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::TruncBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::TruncBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
-    return libcasm_ir::VoidConstant();
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + builtin.description() + "'" );
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::ShlBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::ShlBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
-    return libcasm_ir::VoidConstant();
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + builtin.description() + "'" );
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::ShrBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::ShrBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
-    return libcasm_ir::VoidConstant();
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + builtin.description() + "'" );
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::AshrBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::AshrBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
-    return libcasm_ir::VoidConstant();
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + builtin.description() + "'" );
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::ClzBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::ClzBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
-    return libcasm_ir::VoidConstant();
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + builtin.description() + "'" );
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::CloBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::CloBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
-    return libcasm_ir::VoidConstant();
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + builtin.description() + "'" );
 }
 
-libcasm_ir::Constant Builtin::execute( const libcasm_ir::ClsBuiltin& builtin,
-    const libcasm_ir::Constant* operands, const std::size_t size )
+void Builtin::execute( const libcasm_ir::ClsBuiltin& builtin,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+    const std::size_t size )
 {
-    return libcasm_ir::VoidConstant();
+    throw libcasm_ir::InternalException(
+        "unimplemented '" + builtin.description() + "'" );
 }
 
-// libcasm_ir::Constant Builtin::execute( const libcasm_ir::PowBuiltin& builtin,
-// const libcasm_ir::Constant* operands, const std::size_t size )
+// void Builtin::execute( const libcasm_ir::PowBuiltin& builtin,
+// libcasm_ir::Constant& res, const libcasm_ir::Constant* operands, const
+// std::size_t size )
 // {
 // }
 
-// libcasm_ir::Constant Builtin::execute( const libcasm_ir::RandBuiltin&
-// builtin, const libcasm_ir::Constant* operands, const std::size_t size )
+// void Builtin::execute( const libcasm_ir::RandBuiltin&
+// builtin, libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+// const std::size_t size )
 // {
 // }
 

@@ -49,12 +49,13 @@
 
 using namespace libcasm_rt;
 
-libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::InvInstruction& instr, const libcasm_ir::Constant& lhs )
+void Instruction::execute( const libcasm_ir::InvInstruction& instr,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs )
 {
     if( not lhs.defined() )
     {
-        return libcasm_ir::Constant::undef( lhs.type().ptr_type() );
+        res = libcasm_ir::Constant::undef( lhs.type().ptr_type() );
+        return;
     }
 
     switch( lhs.type().id() )
@@ -64,7 +65,8 @@ libcasm_ir::Constant Instruction::execute(
             const auto& val = static_cast< const libcasm_ir::IntegerConstant& >(
                 lhs ).value();
 
-            return libcasm_ir::IntegerConstant( -val );
+            res = libcasm_ir::IntegerConstant( -val );
+            break;
         }
         case libcasm_ir::Type::FLOATING:
         {
@@ -72,7 +74,8 @@ libcasm_ir::Constant Instruction::execute(
                 = static_cast< const libcasm_ir::FloatingConstant& >( lhs )
                       .value();
 
-            return libcasm_ir::FloatingConstant( -val );
+            res = libcasm_ir::FloatingConstant( -val );
+            break;
         }
         case libcasm_ir::Type::RATIONAL:
         {
@@ -80,25 +83,27 @@ libcasm_ir::Constant Instruction::execute(
                 = static_cast< const libcasm_ir::RationalConstant& >( lhs )
                       .value();
 
-            return libcasm_ir::RationalConstant( -val );
+            res = libcasm_ir::RationalConstant( -val );
+            break;
         }
         default:
         {
             throw libcasm_ir::InternalException(
                 "unimplemented '" + instr.description() + "'" );
-            return libcasm_ir::VoidConstant();
+            res = libcasm_ir::VoidConstant();
+            break;
         }
     }
 }
 
-libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::AddInstruction& instr,
-    const libcasm_ir::Constant& lhs,
+void Instruction::execute( const libcasm_ir::AddInstruction& instr,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
     if( not lhs.defined() or not rhs.defined() )
     {
-        return libcasm_ir::Constant::undef( instr.type().ptr_type() );
+        res = libcasm_ir::Constant::undef( instr.type().ptr_type() );
+        return;
     }
 
     switch( instr.type().id() )
@@ -112,7 +117,8 @@ libcasm_ir::Constant Instruction::execute(
                 = static_cast< const libcasm_ir::IntegerConstant& >( rhs )
                       .value();
 
-            return libcasm_ir::IntegerConstant( lval + rval );
+            res = libcasm_ir::IntegerConstant( lval + rval );
+            break;
         }
         case libcasm_ir::Type::STRING:
         {
@@ -121,25 +127,26 @@ libcasm_ir::Constant Instruction::execute(
             const auto& rval = static_cast< const libcasm_ir::StringConstant& >(
                 rhs ).value();
 
-            return libcasm_ir::StringConstant( lval + rval );
+            res = libcasm_ir::StringConstant( lval + rval );
+            break;
         }
         default:
         {
             throw libcasm_ir::InternalException(
                 "unimplemented '" + instr.description() + "'" );
-            return libcasm_ir::VoidConstant();
+            break;
         }
     }
 }
 
-libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::SubInstruction& instr,
-    const libcasm_ir::Constant& lhs,
+void Instruction::execute( const libcasm_ir::SubInstruction& instr,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
     if( not lhs.defined() or not rhs.defined() )
     {
-        return libcasm_ir::Constant::undef( instr.type().ptr_type() );
+        res = libcasm_ir::Constant::undef( instr.type().ptr_type() );
+        return;
     }
 
     switch( instr.type().id() )
@@ -153,25 +160,26 @@ libcasm_ir::Constant Instruction::execute(
                 = static_cast< const libcasm_ir::IntegerConstant& >( rhs )
                       .value();
 
-            return libcasm_ir::IntegerConstant( lval - rval );
+            res = libcasm_ir::IntegerConstant( lval - rval );
+            break;
         }
         default:
         {
             throw libcasm_ir::InternalException(
                 "unimplemented '" + instr.description() + "'" );
-            return libcasm_ir::VoidConstant();
+            break;
         }
     }
 }
 
-libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::MulInstruction& instr,
-    const libcasm_ir::Constant& lhs,
+void Instruction::execute( const libcasm_ir::MulInstruction& instr,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
     if( not lhs.defined() or not rhs.defined() )
     {
-        return libcasm_ir::Constant::undef( instr.type().ptr_type() );
+        res = libcasm_ir::Constant::undef( instr.type().ptr_type() );
+        return;
     }
 
     switch( instr.type().id() )
@@ -185,62 +193,26 @@ libcasm_ir::Constant Instruction::execute(
                 = static_cast< const libcasm_ir::IntegerConstant& >( rhs )
                       .value();
 
-            return libcasm_ir::IntegerConstant( lval * rval );
+            res = libcasm_ir::IntegerConstant( lval * rval );
+            break;
         }
         default:
         {
             throw libcasm_ir::InternalException(
                 "unimplemented '" + instr.description() + "'" );
-            return libcasm_ir::VoidConstant();
+            break;
         }
     }
 }
 
-libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::ModInstruction& instr,
-    const libcasm_ir::Constant& lhs,
+void Instruction::execute( const libcasm_ir::ModInstruction& instr,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
     if( not lhs.defined() or not rhs.defined() )
     {
-        return libcasm_ir::Constant::undef( instr.type().ptr_type() );
-    }
-
-    switch( instr.type().id() )
-    {
-        case libcasm_ir::Type::INTEGER:
-        {
-            const auto& lval
-                = static_cast< const libcasm_ir::IntegerConstant& >( lhs )
-                      .value();
-            const auto& rval
-                = static_cast< const libcasm_ir::IntegerConstant& >( rhs )
-                      .value();
-
-            if( rval == 0 )
-            {
-                return libcasm_ir::IntegerConstant();
-            }
-
-            return libcasm_ir::IntegerConstant( lval % rval );
-        }
-        default:
-        {
-            throw libcasm_ir::InternalException(
-                "unimplemented '" + instr.description() + "'" );
-            return libcasm_ir::VoidConstant();
-        }
-    }
-}
-
-libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::DivInstruction& instr,
-    const libcasm_ir::Constant& lhs,
-    const libcasm_ir::Constant& rhs )
-{
-    if( not lhs.defined() or not rhs.defined() )
-    {
-        return libcasm_ir::Constant::undef( instr.type().ptr_type() );
+        res = libcasm_ir::Constant::undef( instr.type().ptr_type() );
+        return;
     }
 
     switch( instr.type().id() )
@@ -256,33 +228,73 @@ libcasm_ir::Constant Instruction::execute(
 
             if( rval == 0 )
             {
-                return libcasm_ir::IntegerConstant();
+                res = libcasm_ir::IntegerConstant();
             }
-
-            return libcasm_ir::IntegerConstant( lval / rval );
+            else
+            {
+                res = libcasm_ir::IntegerConstant( lval % rval );
+            }
+            break;
         }
         default:
         {
             throw libcasm_ir::InternalException(
                 "unimplemented '" + instr.description() + "'" );
-            return libcasm_ir::VoidConstant();
+            break;
         }
     }
 }
 
-libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::PowInstruction& instr,
-    const libcasm_ir::Constant& lhs,
+void Instruction::execute( const libcasm_ir::DivInstruction& instr,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
+    const libcasm_ir::Constant& rhs )
+{
+    if( not lhs.defined() or not rhs.defined() )
+    {
+        res = libcasm_ir::Constant::undef( instr.type().ptr_type() );
+        return;
+    }
+
+    switch( instr.type().id() )
+    {
+        case libcasm_ir::Type::INTEGER:
+        {
+            const auto& lval
+                = static_cast< const libcasm_ir::IntegerConstant& >( lhs )
+                      .value();
+            const auto& rval
+                = static_cast< const libcasm_ir::IntegerConstant& >( rhs )
+                      .value();
+
+            if( rval == 0 )
+            {
+                res = libcasm_ir::IntegerConstant();
+            }
+            else
+            {
+                res = libcasm_ir::IntegerConstant( lval / rval );
+            }
+            break;
+        }
+        default:
+        {
+            throw libcasm_ir::InternalException(
+                "unimplemented '" + instr.description() + "'" );
+            break;
+        }
+    }
+}
+
+void Instruction::execute( const libcasm_ir::PowInstruction& instr,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
     throw libcasm_ir::InternalException(
         "unimplemented '" + instr.description() + "'" );
-    return libcasm_ir::VoidConstant();
 }
 
-libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::AndInstruction& instr,
-    const libcasm_ir::Constant& lhs,
+void Instruction::execute( const libcasm_ir::AndInstruction& instr,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
     const u1 lval
@@ -292,25 +304,24 @@ libcasm_ir::Constant Instruction::execute(
 
     if( lhs.defined() and rhs.defined() )
     {
-        return libcasm_ir::BooleanConstant( lval and rval );
+        res = libcasm_ir::BooleanConstant( lval and rval );
     }
     else
     {
         if( ( lhs.defined() and ( not lval ) )
             or ( rhs.defined() and ( not rval ) ) )
         {
-            return libcasm_ir::BooleanConstant( false );
+            res = libcasm_ir::BooleanConstant( false );
         }
         else
         {
-            return libcasm_ir::BooleanConstant();
+            res = libcasm_ir::BooleanConstant();
         }
     }
 }
 
-libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::XorInstruction& instr,
-    const libcasm_ir::Constant& lhs,
+void Instruction::execute( const libcasm_ir::XorInstruction& instr,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
     const u1 lval
@@ -320,17 +331,16 @@ libcasm_ir::Constant Instruction::execute(
 
     if( lhs.defined() and rhs.defined() )
     {
-        return libcasm_ir::BooleanConstant( lval xor rval );
+        res = libcasm_ir::BooleanConstant( lval xor rval );
     }
     else
     {
-        return libcasm_ir::BooleanConstant();
+        res = libcasm_ir::BooleanConstant();
     }
 }
 
-libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::OrInstruction& instr,
-    const libcasm_ir::Constant& lhs,
+void Instruction::execute( const libcasm_ir::OrInstruction& instr,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
     const u1 lval
@@ -340,24 +350,23 @@ libcasm_ir::Constant Instruction::execute(
 
     if( lhs.defined() and rhs.defined() )
     {
-        return libcasm_ir::BooleanConstant( lval or rval );
+        res = libcasm_ir::BooleanConstant( lval or rval );
     }
     else
     {
         if( ( lhs.defined() and lval ) or ( rhs.defined() and rval ) )
         {
-            return libcasm_ir::BooleanConstant( true );
+            res = libcasm_ir::BooleanConstant( true );
         }
         else
         {
-            return libcasm_ir::BooleanConstant();
+            res = libcasm_ir::BooleanConstant();
         }
     }
 }
 
-libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::ImpInstruction& instr,
-    const libcasm_ir::Constant& lhs,
+void Instruction::execute( const libcasm_ir::ImpInstruction& instr,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
     const u1 lval
@@ -367,27 +376,28 @@ libcasm_ir::Constant Instruction::execute(
 
     if( lhs.defined() and rhs.defined() )
     {
-        return libcasm_ir::BooleanConstant( ( not lval ) or rval );
+        res = libcasm_ir::BooleanConstant( ( not lval ) or rval );
     }
     else
     {
         if( ( lhs.defined() and ( not lval ) ) or ( rhs.defined() and rval ) )
         {
-            return libcasm_ir::BooleanConstant( true );
+            res = libcasm_ir::BooleanConstant( true );
         }
         else
         {
-            return libcasm_ir::BooleanConstant();
+            res = libcasm_ir::BooleanConstant();
         }
     }
 }
 
-libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::NotInstruction& instr, const libcasm_ir::Constant& lhs )
+void Instruction::execute( const libcasm_ir::NotInstruction& instr,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs )
 {
     if( not lhs.defined() )
     {
-        return libcasm_ir::Constant::undef( instr.type().ptr_type() );
+        res = libcasm_ir::Constant::undef( instr.type().ptr_type() );
+        return;
     }
 
     switch( lhs.type().id() )
@@ -397,79 +407,80 @@ libcasm_ir::Constant Instruction::execute(
             const u1 val = static_cast< const libcasm_ir::BooleanConstant& >(
                 lhs ).value();
 
-            return libcasm_ir::BooleanConstant( not val );
+            res = libcasm_ir::BooleanConstant( not val );
+            break;
         }
         case libcasm_ir::Type::INTEGER:
         {
             const auto& val = static_cast< const libcasm_ir::IntegerConstant& >(
                 lhs ).value();
 
-            return libcasm_ir::BooleanConstant( val == 0 );
+            res = libcasm_ir::BooleanConstant( val == 0 );
+            break;
         }
         case libcasm_ir::Type::BIT:
         {
             const auto& val
                 = static_cast< const libcasm_ir::BitConstant& >( lhs ).value();
 
-            return libcasm_ir::BitConstant( lhs.type().ptr_type(), ~val );
+            res = libcasm_ir::BitConstant( lhs.type().ptr_type(), ~val );
+            break;
         }
         default:
         {
             throw libcasm_ir::InternalException(
                 "unimplemented '" + instr.description() + "'" );
-            return libcasm_ir::VoidConstant();
+            break;
         }
     }
 }
 
-libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::EquInstruction& instr,
-    const libcasm_ir::Constant& lhs,
+void Instruction::execute( const libcasm_ir::EquInstruction& instr,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
     if( lhs.defined() and rhs.defined() )
     {
-        return libcasm_ir::BooleanConstant( lhs == rhs );
+        res = libcasm_ir::BooleanConstant( lhs == rhs );
     }
     else if( lhs.defined() or rhs.defined() )
     {
-        return libcasm_ir::BooleanConstant( false );
+        res = libcasm_ir::BooleanConstant( false );
     }
     else
     {
-        return libcasm_ir::BooleanConstant( true );
+        res = libcasm_ir::BooleanConstant( true );
     }
 }
 
-libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::NeqInstruction& instr,
-    const libcasm_ir::Constant& lhs,
+void Instruction::execute( const libcasm_ir::NeqInstruction& instr,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
     if( lhs.defined() and rhs.defined() )
     {
-        return libcasm_ir::BooleanConstant( lhs != rhs );
+        res = libcasm_ir::BooleanConstant( lhs != rhs );
     }
     else if( lhs.defined() or rhs.defined() )
     {
-        return libcasm_ir::BooleanConstant( true );
+        res = libcasm_ir::BooleanConstant( true );
     }
     else
     {
-        return libcasm_ir::BooleanConstant( false );
+        res = libcasm_ir::BooleanConstant( false );
     }
 }
 
-libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::LthInstruction& instr,
-    const libcasm_ir::Constant& lhs,
+void Instruction::execute( const libcasm_ir::LthInstruction& instr,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
     assert( lhs.type() == rhs.type() );
 
     if( not lhs.defined() or not rhs.defined() )
     {
-        return libcasm_ir::BooleanConstant();
+        res = libcasm_ir::BooleanConstant();
+        return;
     }
 
     switch( lhs.type().id() )
@@ -483,20 +494,20 @@ libcasm_ir::Constant Instruction::execute(
                 = static_cast< const libcasm_ir::IntegerConstant& >( rhs )
                       .value();
 
-            return libcasm_ir::BooleanConstant( lval < rval );
+            res = libcasm_ir::BooleanConstant( lval < rval );
+            break;
         }
         default:
         {
             throw libcasm_ir::InternalException(
                 "unimplemented '" + instr.description() + "'" );
-            return libcasm_ir::VoidConstant();
+            break;
         }
     }
 }
 
-libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::LeqInstruction& instr,
-    const libcasm_ir::Constant& lhs,
+void Instruction::execute( const libcasm_ir::LeqInstruction& instr,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
     assert( lhs.type() == rhs.type() );
@@ -514,36 +525,37 @@ libcasm_ir::Constant Instruction::execute(
                     = static_cast< const libcasm_ir::IntegerConstant& >( rhs )
                           .value();
 
-                return libcasm_ir::BooleanConstant( lval <= rval );
+                res = libcasm_ir::BooleanConstant( lval <= rval );
+                break;
             }
             default:
             {
                 throw libcasm_ir::InternalException(
                     "unimplemented '" + instr.description() + "'" );
-                return libcasm_ir::VoidConstant();
+                break;
             }
         }
     }
     else if( not lhs.defined() and not rhs.defined() )
     {
-        return libcasm_ir::BooleanConstant( true );
+        res = libcasm_ir::BooleanConstant( true );
     }
     else
     {
-        return libcasm_ir::BooleanConstant();
+        res = libcasm_ir::BooleanConstant();
     }
 }
 
-libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::GthInstruction& instr,
-    const libcasm_ir::Constant& lhs,
+void Instruction::execute( const libcasm_ir::GthInstruction& instr,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
     assert( lhs.type() == rhs.type() );
 
     if( not lhs.defined() or not rhs.defined() )
     {
-        return libcasm_ir::BooleanConstant();
+        res = libcasm_ir::BooleanConstant();
+        return;
     }
 
     switch( lhs.type().id() )
@@ -557,20 +569,20 @@ libcasm_ir::Constant Instruction::execute(
                 = static_cast< const libcasm_ir::IntegerConstant& >( rhs )
                       .value();
 
-            return libcasm_ir::BooleanConstant( lval > rval );
+            res = libcasm_ir::BooleanConstant( lval > rval );
+            break;
         }
         default:
         {
             throw libcasm_ir::InternalException(
                 "unimplemented '" + instr.description() + "'" );
-            return libcasm_ir::VoidConstant();
+            break;
         }
     }
 }
 
-libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::GeqInstruction& instr,
-    const libcasm_ir::Constant& lhs,
+void Instruction::execute( const libcasm_ir::GeqInstruction& instr,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
     assert( lhs.type() == rhs.type() );
@@ -588,29 +600,29 @@ libcasm_ir::Constant Instruction::execute(
                     = static_cast< const libcasm_ir::IntegerConstant& >( rhs )
                           .value();
 
-                return libcasm_ir::BooleanConstant( lval >= rval );
+                res = libcasm_ir::BooleanConstant( lval >= rval );
+                break;
             }
             default:
             {
                 throw libcasm_ir::InternalException(
                     "unimplemented '" + instr.description() + "'" );
-                return libcasm_ir::VoidConstant();
+                break;
             }
         }
     }
     else if( not lhs.defined() and not rhs.defined() )
     {
-        return libcasm_ir::BooleanConstant( true );
+        res = libcasm_ir::BooleanConstant( true );
     }
     else
     {
-        return libcasm_ir::BooleanConstant();
+        res = libcasm_ir::BooleanConstant();
     }
 }
 
-libcasm_ir::Constant Instruction::execute(
-    const libcasm_ir::CallInstruction& instr,
-    const libcasm_ir::Constant* operands,
+void Instruction::execute( const libcasm_ir::CallInstruction& instr,
+    libcasm_ir::Constant& res, const libcasm_ir::Constant* reg,
     const std::size_t size )
 {
     // TODO
@@ -621,7 +633,6 @@ libcasm_ir::Constant Instruction::execute(
 
     throw libcasm_ir::InternalException(
         "unimplemented '" + instr.description() + "'" );
-    return libcasm_ir::VoidConstant();
 }
 
 // libcsel_ir::CallableUnit* Instruction::Not(

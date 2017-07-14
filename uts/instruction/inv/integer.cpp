@@ -33,7 +33,8 @@ static const auto type
 
 #define CALC_( ARG )                                                           \
     const auto arg = IntegerConstant( ARG );                                   \
-    const auto res = libcasm_rt::Value::execute( id, *type, arg );
+    Constant res;                                                              \
+    libcasm_rt::Value::execute( id, *type, res, arg );
 
 #define TEST_( NAME, RES, ARG )                                                \
     TEST( libcasm_rt__instruction_inv_integer, NAME )                          \

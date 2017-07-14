@@ -34,7 +34,9 @@ static const auto type
 
 TEST( libcasm_rt__builtin_abort, call )
 {
-    EXPECT_THROW( libcasm_rt::Value::execute( id, *type );, AbortException );
+    Constant res;
+    EXPECT_THROW( libcasm_rt::Value::execute( id, *type, res );
+                  , AbortException );
 }
 
 //
