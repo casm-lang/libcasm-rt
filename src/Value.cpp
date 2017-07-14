@@ -190,7 +190,7 @@ libcasm_ir::Constant Value::execute_( const libcasm_ir::Value::ID id,
         {
             assert( size == 2 );
             return libcasm_rt::Instruction::
-                execute< libcasm_ir::XorInstruction >( operands, size );
+                execute< libcasm_ir::AndInstruction >( operands, size );
         }
 
         case libcasm_ir::Value::ID::NOT_INSTRUCTION:
