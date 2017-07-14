@@ -144,15 +144,30 @@ libcasm_ir::Constant Builtin::execute(
             {
                 const auto c
                     = static_cast< const libcasm_ir::IntegerConstant& >( arg );
-                return libcasm_ir::BooleanConstant(
-                    static_cast< const libstdhl::Type& >( c.value() ) > 0
-                    and not c.value().sign() );
+
+                if( c.value().trivial() )
+                {
+                    return libcasm_ir::BooleanConstant(
+                        c.value().value() > 0 and not c.value().sign() );
+                }
+                else
+                {
+                    return libcasm_ir::BooleanConstant( true );
+                }
             }
             case libcasm_ir::Type::BIT:
             {
                 const auto c
                     = static_cast< const libcasm_ir::BitConstant& >( arg );
-                return libcasm_ir::BooleanConstant( c.value() > 0 );
+
+                if( c.value().trivial() )
+                {
+                    return libcasm_ir::BooleanConstant( c.value().value() > 0 );
+                }
+                else
+                {
+                    return libcasm_ir::BooleanConstant( true );
+                }
             }
             default:
             {
@@ -196,8 +211,10 @@ libcasm_ir::Constant Builtin::execute(
                 const auto c
                     = static_cast< const libcasm_ir::EnumerationConstant& >(
                         arg );
+
                 return libcasm_ir::IntegerConstant(
-                    static_cast< const libstdhl::Integer& >( c.value() ) );
+                    static_cast< const libstdhl::Type::Integer& >(
+                        c.value().value() ) );
             }
             default:
             {
@@ -523,7 +540,7 @@ libcasm_ir::Constant Builtin::execute( const libcasm_ir::AdduBuiltin& builtin,
 
     if( not lhs.defined() or not rhs.defined() )
     {
-        return libcasm_ir::Constant::undef( lhs.ptr_type() );
+        return libcasm_ir::Constant::undef( lhs.type().ptr_type() );
     }
 
     switch( lhs.type().id() )

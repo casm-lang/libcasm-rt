@@ -54,7 +54,7 @@ libcasm_ir::Constant Instruction::execute(
 {
     if( not lhs.defined() )
     {
-        return libcasm_ir::Constant::undef( lhs.ptr_type() );
+        return libcasm_ir::Constant::undef( lhs.type().ptr_type() );
     }
 
     switch( lhs.type().id() )
@@ -98,7 +98,7 @@ libcasm_ir::Constant Instruction::execute(
 {
     if( not lhs.defined() or not rhs.defined() )
     {
-        return libcasm_ir::Constant::undef( instr.ptr_type() );
+        return libcasm_ir::Constant::undef( instr.type().ptr_type() );
     }
 
     switch( instr.type().id() )
@@ -139,7 +139,7 @@ libcasm_ir::Constant Instruction::execute(
 {
     if( not lhs.defined() or not rhs.defined() )
     {
-        return libcasm_ir::Constant::undef( instr.ptr_type() );
+        return libcasm_ir::Constant::undef( instr.type().ptr_type() );
     }
 
     switch( instr.type().id() )
@@ -171,7 +171,7 @@ libcasm_ir::Constant Instruction::execute(
 {
     if( not lhs.defined() or not rhs.defined() )
     {
-        return libcasm_ir::Constant::undef( instr.ptr_type() );
+        return libcasm_ir::Constant::undef( instr.type().ptr_type() );
     }
 
     switch( instr.type().id() )
@@ -203,7 +203,7 @@ libcasm_ir::Constant Instruction::execute(
 {
     if( not lhs.defined() or not rhs.defined() )
     {
-        return libcasm_ir::Constant::undef( instr.ptr_type() );
+        return libcasm_ir::Constant::undef( instr.type().ptr_type() );
     }
 
     switch( instr.type().id() )
@@ -217,7 +217,7 @@ libcasm_ir::Constant Instruction::execute(
                 = static_cast< const libcasm_ir::IntegerConstant& >( rhs )
                       .value();
 
-            if( static_cast< const libstdhl::Type& >( rval ) == 0 )
+            if( rval == 0 )
             {
                 return libcasm_ir::IntegerConstant();
             }
@@ -240,7 +240,7 @@ libcasm_ir::Constant Instruction::execute(
 {
     if( not lhs.defined() or not rhs.defined() )
     {
-        return libcasm_ir::Constant::undef( instr.ptr_type() );
+        return libcasm_ir::Constant::undef( instr.type().ptr_type() );
     }
 
     switch( instr.type().id() )
@@ -254,7 +254,7 @@ libcasm_ir::Constant Instruction::execute(
                 = static_cast< const libcasm_ir::IntegerConstant& >( rhs )
                       .value();
 
-            if( static_cast< const libstdhl::Type& >( rval ) == 0 )
+            if( rval == 0 )
             {
                 return libcasm_ir::IntegerConstant();
             }
@@ -387,7 +387,7 @@ libcasm_ir::Constant Instruction::execute(
 {
     if( not lhs.defined() )
     {
-        return libcasm_ir::Constant::undef( instr.ptr_type() );
+        return libcasm_ir::Constant::undef( instr.type().ptr_type() );
     }
 
     switch( lhs.type().id() )
@@ -404,15 +404,14 @@ libcasm_ir::Constant Instruction::execute(
             const auto& val = static_cast< const libcasm_ir::IntegerConstant& >(
                 lhs ).value();
 
-            return libcasm_ir::BooleanConstant(
-                static_cast< const libstdhl::Type& >( val ) == 0 );
+            return libcasm_ir::BooleanConstant( val == 0 );
         }
         case libcasm_ir::Type::BIT:
         {
             const auto& val
                 = static_cast< const libcasm_ir::BitConstant& >( lhs ).value();
 
-            return libcasm_ir::BitConstant( lhs.ptr_type(), ~val );
+            return libcasm_ir::BitConstant( lhs.type().ptr_type(), ~val );
         }
         default:
         {
