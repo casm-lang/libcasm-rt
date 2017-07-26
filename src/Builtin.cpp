@@ -72,7 +72,8 @@ void Builtin::execute( const libcasm_ir::AssertBuiltin& builtin,
 {
     const auto& cond = operands[ 0 ];
     assert( cond.type().isBoolean() );
-    const auto c = static_cast< const libcasm_ir::BooleanConstant& >( cond );
+    const auto& c
+        = static_cast< const libcasm_ir::BooleanConstant& >( cond ).value();
 
     if( not c.defined() )
     {
@@ -91,7 +92,7 @@ void Builtin::execute( const libcasm_ir::AssertBuiltin& builtin,
                 assert( txt.type().isString() );
                 const auto str
                     = static_cast< const libcasm_ir::StringConstant& >( txt );
-                msg += ": " + str.value();
+                msg += ": " + str.name();
             }
 
             throw libcasm_ir::AssertionException( msg );
@@ -109,7 +110,7 @@ void Builtin::execute( const libcasm_ir::PrintBuiltin& builtin,
     assert( txt.type().isString() );
     const auto str = static_cast< const libcasm_ir::StringConstant& >( txt );
 
-    std::cout << str.value();
+    std::cout << str.name();
 
     res = libcasm_ir::VoidConstant();
 }
@@ -122,7 +123,7 @@ void Builtin::execute( const libcasm_ir::PrintLnBuiltin& builtin,
     assert( txt.type().isString() );
     const auto str = static_cast< const libcasm_ir::StringConstant& >( txt );
 
-    std::cout << str.value() << "\n";
+    std::cout << str.name() << "\n";
 
     res = libcasm_ir::VoidConstant();
 }
@@ -203,14 +204,15 @@ void Builtin::execute( const libcasm_ir::AsIntegerBuiltin& builtin,
             }
             case libcasm_ir::Type::BOOLEAN:
             {
-                const auto c
-                    = static_cast< const libcasm_ir::BooleanConstant& >( arg );
+                const auto& c
+                    = static_cast< const libcasm_ir::BooleanConstant& >( arg )
+                          .value();
                 res = libcasm_ir::IntegerConstant( c.value() ? 1 : 0 );
                 break;
             }
             case libcasm_ir::Type::BIT:
             {
-                const auto c
+                const auto& c
                     = static_cast< const libcasm_ir::BitConstant& >( arg );
                 res = libcasm_ir::IntegerConstant( c );
                 break;
@@ -223,7 +225,7 @@ void Builtin::execute( const libcasm_ir::AsIntegerBuiltin& builtin,
 
                 res = libcasm_ir::IntegerConstant(
                     static_cast< const libstdhl::Type::Integer& >(
-                        c.value().value() ) );
+                        c.value() ) );
                 break;
             }
             default:
@@ -300,7 +302,8 @@ void Builtin::execute( const libcasm_ir::DecBuiltin& builtin,
             case libcasm_ir::Type::BOOLEAN:
             {
                 const auto& c
-                    = static_cast< const libcasm_ir::BooleanConstant& >( arg );
+                    = static_cast< const libcasm_ir::BooleanConstant& >( arg )
+                          .value();
                 res = libcasm_ir::StringConstant( c.value() ? "1" : "0" );
                 break;
             }
@@ -375,7 +378,8 @@ void Builtin::execute( const libcasm_ir::HexBuiltin& builtin,
             case libcasm_ir::Type::BOOLEAN:
             {
                 const auto& c
-                    = static_cast< const libcasm_ir::BooleanConstant& >( arg );
+                    = static_cast< const libcasm_ir::BooleanConstant& >( arg )
+                          .value();
                 res = libcasm_ir::StringConstant( c.value() ? "1" : "0" );
                 break;
             }
@@ -450,7 +454,8 @@ void Builtin::execute( const libcasm_ir::OctBuiltin& builtin,
             case libcasm_ir::Type::BOOLEAN:
             {
                 const auto& c
-                    = static_cast< const libcasm_ir::BooleanConstant& >( arg );
+                    = static_cast< const libcasm_ir::BooleanConstant& >( arg )
+                          .value();
                 res = libcasm_ir::StringConstant( c.value() ? "1" : "0" );
                 break;
             }
@@ -525,7 +530,8 @@ void Builtin::execute( const libcasm_ir::BinBuiltin& builtin,
             case libcasm_ir::Type::BOOLEAN:
             {
                 const auto& c
-                    = static_cast< const libcasm_ir::BooleanConstant& >( arg );
+                    = static_cast< const libcasm_ir::BooleanConstant& >( arg )
+                          .value();
                 res = libcasm_ir::StringConstant( c.value() ? "1" : "0" );
                 break;
             }
@@ -612,16 +618,6 @@ void Builtin::execute( const libcasm_ir::AdduBuiltin& builtin,
                       .value();
 
             res = libcasm_ir::IntegerConstant( lval + rval );
-            break;
-        }
-        case libcasm_ir::Type::BIT:
-        {
-            const auto& lval = static_cast< const libcasm_ir::StringConstant& >(
-                lhs ).value();
-            const auto& rval = static_cast< const libcasm_ir::StringConstant& >(
-                rhs ).value();
-
-            res = libcasm_ir::StringConstant( lval + rval );
             break;
         }
         default:
