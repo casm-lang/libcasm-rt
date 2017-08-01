@@ -303,12 +303,12 @@ void Instruction::execute( const libcasm_ir::AndInstruction& instr,
 
     if( lhs.defined() and rhs.defined() )
     {
-        res = libcasm_ir::BooleanConstant( lval and rval );
+        res = libcasm_ir::BooleanConstant( lval.value() and rval.value() );
     }
     else
     {
-        if( ( lhs.defined() and ( not lval ) )
-            or ( rhs.defined() and ( not rval ) ) )
+        if( ( lhs.defined() and ( not lval.value() ) )
+            or ( rhs.defined() and ( not rval.value() ) ) )
         {
             res = libcasm_ir::BooleanConstant( false );
         }
@@ -330,7 +330,7 @@ void Instruction::execute( const libcasm_ir::XorInstruction& instr,
 
     if( lhs.defined() and rhs.defined() )
     {
-        res = libcasm_ir::BooleanConstant( lval xor rval );
+        res = libcasm_ir::BooleanConstant( lval.value() xor rval.value() );
     }
     else
     {
@@ -349,11 +349,12 @@ void Instruction::execute( const libcasm_ir::OrInstruction& instr,
 
     if( lhs.defined() and rhs.defined() )
     {
-        res = libcasm_ir::BooleanConstant( lval or rval );
+        res = libcasm_ir::BooleanConstant( lval.value() or rval.value() );
     }
     else
     {
-        if( ( lhs.defined() and lval ) or ( rhs.defined() and rval ) )
+        if( ( lhs.defined() and lval.value() )
+            or ( rhs.defined() and rval.value() ) )
         {
             res = libcasm_ir::BooleanConstant( true );
         }
@@ -375,11 +376,13 @@ void Instruction::execute( const libcasm_ir::ImpInstruction& instr,
 
     if( lhs.defined() and rhs.defined() )
     {
-        res = libcasm_ir::BooleanConstant( ( not lval ) or rval );
+        res = libcasm_ir::BooleanConstant(
+            ( not lval.value() ) or rval.value() );
     }
     else
     {
-        if( ( lhs.defined() and ( not lval ) ) or ( rhs.defined() and rval ) )
+        if( ( lhs.defined() and ( not lval.value() ) )
+            or ( rhs.defined() and rval.value() ) )
         {
             res = libcasm_ir::BooleanConstant( true );
         }
@@ -406,7 +409,7 @@ void Instruction::execute( const libcasm_ir::NotInstruction& instr,
             const auto& val = static_cast< const libcasm_ir::BooleanConstant& >(
                 lhs ).value();
 
-            res = libcasm_ir::BooleanConstant( not val );
+            res = libcasm_ir::BooleanConstant( not val.value() );
             break;
         }
         case libcasm_ir::Type::INTEGER:
