@@ -20,102 +20,171 @@
 #   You should have received a copy of the GNU General Public License
 #   along with libcasm-rt. If not, see <http://www.gnu.org/licenses/>.
 #
+#   Additional permission under GNU GPL version 3 section 7
+#
+#   libcasm-rt is distributed under the terms of the GNU General Public License
+#   with the following clarification and special exception: Linking libcasm-rt
+#   statically or dynamically with other modules is making a combined work
+#   based on libcasm-rt. Thus, the terms and conditions of the GNU General
+#   Public License cover the whole combination. As a special exception,
+#   the copyright holders of libcasm-rt give you permission to link libcasm-rt
+#   with independent modules to produce an executable, regardless of the
+#   license terms of these independent modules, and to copy and distribute
+#   the resulting executable under terms of your choice, provided that you
+#   also meet, for each linked independent module, the terms and conditions
+#   of the license of that module. An independent module is a module which
+#   is not derived from or based on libcasm-rt. If you modify libcasm-rt, you
+#   may extend this exception to your version of the library, but you are
+#   not obliged to do so. If you do not wish to do so, delete this exception
+#   statement from your version.
+#
 
-cmake_minimum_required( VERSION 3.1 )
+set( PROJECT libcasm-rt )
+cmake_minimum_required( VERSION ${CMAKE_VERSION} )
 
-if( EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../gtest" )
-  set( LIBS .. )
-else()
-  set( LIBS lib )
+set( CMAKE_VERSION 3.2 )
+set( CMAKE_INCLUDE_CURRENT_DIR ON )
+
+set( CMAKE_CXX_STANDARD 11 )
+project( ${PROJECT} LANGUAGES CXX )
+
+find_package( ECM REQUIRED CONFIG QUIET )
+set( CMAKE_MODULE_PATH
+  ${ECM_MODULE_PATH}
+  ${${PROJECT}_SOURCE_DIR}/.cmake
+  )
+
+set( THREADS_PREFER_PTHREAD_FLAG ON )
+find_package( Threads REQUIRED )
+
+include( ECMGenerateHeaders )
+include( FeatureSummary )
+include( GenerateExportHeader )
+include( CPack )
+include( LibPackage )
+
+package_git( ${PROJECT} )
+package_git_submodule( libstdhl   master REQUIRED obj   ../stdhl   lib/stdhl   )
+package_git_submodule( libgtest   master REQUIRED build ../gtest   lib/gtest   )
+package_git_submodule( libhayai   master REQUIRED build ../hayai   lib/hayai   )
+package_git_submodule( libpass    master REQUIRED obj   ../pass    lib/pass    )
+package_git_submodule( libcasm-ir master REQUIRED obj   ../casm-ir lib/casm-ir )
+
+add_subdirectory( src )
+add_subdirectory( etc
+  EXCLUDE_FROM_ALL
+  )
+
+add_custom_target( sync
+  COMMAND
+    make sync > ${PROJECT_BINARY_DIR}/CMakeSync 2>&1
+  DEPENDS
+    libgtest
+    libhayai
+    libstdhl
+    libpass
+    libcasm-ir
+  WORKING_DIRECTORY
+    ${PROJECT_SOURCE_DIR}
+  )
+
+add_dependencies( ${PROJECT}-cpp
+  sync
+  )
+
+
+#
+# library
+#
+
+add_library( ${PROJECT} STATIC
+  $<TARGET_OBJECTS:${PROJECT}-cpp>
+  )
+
+if( ${LIBCASM_IR_FOUND} )
+  target_link_libraries( ${PROJECT}
+    ${LIBCASM_IR_LIBRARY}
+    ${LIBPASS_LIBRARY}
+    ${LIBSTDHL_LIBRARY}
+    )
 endif()
 
-foreach( DEPENDENCY
-    stdhl
-    pass
-    casm-ir
-    )
-  if( NOT TARGET ${DEPENDENCY} )
-    add_subdirectory( ${LIBS}/${DEPENDENCY} lib/${DEPENDENCY} )
-  endif()  
-endforeach()
 
+set( ${PROJECT}_VERSION ${GIT_REVTAG} )
+set_property( TARGET ${PROJECT} PROPERTY VERSION   ${PROJECT}_VERSION )
+set_property( TARGET ${PROJECT} PROPERTY PREFIX "" )
 
-file( GLOB_RECURSE CXX_SRC_FILES "src/*.cpp" )
-file( GLOB_RECURSE CXX_UTS_FILES "uts/*.cpp" )
-
-
-set( TARGET casm-rt )
-project( ${TARGET} )
-
-
-include_directories(
-  .
-  src
-  ${LIBS}/gtest/googletest
-  ${LIBS}/gtest/googletest/include
-  ${LIBS}/hayai/src
-  ${LIBS}/stdhl
-  ${LIBS}/pass
-  ${LIBS}/casm-ir
-)
-
-
-set( CMAKE_CXX_FLAGS          "${CMAKE_CXX_FLAGS}          -std=c++11 -Wall" )
-
-set( CMAKE_CXX_FLAGS_DEBUG    "${CMAKE_CXX_FLAGS_DEBUG}    -O0" )
-set( CMAKE_CXX_FLAGS_RELEASE  "${CMAKE_CXX_FLAGS_RELEASE}  -O3" )
-set( CMAKE_CXX_FLAGS_SANITIZE "${CMAKE_CXX_FLAGS_SANITIZE} -O1 -Wextra -g -fno-omit-frame-pointer -fno-optimize-sibling-calls -fsanitize=undefined -fsanitize=address" )
-
-
-add_library( ${TARGET} STATIC
-  ${CXX_SRC_FILES}
-)
-
-
-add_library( ${TARGET}-test OBJECT
-  ${CXX_UTS_FILES}
-)
-
-add_executable( ${TARGET}-check
-  ${LIBS}/gtest/googletest/src/gtest_main.cc
-  ${LIBS}/gtest/googletest/src/gtest-all.cc
-  $<TARGET_OBJECTS:${TARGET}-test>
-)
-
-target_link_libraries( ${TARGET}-check
-  ${TARGET}
-  casm-ir
-  pass
-  stdhl
-  pthread
-)
-
-
-add_library( ${TARGET}-benchmark OBJECT
-  ${CXX_UTS_FILES}
-)
-
-add_executable( ${TARGET}-run
-  ${LIBS}/hayai/src/hayai_posix_main.cpp
-  ${LIBS}/gtest/googletest/src/gtest-all.cc
-  $<TARGET_OBJECTS:${TARGET}-benchmark>
-)
-
-target_link_libraries( ${TARGET}-run
-  ${TARGET}
-  casm-ir
-  pass
-  stdhl
-  pthread
-)
-
-
-if( NOT CMAKE_BUILD_TYPE )
-  set( CMAKE_BUILD_TYPE Debug
-    CACHE STRING "Choose the type of build : debug sanitize release."
-    FORCE
+install(
+  TARGETS  ${PROJECT}
+  EXPORT   ${PROJECT}Targets
+  LIBRARY  DESTINATION lib
+  ARCHIVE  DESTINATION lib
+  RUNTIME  DESTINATION bin
+  INCLUDES DESTINATION include
   )
-endif( NOT CMAKE_BUILD_TYPE )
+
+generate_export_header( ${PROJECT} )
+
+install(
+  FILES
+  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT}_export.h"
+  DESTINATION
+  "include/${PROJECT}"
+  )
 
 
-message( "* ${CMAKE_BUILD_TYPE} : ${TARGET} : ${LIBS}" )
+#
+# test
+# 
+
+
+add_executable( ${PROJECT}-check
+  EXCLUDE_FROM_ALL
+  $<TARGET_OBJECTS:${PROJECT}-test>
+  )
+
+if( ${LIBGTEST_FOUND} )
+  target_link_libraries( ${PROJECT}-check
+    ${PROJECT}
+    ${LIBGTEST_LIBRARY}
+    ${LIBGTEST_MAIN}
+    Threads::Threads
+    )
+endif()
+
+#
+# benchmark
+#
+
+add_executable( ${PROJECT}-run
+  EXCLUDE_FROM_ALL
+  $<TARGET_OBJECTS:${PROJECT}-benchmark>
+  )
+
+if( ${LIBHAYAI_FOUND} )
+  target_link_libraries( ${PROJECT}-run
+    ${PROJECT}
+    ${LIBHAYAI_LIBRARY}
+    )
+endif()
+
+
+#
+# cmake
+#
+
+install(
+  FILES
+    .cmake/Find${PROJECT}.cmake
+  DESTINATION
+    "share/cmake/Module/${PROJECT}"
+  )
+
+#
+# build features and checks
+#
+
+include( LibCompile )
+compile_flags( CXX )
+compile_check()
+feature_summary( WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES )

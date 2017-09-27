@@ -20,6 +20,24 @@
 //  You should have received a copy of the GNU General Public License
 //  along with libcasm-rt. If not, see <http://www.gnu.org/licenses/>.
 //
+//  Additional permission under GNU GPL version 3 section 7
+//
+//  libcasm-rt is distributed under the terms of the GNU General Public License
+//  with the following clarification and special exception: Linking libcasm-rt
+//  statically or dynamically with other modules is making a combined work
+//  based on libcasm-rt. Thus, the terms and conditions of the GNU General
+//  Public License cover the whole combination. As a special exception,
+//  the copyright holders of libcasm-rt give you permission to link libcasm-rt
+//  with independent modules to produce an executable, regardless of the
+//  license terms of these independent modules, and to copy and distribute
+//  the resulting executable under terms of your choice, provided that you
+//  also meet, for each linked independent module, the terms and conditions
+//  of the license of that module. An independent module is a module which
+//  is not derived from or based on libcasm-rt. If you modify libcasm-rt, you
+//  may extend this exception to your version of the library, but you are
+//  not obliged to do so. If you do not wish to do so, delete this exception
+//  statement from your version.
+//
 
 /**
    @brief    TODO
@@ -30,12 +48,12 @@
 #ifndef _LIB_CASMRT_VALUE_H_
 #define _LIB_CASMRT_VALUE_H_
 
-#include "CasmRT.h"
+#include <libcasm-rt/CasmRT>
 
-#include "../casm-ir/src/Constant.h"
-#include "../casm-ir/src/Value.h"
+#include <libcasm-ir/Constant>
+#include <libcasm-ir/Value>
 
-#include "../stdhl/cpp/Variadic.h"
+#include <libstdhl/Variadic>
 
 namespace libcasm_rt
 {
@@ -79,7 +97,8 @@ namespace libcasm_rt
             const libcasm_ir::Type& reftype, libcasm_ir::Constant& res,
             Args&&... args )
         {
-            const auto type = libstdhl::wrap( (libcasm_ir::Type&)reftype );
+            const auto type
+                = libstdhl::Memory::wrap( (libcasm_ir::Type&)reftype );
             execute( id, type, res, std::forward< Args >( args )... );
         }
     };
