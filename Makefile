@@ -41,4 +41,4 @@
 
 TARGET = libcasm-rt
 
-include .config.mk
+include .cmake/config.mk

@@ -50,19 +50,12 @@ libfind_pkg_check_modules( LIBCASM_RT_PKGCONF libcasm-rt )
 find_path( LIBCASM_RT_INCLUDE_DIR
   NAMES libcasm-rt/libcasm-rt.h
   PATHS ${LIBCASM_RT_PKGCONF_INCLUDE_DIRS}
-)
+  )
 
 find_library( LIBCASM_RT_LIBRARY
   NAMES libcasm-rt casm-rt
   PATHS ${LIBCASM_RT_PKGCONF_LIBRARY_DIRS}
-)
-
-if( LIBCASM_RT_LIBRARY-NOTFOUND )
-  find_library( LIBCASM_RT_LIBRARY
-    NAMES libcasm-rt libcasm-rt
-    PATHS ${LIBCASM_RT_PKGCONF_LIBRARY_DIRS}
-    )
-endif()
+  )
 
 set( LIBCASM_RT_PROCESS_INCLUDES LIBCASM_RT_INCLUDE_DIR )
 set( LIBCASM_RT_PROCESS_LIBS     LIBCASM_RT_LIBRARY )
