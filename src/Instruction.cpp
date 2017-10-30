@@ -47,6 +47,8 @@
 #include "Value.h"
 
 #include <libstdhl/Log>
+#include <libstdhl/type/Integer>
+#include <libstdhl/type/Natural>
 
 #include <libcasm-ir/Constant>
 #include <libcasm-ir/Exception>
@@ -308,8 +310,161 @@ void Instruction::execute( const libcasm_ir::PowInstruction& instr,
     libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
-    throw libcasm_ir::InternalException(
-        "unimplemented '" + instr.description() + "'" );
+    if( not lhs.defined() )
+    {
+        res = libcasm_ir::Constant::undef( instr.type().ptr_type() );
+        return;
+    }
+
+    if( not rhs.defined() )
+    {
+        switch( instr.type().kind() )
+        {
+            case libcasm_ir::Type::Kind::INTEGER:
+            {
+                const auto& lval
+                    = static_cast< const libcasm_ir::IntegerConstant& >( lhs )
+                          .value();
+
+                if( lval == 1 )
+                {
+                    res = lhs;
+                }
+                else
+                {
+                    res = libcasm_ir::Constant::undef(
+                        instr.type().ptr_type() );
+                }
+                break;
+            }
+            case libcasm_ir::Type::Kind::FLOATING:
+            {
+                const auto& lval
+                    = static_cast< const libcasm_ir::FloatingConstant& >( lhs
+                    )
+                          .value();
+
+                if( lval == 1 )
+                {
+                    res = lhs;
+                }
+                else
+                {
+                    res = libcasm_ir::Constant::undef(
+                        instr.type().ptr_type() );
+                }
+                break;
+            }
+            default:
+            {
+                throw libcasm_ir::InternalException(
+                    "unimplemented '" + instr.description() + "'" );
+                break;
+            }
+        }
+    }
+    else
+    {
+        switch( instr.type().kind() )
+        {
+            case libcasm_ir::Type::Kind::INTEGER:
+            {
+                const auto& lval
+                    = static_cast< const libcasm_ir::IntegerConstant& >( lhs )
+                          .value();
+                const auto& rval
+                    = static_cast< const libcasm_ir::IntegerConstant& >( rhs )
+                          .value();
+
+                if( rval < 0 )
+                {
+                    if( lval == 1 or -lval == 1 )
+                    {
+                        auto neg_rval = -rval;
+                        const auto& nat_rval
+                            = static_cast< const libstdhl::Type::Natural& >(
+                                neg_rval );
+
+                        libcasm_ir::IntegerConstant( lval ^ nat_rval );
+                    }
+                    else
+                    {
+                        libcasm_ir::Constant::undef( instr.type().ptr_type() );
+                    }
+                }
+                else if( rval == 0 )
+                {
+                    if( lval == 0 )
+                    {
+                        res = libcasm_ir::Constant::undef(
+                            instr.type().ptr_type() );
+                    }
+                    else
+                    {
+                        res = libcasm_ir::IntegerConstant( 1 );
+                    }
+                }
+                else
+                {
+                    const auto& nat_rval
+                        = static_cast< const libstdhl::Type::Natural& >( rval );
+                    res = libcasm_ir::IntegerConstant( lval ^ nat_rval );
+                }
+                break;
+            }
+            case libcasm_ir::Type::Kind::FLOATING:
+            {
+                const auto& lval
+                    = static_cast< const libcasm_ir::FloatingConstant& >( lhs )
+                          .value();
+                const auto& rval
+                    = static_cast< const libcasm_ir::IntegerConstant& >( rhs )
+                          .value();
+
+                if( rval < 0 )
+                {
+                    if( lval == 1 or -lval == 1 )
+                    {
+                        auto neg_rval = -rval;
+                        const auto& nat_rval
+                            = static_cast< const libstdhl::Type::Natural& >(
+                                neg_rval );
+
+                        libcasm_ir::FloatingConstant( lval ^ nat_rval );
+                    }
+                    else
+                    {
+                        libcasm_ir::Constant::undef( instr.type().ptr_type() );
+                    }
+                }
+                else if( rval == 0 )
+                {
+                    if( lval == 0 )
+                    {
+                        res = libcasm_ir::Constant::undef(
+                            instr.type().ptr_type() );
+                    }
+                    else
+                    {
+                        res = libcasm_ir::FloatingConstant( 1 );
+                    }
+                }
+                else
+                {
+                    const auto& nat_rval
+                        = static_cast< const libstdhl::Type::Natural& >( rval );
+                    res = libcasm_ir::FloatingConstant( lval ^ nat_rval );
+                }
+                break;
+            }
+            default:
+            {
+                throw libcasm_ir::InternalException(
+                    "unimplemented '" + instr.description() + "'" );
+                break;
+            }
+        }
+    }
 }
 
 void Instruction::execute( const libcasm_ir::AndInstruction& instr,
@@ -362,25 +517,58 @@ void Instruction::execute( const libcasm_ir::OrInstruction& instr,
     libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
-    const auto& lval
-        = static_cast< const libcasm_ir::BooleanConstant& >( lhs ).value();
-    const auto& rval
-        = static_cast< const libcasm_ir::BooleanConstant& >( rhs ).value();
+    switch( lhs.type().kind() )
+    {
+        case libcasm_ir::Type::Kind::BOOLEAN:
+        {
+            const auto& lval
+                = static_cast< const libcasm_ir::BooleanConstant& >( lhs )
+                      .value();
+            const auto& rval
+                = static_cast< const libcasm_ir::BooleanConstant& >( rhs )
+                      .value();
 
-    if( lhs.defined() and rhs.defined() )
-    {
-        res = libcasm_ir::BooleanConstant( lval.value() or rval.value() );
-    }
-    else
-    {
-        if( ( lhs.defined() and lval.value() )
-            or ( rhs.defined() and rval.value() ) )
-        {
-            res = libcasm_ir::BooleanConstant( true );
+            if( lhs.defined() and rhs.defined() )
+            {
+                res = libcasm_ir::BooleanConstant(
+                    lval.value() or rval.value() );
+            }
+            else
+            {
+                if( ( lhs.defined() and lval.value() )
+                    or ( rhs.defined() and rval.value() ) )
+                {
+                    res = libcasm_ir::BooleanConstant( true );
+                }
+                else
+                {
+                    res = libcasm_ir::BooleanConstant();
+                }
+            }
+            break;
         }
-        else
+        case libcasm_ir::Type::Kind::BIT:
         {
-            res = libcasm_ir::BooleanConstant();
+            const auto& lval
+                = static_cast< const libcasm_ir::BitConstant& >( lhs ).value();
+            const auto& rval
+                = static_cast< const libcasm_ir::BitConstant& >( rhs ).value();
+
+            if( lhs.defined() and rhs.defined() )
+            {
+                res = libcasm_ir::BitConstant( lval.value() or rval.value() );
+            }
+            else
+            {
+                res = libcasm_ir::Constant::undef( lhs.type().ptr_type() );
+            }
+            break;
+        }
+        default:
+        {
+            throw libcasm_ir::InternalException(
+                "unimplemented '" + instr.description() + "'" );
+            break;
         }
     }
 }
@@ -682,25 +870,32 @@ void Instruction::execute( const libcasm_ir::CallInstruction& instr,
 //     // auto ret = el->out( "ret", el_ty.results()[ 0 ] );
 
 //     // libcsel_ir::Scope* scope = new libcsel_ir::ParallelScope( el );
-//     // libcsel_ir::Statement* stmt = new libcsel_ir::TrivialStatement( scope
+//     // libcsel_ir::Statement* stmt = new libcsel_ir::TrivialStatement(
+//     scope
 //     );
 
 //     // auto idx0 = new libcsel_ir::BitConstant( 8, 0 );
 //     // auto idx1 = new libcsel_ir::BitConstant( 8, 1 );
 
 //     // auto arg_v_ptr
-//     //     = stmt->add( new libcsel_ir::ExtractInstruction( arg, idx0 ) );
+//     //     = stmt->add( new libcsel_ir::ExtractInstruction( arg, idx0 )
+//     );
 //     // auto arg_d_ptr
-//     //     = stmt->add( new libcsel_ir::ExtractInstruction( arg, idx1 ) );
+//     //     = stmt->add( new libcsel_ir::ExtractInstruction( arg, idx1 )
+//     );
 
 //     // auto ret_v_ptr
-//     //     = stmt->add( new libcsel_ir::ExtractInstruction( ret, idx0 ) );
-//     // auto ret_d_ptr
-//     //     = stmt->add( new libcsel_ir::ExtractInstruction( ret, idx1 ) );
-
-//     // auto arg_v = stmt->add( new libcsel_ir::LoadInstruction( arg_v_ptr )
+//     //     = stmt->add( new libcsel_ir::ExtractInstruction( ret, idx0 )
 //     );
-//     // auto arg_d = stmt->add( new libcsel_ir::LoadInstruction( arg_d_ptr )
+//     // auto ret_d_ptr
+//     //     = stmt->add( new libcsel_ir::ExtractInstruction( ret, idx1 )
+//     );
+
+//     // auto arg_v = stmt->add( new libcsel_ir::LoadInstruction( arg_v_ptr
+//     )
+//     );
+//     // auto arg_d = stmt->add( new libcsel_ir::LoadInstruction( arg_d_ptr
+//     )
 //     );
 
 //     // libcsel_ir::Value* r0 = 0;
@@ -743,35 +938,46 @@ void Instruction::execute( const libcasm_ir::CallInstruction& instr,
 //     // auto ret = el->out( "ret", el_ty.results()[ 0 ] );
 
 //     // libcsel_ir::Scope* scope = new libcsel_ir::ParallelScope( el );
-//     // libcsel_ir::Statement* stmt = new libcsel_ir::TrivialStatement( scope
+//     // libcsel_ir::Statement* stmt = new libcsel_ir::TrivialStatement(
+//     scope
 //     );
 
 //     // auto idx0 = new libcsel_ir::BitConstant( 8, 0 );
 //     // auto idx1 = new libcsel_ir::BitConstant( 8, 1 );
 
 //     // auto lhs_v_ptr
-//     //     = stmt->add( new libcsel_ir::ExtractInstruction( lhs, idx0 ) );
+//     //     = stmt->add( new libcsel_ir::ExtractInstruction( lhs, idx0 )
+//     );
 //     // auto lhs_d_ptr
-//     //     = stmt->add( new libcsel_ir::ExtractInstruction( lhs, idx1 ) );
+//     //     = stmt->add( new libcsel_ir::ExtractInstruction( lhs, idx1 )
+//     );
 
 //     // auto rhs_v_ptr
-//     //     = stmt->add( new libcsel_ir::ExtractInstruction( rhs, idx0 ) );
+//     //     = stmt->add( new libcsel_ir::ExtractInstruction( rhs, idx0 )
+//     );
 //     // auto rhs_d_ptr
-//     //     = stmt->add( new libcsel_ir::ExtractInstruction( rhs, idx1 ) );
+//     //     = stmt->add( new libcsel_ir::ExtractInstruction( rhs, idx1 )
+//     );
 
 //     // auto ret_v_ptr
-//     //     = stmt->add( new libcsel_ir::ExtractInstruction( ret, idx0 ) );
+//     //     = stmt->add( new libcsel_ir::ExtractInstruction( ret, idx0 )
+//     );
 //     // auto ret_d_ptr
-//     //     = stmt->add( new libcsel_ir::ExtractInstruction( ret, idx1 ) );
-
-//     // auto lhs_v = stmt->add( new libcsel_ir::LoadInstruction( lhs_v_ptr )
-//     );
-//     // auto lhs_d = stmt->add( new libcsel_ir::LoadInstruction( lhs_d_ptr )
+//     //     = stmt->add( new libcsel_ir::ExtractInstruction( ret, idx1 )
 //     );
 
-//     // auto rhs_v = stmt->add( new libcsel_ir::LoadInstruction( rhs_v_ptr )
+//     // auto lhs_v = stmt->add( new libcsel_ir::LoadInstruction( lhs_v_ptr
+//     )
 //     );
-//     // auto rhs_d = stmt->add( new libcsel_ir::LoadInstruction( rhs_d_ptr )
+//     // auto lhs_d = stmt->add( new libcsel_ir::LoadInstruction( lhs_d_ptr
+//     )
+//     );
+
+//     // auto rhs_v = stmt->add( new libcsel_ir::LoadInstruction( rhs_v_ptr
+//     )
+//     );
+//     // auto rhs_d = stmt->add( new libcsel_ir::LoadInstruction( rhs_d_ptr
+//     )
 //     );
 
 //     // // not(ld or rd) or ( (ld and rd) and (lv == rv) )
@@ -779,9 +985,12 @@ void Instruction::execute( const libcasm_ir::CallInstruction& instr,
 //     // // r3 or r4
 //     // // r5
 
-//     // auto r0 = stmt->add( new libcsel_ir::OrInstruction( lhs_d, rhs_d ) );
-//     // auto r1 = stmt->add( new libcsel_ir::AndInstruction( lhs_d, rhs_d ) );
-//     // auto r2 = stmt->add( new libcsel_ir::EquInstruction( lhs_v, rhs_v ) );
+//     // auto r0 = stmt->add( new libcsel_ir::OrInstruction( lhs_d, rhs_d )
+//     );
+//     // auto r1 = stmt->add( new libcsel_ir::AndInstruction( lhs_d, rhs_d
+//     ) );
+//     // auto r2 = stmt->add( new libcsel_ir::EquInstruction( lhs_v, rhs_v
+//     ) );
 //     // auto r3 = stmt->add( new libcsel_ir::LnotInstruction( r0 ) );
 //     // auto r4 = stmt->add( new libcsel_ir::AndInstruction( r1, r2 ) );
 //     // auto r5 = stmt->add( new libcsel_ir::OrInstruction( r3, r4 ) );
@@ -799,7 +1008,8 @@ void Instruction::execute( const libcasm_ir::CallInstruction& instr,
 //     libcasm_ir::Value& instr, libcsel_ir::Module* module )
 // {
 //     assert( libcasm_ir::isa< libcasm_ir::BinaryInstruction >( &value ) );
-//     assert( libcasm_ir::isa< libcasm_ir::ArithmeticInstruction >( &value ) );
+//     assert( libcasm_ir::isa< libcasm_ir::ArithmeticInstruction >( &value
+//     ) );
 
 //     libcasm_ir::ArithmeticInstruction* instr
 //         = (libcasm_ir::ArithmeticInstruction*)&value;
@@ -814,7 +1024,8 @@ void Instruction::execute( const libcasm_ir::CallInstruction& instr,
 //     libcsel_ir::Structure* tt = libcasm_rt::Type::create( *instr );
 
 //     std::string key
-//         = std::string( "casmrt_" + std::string( &instr.name()[ 1 ] ) + "_"
+//         = std::string( "casmrt_" + std::string( &instr.name()[ 1 ] ) +
+//         "_"
 //                        + std::string( ta->name() )
 //                        + "_"
 //                        + std::string( tb->name() )
@@ -840,8 +1051,8 @@ void Instruction::execute( const libcasm_ir::CallInstruction& instr,
 //     libcsel_ir::Reference* rb = obj->in( "b", tb->type() );
 //     libcsel_ir::Reference* rt = obj->out( "t", tt->type() );
 
-//     libcsel_ir::Scope* scope = 0; // new libcsel_ir::ParallelScope( obj );
-//     if( strcmp( &instr.name()[ 1 ], "div" )
+//     libcsel_ir::Scope* scope = 0; // new libcsel_ir::ParallelScope( obj
+//     ); if( strcmp( &instr.name()[ 1 ], "div" )
 //         == 0 ) // TODO: EXPERIMENTIAL: DEMO ONLY!!!
 //     {
 //         scope = new libcsel_ir::SequentialScope( obj );
@@ -873,12 +1084,15 @@ void Instruction::execute( const libcasm_ir::CallInstruction& instr,
 //     libcsel_ir::Value* rtd = new libcsel_ir::ExtractInstruction(
 //         rt, rt->getStructure()->get( 1 ) );
 
-//     libcsel_ir::Value* scv = new libcsel_ir::StoreInstruction( icv, rtv );
-//     libcsel_ir::Value* scd = new libcsel_ir::StoreInstruction( icd, rtd );
+//     libcsel_ir::Value* scv = new libcsel_ir::StoreInstruction( icv, rtv
+//     ); libcsel_ir::Value* scd = new libcsel_ir::StoreInstruction( icd,
+//     rtd );
 
-//     libcsel_ir::Statement* stmt_v = new libcsel_ir::TrivialStatement( scope
+//     libcsel_ir::Statement* stmt_v = new libcsel_ir::TrivialStatement(
+//     scope
 //     );
-//     libcsel_ir::Statement* stmt_d = new libcsel_ir::TrivialStatement( scope
+//     libcsel_ir::Statement* stmt_d = new libcsel_ir::TrivialStatement(
+//     scope
 //     );
 //     stmt_v->add( scv );
 //     stmt_d->add( scd );
@@ -908,17 +1122,20 @@ void Instruction::execute( const libcasm_ir::CallInstruction& instr,
 //     libcasm_ir::Value& instr, libcsel_ir::Module* module )
 // {
 //     assert( libcasm_ir::isa< libcasm_ir::EquInstruction >( &value ) );
-//     libcasm_ir::EquInstruction* instr = (libcasm_ir::EquInstruction*)&value;
+//     libcasm_ir::EquInstruction* instr =
+//     (libcasm_ir::EquInstruction*)&value;
 
 //     static std::unordered_map< std::string, libcsel_ir::CallableUnit* >
 //     cache;
 
-//     libcsel_ir::Structure* ta = libcasm_rt::Type::create( *instr->getLHS() );
-//     libcsel_ir::Structure* tb = libcasm_rt::Type::create( *instr->getRHS() );
-//     libcsel_ir::Structure* tt = libcasm_rt::Type::create( *instr );
+//     libcsel_ir::Structure* ta = libcasm_rt::Type::create(
+//     *instr->getLHS() ); libcsel_ir::Structure* tb =
+//     libcasm_rt::Type::create( *instr->getRHS() ); libcsel_ir::Structure*
+//     tt = libcasm_rt::Type::create( *instr );
 
 //     std::string key
-//         = std::string( "casmrt_" + std::string( &instr.name()[ 1 ] ) + "_"
+//         = std::string( "casmrt_" + std::string( &instr.name()[ 1 ] ) +
+//         "_"
 //                        + std::string( ta->name() )
 //                        + "_"
 //                        + std::string( tb->name() )
@@ -964,26 +1181,27 @@ void Instruction::execute( const libcasm_ir::CallInstruction& instr,
 //     libcsel_ir::Value* lbv = new libcsel_ir::LoadInstruction( rbv );
 //     libcsel_ir::Value* lbd = new libcsel_ir::LoadInstruction( rbd );
 
-//     libcsel_ir::Statement* stmt_d = new libcsel_ir::TrivialStatement( scope
+//     libcsel_ir::Statement* stmt_d = new libcsel_ir::TrivialStatement(
+//     scope
 //     );
 //     libcsel_ir::Value* def = libcsel_ir::BitConstant::create( 1, 1 );
 //     if( module )
 //     {
 //         module->add( def );
 //     }
-//     libcsel_ir::Value* scd = new libcsel_ir::StoreInstruction( def, rtd );
-//     stmt_d->add( scd );
+//     libcsel_ir::Value* scd = new libcsel_ir::StoreInstruction( def, rtd
+//     ); stmt_d->add( scd );
 
-//     libcsel_ir::Value* check = new libcsel_ir::AndInstruction( lad, lbd );
-//     libcsel_ir::Statement* br = new libcsel_ir::BranchStatement( scope );
-//     br->add( rtv );
-//     br->add( check );
+//     libcsel_ir::Value* check = new libcsel_ir::AndInstruction( lad, lbd
+//     ); libcsel_ir::Statement* br = new libcsel_ir::BranchStatement( scope
+//     ); br->add( rtv ); br->add( check );
 
 //     libcsel_ir::Scope* br_true = new libcsel_ir::ParallelScope();
 //     br->addScope( br_true );
 //     libcsel_ir::Value* equ_v
 //         = new libcsel_ir::EquUnsignedInstruction( lav, lbv );
-//     libcsel_ir::Value* equ_s = new libcsel_ir::StoreInstruction( equ_v, rtv
+//     libcsel_ir::Value* equ_s = new libcsel_ir::StoreInstruction( equ_v,
+//     rtv
 //     );
 //     libcsel_ir::Statement* st_true
 //         = new libcsel_ir::TrivialStatement( br_true );
@@ -991,9 +1209,10 @@ void Instruction::execute( const libcasm_ir::CallInstruction& instr,
 
 //     libcsel_ir::Scope* br_false = new libcsel_ir::ParallelScope();
 //     br->addScope( br_false );
-//     libcsel_ir::Value* equ_x = new libcsel_ir::XorInstruction( lad, lbd );
-//     libcsel_ir::Value* equ_y = new libcsel_ir::NotInstruction( equ_x );
-//     libcsel_ir::Value* equ_u = new libcsel_ir::StoreInstruction( equ_y, rtv
+//     libcsel_ir::Value* equ_x = new libcsel_ir::XorInstruction( lad, lbd
+//     ); libcsel_ir::Value* equ_y = new libcsel_ir::NotInstruction( equ_x
+//     ); libcsel_ir::Value* equ_u = new libcsel_ir::StoreInstruction(
+//     equ_y, rtv
 //     );
 //     libcsel_ir::Statement* st_false
 //         = new libcsel_ir::TrivialStatement( br_false );
