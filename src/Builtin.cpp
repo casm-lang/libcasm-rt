@@ -195,51 +195,47 @@ void Builtin::execute( const libcasm_ir::AsIntegerBuiltin& builtin,
 {
     const auto& arg = operands[ 0 ];
 
-    if( arg.defined() )
-    {
-        switch( arg.type().kind() )
-        {
-            case libcasm_ir::Type::Kind::INTEGER:
-            {
-                res = arg;
-                break;
-            }
-            case libcasm_ir::Type::Kind::BOOLEAN:
-            {
-                const auto& c
-                    = static_cast< const libcasm_ir::BooleanConstant& >( arg )
-                          .value();
-                res = libcasm_ir::IntegerConstant( c.value() ? 1 : 0 );
-                break;
-            }
-            case libcasm_ir::Type::Kind::BIT:
-            {
-                const auto& c
-                    = static_cast< const libcasm_ir::BitConstant& >( arg );
-                res = libcasm_ir::IntegerConstant( c );
-                break;
-            }
-            case libcasm_ir::Type::Kind::ENUMERATION:
-            {
-                const auto c
-                    = static_cast< const libcasm_ir::EnumerationConstant& >(
-                        arg );
-
-                res = libcasm_ir::IntegerConstant(
-                    static_cast< const libstdhl::Type::Integer& >(
-                        c.value() ) );
-                break;
-            }
-            default:
-            {
-                throw libcasm_ir::InternalException(
-                    "unimplemented '" + builtin.description() + "'" );
-            }
-        }
-    }
-    else
+    if( not arg.defined() )
     {
         res = libcasm_ir::IntegerConstant();
+        return;
+    }
+
+    switch( arg.type().kind() )
+    {
+        case libcasm_ir::Type::Kind::BOOLEAN:
+        {
+            const auto& c
+                = static_cast< const libcasm_ir::BooleanConstant& >( arg )
+                      .value();
+            res = libcasm_ir::IntegerConstant( c == true ? 1 : 0 );
+            break;
+        }
+        case libcasm_ir::Type::Kind::INTEGER:
+        {
+            res = arg;
+            break;
+        }
+        case libcasm_ir::Type::Kind::BIT:
+        {
+            const auto& c
+                = static_cast< const libcasm_ir::BitConstant& >( arg ).value();
+            res = libcasm_ir::IntegerConstant( c );
+            break;
+        }
+        case libcasm_ir::Type::Kind::FLOATING:
+        {
+            const auto& c
+                = static_cast< const libcasm_ir::FloatingConstant& >( arg )
+                      .value();
+            res = libcasm_ir::IntegerConstant( c.toInteger() );
+            break;
+        }
+        default:
+        {
+            throw libcasm_ir::InternalException(
+                "unimplemented '" + builtin.description() + "'" );
+        }
     }
 }
 
