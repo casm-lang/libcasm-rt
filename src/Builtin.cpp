@@ -151,56 +151,41 @@ void Builtin::execute( const libcasm_ir::AsBooleanBuiltin& builtin,
 {
     const auto& arg = operands[ 0 ];
 
-    if( arg.defined() )
-    {
-        switch( arg.type().kind() )
-        {
-            case libcasm_ir::Type::Kind::BOOLEAN:
-            {
-                res = arg;
-                break;
-            }
-            case libcasm_ir::Type::Kind::INTEGER:
-            {
-                const auto c
-                    = static_cast< const libcasm_ir::IntegerConstant& >( arg );
-
-                if( c.value().trivial() )
-                {
-                    res = libcasm_ir::BooleanConstant(
-                        c.value().value() > 0 and not c.value().sign() );
-                }
-                else
-                {
-                    res = libcasm_ir::BooleanConstant( true );
-                }
-                break;
-            }
-            case libcasm_ir::Type::Kind::BIT:
-            {
-                const auto c
-                    = static_cast< const libcasm_ir::BitConstant& >( arg );
-
-                if( c.value().trivial() )
-                {
-                    res = libcasm_ir::BooleanConstant( c.value().value() > 0 );
-                }
-                else
-                {
-                    res = libcasm_ir::BooleanConstant( true );
-                }
-                break;
-            }
-            default:
-            {
-                throw libcasm_ir::InternalException(
-                    "unimplemented '" + builtin.description() + "'" );
-            }
-        }
-    }
-    else
+    if( not arg.defined() )
     {
         res = libcasm_ir::BooleanConstant();
+        return;
+    }
+
+    switch( arg.type().kind() )
+    {
+        case libcasm_ir::Type::Kind::BOOLEAN:
+        {
+            res = arg;
+            break;
+        }
+        case libcasm_ir::Type::Kind::INTEGER:
+        {
+            const auto c
+                = static_cast< const libcasm_ir::IntegerConstant& >( arg )
+                      .value();
+
+            res = libcasm_ir::BooleanConstant( c > 0 );
+            break;
+        }
+        case libcasm_ir::Type::Kind::BIT:
+        {
+            const auto c
+                = static_cast< const libcasm_ir::BitConstant& >( arg ).value();
+
+            res = libcasm_ir::BooleanConstant( c > 0 );
+            break;
+        }
+        default:
+        {
+            throw libcasm_ir::InternalException(
+                "unimplemented '" + builtin.description() + "'" );
+        }
     }
 }
 
