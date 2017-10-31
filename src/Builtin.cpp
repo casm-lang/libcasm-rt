@@ -286,8 +286,54 @@ void Builtin::execute( const libcasm_ir::AsFloatingBuiltin& builtin,
     libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
     const std::size_t size )
 {
-    throw libcasm_ir::InternalException(
-        "unimplemented '" + builtin.description() + "'" );
+    const auto& arg = operands[ 0 ];
+
+    if( arg.defined() )
+    {
+        switch( arg.type().kind() )
+        {
+            case libcasm_ir::Type::Kind::FLOATING:
+            {
+                const auto& c
+                    = static_cast< const libcasm_ir::FloatingConstant& >( arg );
+                res = c;
+                break;
+            }
+            case libcasm_ir::Type::Kind::BOOLEAN:
+            {
+                const auto& c
+                    = static_cast< const libcasm_ir::BooleanConstant& >( arg )
+                          .value();
+                res = libcasm_ir::FloatingConstant( c == true ? 1.0 : 0.0 );
+                break;
+            }
+            case libcasm_ir::Type::Kind::INTEGER:
+            {
+                const auto& c
+                    = static_cast< const libcasm_ir::IntegerConstant& >( arg )
+                          .value();
+                res = libcasm_ir::FloatingConstant( c );
+                break;
+            }
+            case libcasm_ir::Type::Kind::BIT:
+            {
+                const auto& c
+                    = static_cast< const libcasm_ir::BitConstant& >( arg )
+                          .value();
+                res = libcasm_ir::FloatingConstant( c );
+                break;
+            }
+            default:
+            {
+                throw libcasm_ir::InternalException(
+                    "unimplemented '" + builtin.description() + "'" );
+            }
+        }
+    }
+    else
+    {
+        res = libcasm_ir::FloatingConstant();
+    }
 }
 
 void Builtin::execute( const libcasm_ir::AsRationalBuiltin& builtin,
