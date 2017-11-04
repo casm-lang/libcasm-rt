@@ -55,7 +55,7 @@ add_library( ${PROJECT}-test OBJECT
   builtin/as/string/boolean.cpp
   builtin/as/string/bit.cpp
   builtin/as/string/string.cpp
-  builtin/as/string/floating.cpp
+  builtin/as/string/decimal.cpp
   builtin/as/string/rational.cpp
   builtin/as/integer/integer.cpp
   builtin/as/integer/boolean.cpp

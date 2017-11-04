@@ -223,10 +223,10 @@ void Builtin::execute( const libcasm_ir::AsIntegerBuiltin& builtin,
             res = libcasm_ir::IntegerConstant( c );
             break;
         }
-        case libcasm_ir::Type::Kind::FLOATING:
+        case libcasm_ir::Type::Kind::DECIMAL:
         {
             const auto& c
-                = static_cast< const libcasm_ir::FloatingConstant& >( arg )
+                = static_cast< const libcasm_ir::DecimalConstant& >( arg )
                       .value();
             res = libcasm_ir::IntegerConstant( c.toInteger() );
             break;
@@ -263,7 +263,7 @@ void Builtin::execute( const libcasm_ir::AsStringBuiltin& builtin,
     }
 }
 
-void Builtin::execute( const libcasm_ir::AsFloatingBuiltin& builtin,
+void Builtin::execute( const libcasm_ir::AsDecimalBuiltin& builtin,
     libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
     const std::size_t size )
 {
@@ -273,10 +273,10 @@ void Builtin::execute( const libcasm_ir::AsFloatingBuiltin& builtin,
     {
         switch( arg.type().kind() )
         {
-            case libcasm_ir::Type::Kind::FLOATING:
+            case libcasm_ir::Type::Kind::DECIMAL:
             {
                 const auto& c
-                    = static_cast< const libcasm_ir::FloatingConstant& >( arg );
+                    = static_cast< const libcasm_ir::DecimalConstant& >( arg );
                 res = c;
                 break;
             }
@@ -285,7 +285,7 @@ void Builtin::execute( const libcasm_ir::AsFloatingBuiltin& builtin,
                 const auto& c
                     = static_cast< const libcasm_ir::BooleanConstant& >( arg )
                           .value();
-                res = libcasm_ir::FloatingConstant( c == true ? 1.0 : 0.0 );
+                res = libcasm_ir::DecimalConstant( c == true ? 1.0 : 0.0 );
                 break;
             }
             case libcasm_ir::Type::Kind::INTEGER:
@@ -293,7 +293,7 @@ void Builtin::execute( const libcasm_ir::AsFloatingBuiltin& builtin,
                 const auto& c
                     = static_cast< const libcasm_ir::IntegerConstant& >( arg )
                           .value();
-                res = libcasm_ir::FloatingConstant( c );
+                res = libcasm_ir::DecimalConstant( c );
                 break;
             }
             case libcasm_ir::Type::Kind::BIT:
@@ -301,7 +301,7 @@ void Builtin::execute( const libcasm_ir::AsFloatingBuiltin& builtin,
                 const auto& c
                     = static_cast< const libcasm_ir::BitConstant& >( arg )
                           .value();
-                res = libcasm_ir::FloatingConstant( c );
+                res = libcasm_ir::DecimalConstant( c );
                 break;
             }
             default:
@@ -313,7 +313,7 @@ void Builtin::execute( const libcasm_ir::AsFloatingBuiltin& builtin,
     }
     else
     {
-        res = libcasm_ir::FloatingConstant();
+        res = libcasm_ir::DecimalConstant();
     }
 }
 
@@ -369,10 +369,10 @@ void Builtin::execute( const libcasm_ir::DecBuiltin& builtin,
                     c.to< libstdhl::Type::Radix::DECIMAL >() );
                 break;
             }
-            case libcasm_ir::Type::Kind::FLOATING:
+            case libcasm_ir::Type::Kind::DECIMAL:
             {
                 const auto& c
-                    = static_cast< const libcasm_ir::FloatingConstant& >( arg )
+                    = static_cast< const libcasm_ir::DecimalConstant& >( arg )
                           .value();
                 res = libcasm_ir::StringConstant(
                     c.to< libstdhl::Type::Radix::DECIMAL >() );
@@ -446,10 +446,10 @@ void Builtin::execute( const libcasm_ir::HexBuiltin& builtin,
                     c.to< libstdhl::Type::Radix::HEXADECIMAL >() );
                 break;
             }
-            case libcasm_ir::Type::Kind::FLOATING:
+            case libcasm_ir::Type::Kind::DECIMAL:
             {
                 const auto& c
-                    = static_cast< const libcasm_ir::FloatingConstant& >( arg )
+                    = static_cast< const libcasm_ir::DecimalConstant& >( arg )
                           .value();
                 res = libcasm_ir::StringConstant(
                     c.to< libstdhl::Type::Radix::HEXADECIMAL >() );
@@ -523,10 +523,10 @@ void Builtin::execute( const libcasm_ir::OctBuiltin& builtin,
                     c.to< libstdhl::Type::Radix::OCTAL >() );
                 break;
             }
-            case libcasm_ir::Type::Kind::FLOATING:
+            case libcasm_ir::Type::Kind::DECIMAL:
             {
                 const auto& c
-                    = static_cast< const libcasm_ir::FloatingConstant& >( arg )
+                    = static_cast< const libcasm_ir::DecimalConstant& >( arg )
                           .value();
                 res = libcasm_ir::StringConstant(
                     c.to< libstdhl::Type::Radix::OCTAL >() );
@@ -600,10 +600,10 @@ void Builtin::execute( const libcasm_ir::BinBuiltin& builtin,
                     c.to< libstdhl::Type::Radix::BINARY >() );
                 break;
             }
-            case libcasm_ir::Type::Kind::FLOATING:
+            case libcasm_ir::Type::Kind::DECIMAL:
             {
                 const auto& c
-                    = static_cast< const libcasm_ir::FloatingConstant& >( arg )
+                    = static_cast< const libcasm_ir::DecimalConstant& >( arg )
                           .value();
                 res = libcasm_ir::StringConstant(
                     c.to< libstdhl::Type::Radix::BINARY >() );

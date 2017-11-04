@@ -165,9 +165,9 @@ void Value::execute( const libcasm_ir::Value::ID id,
                 type, res, &lhs, 1 );
             break;
         }
-        case libcasm_ir::Value::ID::AS_FLOATING_BUILTIN:
+        case libcasm_ir::Value::ID::AS_DECIMAL_BUILTIN:
         {
-            libcasm_rt::Builtin::execute< libcasm_ir::AsFloatingBuiltin >(
+            libcasm_rt::Builtin::execute< libcasm_ir::AsDecimalBuiltin >(
                 type, res, &lhs, 1 );
             break;
         }
@@ -627,9 +627,9 @@ void Value::execute( const libcasm_ir::Value::ID id,
                 type, res, reg, size );
             break;
         }
-        case libcasm_ir::Value::ID::AS_FLOATING_BUILTIN:
+        case libcasm_ir::Value::ID::AS_DECIMAL_BUILTIN:
         {
-            libcasm_rt::Builtin::execute< libcasm_ir::AsFloatingBuiltin >(
+            libcasm_rt::Builtin::execute< libcasm_ir::AsDecimalBuiltin >(
                 type, res, reg, size );
             break;
         }
@@ -1041,7 +1041,7 @@ void Value::execute( const libcasm_ir::Value::ID id,
 //         // AS_INTEGER_BUILTIN,
 //         // AS_BIT_BUILTIN,
 //         // AS_STRING_BUILTIN,
-//         // AS_FLOATING_BUILTIN,
+//         // AS_DECIMAL_BUILTIN,
 //         // AS_RATIONAL_BUILTIN,
 //         // AS_ENUMERATION_BUILTIN,
 

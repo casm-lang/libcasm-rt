@@ -88,13 +88,13 @@ void Instruction::execute( const libcasm_ir::InvInstruction& instr,
             res = libcasm_ir::IntegerConstant( -val );
             break;
         }
-        case libcasm_ir::Type::Kind::FLOATING:
+        case libcasm_ir::Type::Kind::DECIMAL:
         {
             const auto& val
-                = static_cast< const libcasm_ir::FloatingConstant& >( lhs )
+                = static_cast< const libcasm_ir::DecimalConstant& >( lhs )
                       .value();
 
-            res = libcasm_ir::FloatingConstant( -val );
+            res = libcasm_ir::DecimalConstant( -val );
             break;
         }
         case libcasm_ir::Type::Kind::RATIONAL:
@@ -337,10 +337,10 @@ void Instruction::execute( const libcasm_ir::PowInstruction& instr,
                 }
                 break;
             }
-            case libcasm_ir::Type::Kind::FLOATING:
+            case libcasm_ir::Type::Kind::DECIMAL:
             {
                 const auto& lval
-                    = static_cast< const libcasm_ir::FloatingConstant& >( lhs
+                    = static_cast< const libcasm_ir::DecimalConstant& >( lhs
                     )
                           .value();
 
@@ -412,10 +412,10 @@ void Instruction::execute( const libcasm_ir::PowInstruction& instr,
                 }
                 break;
             }
-            case libcasm_ir::Type::Kind::FLOATING:
+            case libcasm_ir::Type::Kind::DECIMAL:
             {
                 const auto& lval
-                    = static_cast< const libcasm_ir::FloatingConstant& >( lhs )
+                    = static_cast< const libcasm_ir::DecimalConstant& >( lhs )
                           .value();
                 const auto& rval
                     = static_cast< const libcasm_ir::IntegerConstant& >( rhs )
@@ -430,7 +430,7 @@ void Instruction::execute( const libcasm_ir::PowInstruction& instr,
                             = static_cast< const libstdhl::Type::Natural& >(
                                 neg_rval );
 
-                        libcasm_ir::FloatingConstant( lval ^ nat_rval );
+                        libcasm_ir::DecimalConstant( lval ^ nat_rval );
                     }
                     else
                     {
@@ -446,14 +446,14 @@ void Instruction::execute( const libcasm_ir::PowInstruction& instr,
                     }
                     else
                     {
-                        res = libcasm_ir::FloatingConstant( 1 );
+                        res = libcasm_ir::DecimalConstant( 1 );
                     }
                 }
                 else
                 {
                     const auto& nat_rval
                         = static_cast< const libstdhl::Type::Natural& >( rval );
-                    res = libcasm_ir::FloatingConstant( lval ^ nat_rval );
+                    res = libcasm_ir::DecimalConstant( lval ^ nat_rval );
                 }
                 break;
             }
