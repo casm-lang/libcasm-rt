@@ -47,12 +47,12 @@ static const auto id = Value::ID::AS_STRING_BUILTIN;
 
 static const auto type = libstdhl::Memory::get< RelationType >(
     libstdhl::Memory::get< StringType >(),
-    Types( { libstdhl::Memory::get< FloatingType >() } ) );
+    Types( { libstdhl::Memory::get< DecimalType >() } ) );
 
 #define TEST_( NAME, TO, FROM )                                                \
-    TEST( DISABLED_libcasm_rt__builtin_as_string_floating, NAME )              \
+    TEST( DISABLED_libcasm_rt__builtin_as_string_decimal, NAME )              \
     {                                                                          \
-        const auto arg = FloatingConstant( FROM );                             \
+        const auto arg = DecimalConstant( FROM );                             \
         Constant res;                                                          \
         libcasm_rt::Value::execute( id, *type, res, arg );                     \
         EXPECT_STREQ( res.description().c_str(),                               \

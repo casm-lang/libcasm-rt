@@ -93,7 +93,7 @@ namespace libcasm_rt
             libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::AsFloatingBuiltin& builtin,
+        void execute( const libcasm_ir::AsDecimalBuiltin& builtin,
             libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
             const std::size_t size );
 
