@@ -101,18 +101,7 @@ void Builtin::execute( const libcasm_ir::AssertBuiltin& builtin,
     {
         if( not c.value() )
         {
-            std::string msg = "assertion failed";
-
-            if( size == 2 )
-            {
-                const auto& txt = operands[ 1 ];
-                assert( txt.type().isString() );
-                const auto str
-                    = static_cast< const libcasm_ir::StringConstant& >( txt );
-                msg += ": " + str.name();
-            }
-
-            throw libcasm_ir::AssertionException( msg );
+            throw libcasm_ir::AssertionException( "assertion failed" );
         }
     }
 
