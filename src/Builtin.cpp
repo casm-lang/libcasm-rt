@@ -346,7 +346,8 @@ void Builtin::execute( const libcasm_ir::DecBuiltin& builtin,
                     = static_cast< const libcasm_ir::IntegerConstant& >( arg )
                           .value();
                 res = libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::DECIMAL >() );
+                    c.to< libstdhl::Type::Radix::DECIMAL,
+                        libstdhl::Type::Literal::NONE >() );
                 break;
             }
             case libcasm_ir::Type::Kind::BIT:
@@ -355,7 +356,8 @@ void Builtin::execute( const libcasm_ir::DecBuiltin& builtin,
                     = static_cast< const libcasm_ir::BitConstant& >( arg )
                           .value();
                 res = libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::DECIMAL >() );
+                    c.to< libstdhl::Type::Radix::DECIMAL,
+                        libstdhl::Type::Literal::NONE >() );
                 break;
             }
             case libcasm_ir::Type::Kind::DECIMAL:
@@ -364,7 +366,8 @@ void Builtin::execute( const libcasm_ir::DecBuiltin& builtin,
                     = static_cast< const libcasm_ir::DecimalConstant& >( arg )
                           .value();
                 res = libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::DECIMAL >() );
+                    c.to< libstdhl::Type::Radix::DECIMAL,
+                        libstdhl::Type::Literal::NONE >() );
                 break;
             }
             case libcasm_ir::Type::Kind::RATIONAL:
@@ -373,7 +376,8 @@ void Builtin::execute( const libcasm_ir::DecBuiltin& builtin,
                     = static_cast< const libcasm_ir::RationalConstant& >( arg )
                           .value();
                 res = libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::DECIMAL >() );
+                    c.to< libstdhl::Type::Radix::DECIMAL,
+                        libstdhl::Type::Literal::NONE >() );
                 break;
             }
             case libcasm_ir::Type::Kind::ENUMERATION:
@@ -383,7 +387,8 @@ void Builtin::execute( const libcasm_ir::DecBuiltin& builtin,
                         arg )
                           .value();
                 res = libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::DECIMAL >() );
+                    c.to< libstdhl::Type::Radix::DECIMAL,
+                        libstdhl::Type::Literal::NONE >() );
                 break;
             }
             default:
@@ -423,7 +428,8 @@ void Builtin::execute( const libcasm_ir::HexBuiltin& builtin,
                     = static_cast< const libcasm_ir::IntegerConstant& >( arg )
                           .value();
                 res = libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::HEXADECIMAL >() );
+                    c.to< libstdhl::Type::Radix::HEXADECIMAL,
+                        libstdhl::Type::Literal::NONE >() );
                 break;
             }
             case libcasm_ir::Type::Kind::BIT:
@@ -432,7 +438,8 @@ void Builtin::execute( const libcasm_ir::HexBuiltin& builtin,
                     = static_cast< const libcasm_ir::BitConstant& >( arg )
                           .value();
                 res = libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::HEXADECIMAL >() );
+                    c.to< libstdhl::Type::Radix::HEXADECIMAL,
+                        libstdhl::Type::Literal::NONE >() );
                 break;
             }
             case libcasm_ir::Type::Kind::DECIMAL:
@@ -441,7 +448,8 @@ void Builtin::execute( const libcasm_ir::HexBuiltin& builtin,
                     = static_cast< const libcasm_ir::DecimalConstant& >( arg )
                           .value();
                 res = libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::HEXADECIMAL >() );
+                    c.to< libstdhl::Type::Radix::HEXADECIMAL,
+                        libstdhl::Type::Literal::NONE >() );
                 break;
             }
             case libcasm_ir::Type::Kind::RATIONAL:
@@ -450,7 +458,8 @@ void Builtin::execute( const libcasm_ir::HexBuiltin& builtin,
                     = static_cast< const libcasm_ir::RationalConstant& >( arg )
                           .value();
                 res = libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::HEXADECIMAL >() );
+                    c.to< libstdhl::Type::Radix::HEXADECIMAL,
+                        libstdhl::Type::Literal::NONE >() );
                 break;
             }
             case libcasm_ir::Type::Kind::ENUMERATION:
@@ -460,7 +469,8 @@ void Builtin::execute( const libcasm_ir::HexBuiltin& builtin,
                         arg )
                           .value();
                 res = libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::HEXADECIMAL >() );
+                    c.to< libstdhl::Type::Radix::HEXADECIMAL,
+                        libstdhl::Type::Literal::NONE >() );
                 break;
             }
             default:
@@ -500,7 +510,8 @@ void Builtin::execute( const libcasm_ir::OctBuiltin& builtin,
                     = static_cast< const libcasm_ir::IntegerConstant& >( arg )
                           .value();
                 res = libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::OCTAL >() );
+                    c.to< libstdhl::Type::Radix::OCTAL,
+                        libstdhl::Type::Literal::NONE >() );
                 break;
             }
             case libcasm_ir::Type::Kind::BIT:
@@ -509,7 +520,8 @@ void Builtin::execute( const libcasm_ir::OctBuiltin& builtin,
                     = static_cast< const libcasm_ir::BitConstant& >( arg )
                           .value();
                 res = libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::OCTAL >() );
+                    c.to< libstdhl::Type::Radix::OCTAL,
+                        libstdhl::Type::Literal::NONE >() );
                 break;
             }
             case libcasm_ir::Type::Kind::DECIMAL:
@@ -518,7 +530,8 @@ void Builtin::execute( const libcasm_ir::OctBuiltin& builtin,
                     = static_cast< const libcasm_ir::DecimalConstant& >( arg )
                           .value();
                 res = libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::OCTAL >() );
+                    c.to< libstdhl::Type::Radix::OCTAL,
+                        libstdhl::Type::Literal::NONE >() );
                 break;
             }
             case libcasm_ir::Type::Kind::RATIONAL:
@@ -527,7 +540,8 @@ void Builtin::execute( const libcasm_ir::OctBuiltin& builtin,
                     = static_cast< const libcasm_ir::RationalConstant& >( arg )
                           .value();
                 res = libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::OCTAL >() );
+                    c.to< libstdhl::Type::Radix::OCTAL,
+                        libstdhl::Type::Literal::NONE >() );
                 break;
             }
             case libcasm_ir::Type::Kind::ENUMERATION:
@@ -537,7 +551,8 @@ void Builtin::execute( const libcasm_ir::OctBuiltin& builtin,
                         arg )
                           .value();
                 res = libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::OCTAL >() );
+                    c.to< libstdhl::Type::Radix::OCTAL,
+                        libstdhl::Type::Literal::NONE >() );
                 break;
             }
             default:
@@ -577,7 +592,8 @@ void Builtin::execute( const libcasm_ir::BinBuiltin& builtin,
                     = static_cast< const libcasm_ir::IntegerConstant& >( arg )
                           .value();
                 res = libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::BINARY >() );
+                    c.to< libstdhl::Type::Radix::BINARY,
+                        libstdhl::Type::Literal::NONE >() );
                 break;
             }
             case libcasm_ir::Type::Kind::BIT:
@@ -586,7 +602,8 @@ void Builtin::execute( const libcasm_ir::BinBuiltin& builtin,
                     = static_cast< const libcasm_ir::BitConstant& >( arg )
                           .value();
                 res = libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::BINARY >() );
+                    c.to< libstdhl::Type::Radix::BINARY,
+                        libstdhl::Type::Literal::NONE >() );
                 break;
             }
             case libcasm_ir::Type::Kind::DECIMAL:
@@ -595,7 +612,8 @@ void Builtin::execute( const libcasm_ir::BinBuiltin& builtin,
                     = static_cast< const libcasm_ir::DecimalConstant& >( arg )
                           .value();
                 res = libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::BINARY >() );
+                    c.to< libstdhl::Type::Radix::BINARY,
+                        libstdhl::Type::Literal::NONE >() );
                 break;
             }
             case libcasm_ir::Type::Kind::RATIONAL:
@@ -604,7 +622,8 @@ void Builtin::execute( const libcasm_ir::BinBuiltin& builtin,
                     = static_cast< const libcasm_ir::RationalConstant& >( arg )
                           .value();
                 res = libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::BINARY >() );
+                    c.to< libstdhl::Type::Radix::BINARY,
+                        libstdhl::Type::Literal::NONE >() );
                 break;
             }
             case libcasm_ir::Type::Kind::ENUMERATION:
@@ -614,7 +633,8 @@ void Builtin::execute( const libcasm_ir::BinBuiltin& builtin,
                         arg )
                           .value();
                 res = libcasm_ir::StringConstant(
-                    c.to< libstdhl::Type::Radix::BINARY >() );
+                    c.to< libstdhl::Type::Radix::BINARY,
+                        libstdhl::Type::Literal::NONE >() );
                 break;
             }
             default:
