@@ -232,8 +232,54 @@ void Builtin::execute( const libcasm_ir::AsBitBuiltin& builtin,
     libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
     const std::size_t size )
 {
-    throw libcasm_ir::InternalException(
-        "unimplemented '" + builtin.description() + "'" );
+    const auto& arg = operands[ 0 ];
+
+    if( not arg.defined() )
+    {
+        res = arg;
+        return;
+    }
+
+    switch( arg.type().kind() )
+    {
+        case libcasm_ir::Type::Kind::BOOLEAN:
+        {
+            const auto& c
+                = static_cast< const libcasm_ir::BooleanConstant& >( arg )
+                      .value();
+            res = libcasm_ir::BitConstant( arg.type().ptr_type(),
+                libstdhl::Type::createNatural( c == true ? 1 : 0 ) );
+            break;
+        }
+        case libcasm_ir::Type::Kind::INTEGER:
+        {
+            const auto& c
+                = static_cast< const libcasm_ir::IntegerConstant& >( arg )
+                      .value();
+            res = libcasm_ir::BitConstant(
+                arg.type().ptr_type(), libstdhl::Type::createNatural( c ) );
+            break;
+        }
+        case libcasm_ir::Type::Kind::BIT:
+        {
+            res = arg;
+            break;
+        }
+        case libcasm_ir::Type::Kind::DECIMAL:
+        {
+            const auto& c
+                = static_cast< const libcasm_ir::DecimalConstant& >( arg )
+                      .value();
+            res = libcasm_ir::BitConstant( arg.type().ptr_type(),
+                libstdhl::Type::createNatural( c.toInteger() ) );
+            break;
+        }
+        default:
+        {
+            throw libcasm_ir::InternalException(
+                "unimplemented '" + builtin.description() + "'" );
+        }
+    }
 }
 
 void Builtin::execute( const libcasm_ir::AsStringBuiltin& builtin,
@@ -817,16 +863,112 @@ void Builtin::execute( const libcasm_ir::ShlBuiltin& builtin,
     libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
     const std::size_t size )
 {
-    throw libcasm_ir::InternalException(
-        "unimplemented '" + builtin.description() + "'" );
+    const auto& valueConstant = operands[ 0 ];
+    const auto& offsetConstant = operands[ 1 ];
+
+    if( not valueConstant.defined() or not offsetConstant.defined() )
+    {
+        // offset is undef, return the given value
+        res = valueConstant;
+    }
+    else
+    {
+        assert( builtin.type().result().isBit() );
+        const auto& value
+            = static_cast< const libcasm_ir::BitConstant& >( valueConstant )
+                  .value();
+
+        switch( offsetConstant.type().kind() )
+        {
+            case libcasm_ir::Type::Kind::INTEGER:
+            {
+                const auto& offset
+                    = static_cast< const libcasm_ir::IntegerConstant& >(
+                        offsetConstant )
+                          .value();
+
+                const auto shiftedValue
+                    = libstdhl::Type::createNatural( value << offset );
+                res = libcasm_ir::BitConstant(
+                    valueConstant.type().ptr_type(), shiftedValue );
+                break;
+            }
+            case libcasm_ir::Type::Kind::BIT:
+            {
+                const auto& offset
+                    = static_cast< const libcasm_ir::BitConstant& >(
+                        offsetConstant )
+                          .value();
+
+                const auto shiftedValue
+                    = libstdhl::Type::createNatural( value << offset );
+                res = libcasm_ir::BitConstant(
+                    valueConstant.type().ptr_type(), shiftedValue );
+                break;
+            }
+            default:
+            {
+                throw libcasm_ir::InternalException(
+                    "unimplemented '" + builtin.description() + "'" );
+            }
+        }
+    }
 }
 
 void Builtin::execute( const libcasm_ir::ShrBuiltin& builtin,
     libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
     const std::size_t size )
 {
-    throw libcasm_ir::InternalException(
-        "unimplemented '" + builtin.description() + "'" );
+    const auto& valueConstant = operands[ 0 ];
+    const auto& offsetConstant = operands[ 1 ];
+
+    if( not valueConstant.defined() or not offsetConstant.defined() )
+    {
+        // offset is undef, return the given value
+        res = valueConstant;
+    }
+    else
+    {
+        assert( builtin.type().result().isBit() );
+        const auto& value
+            = static_cast< const libcasm_ir::BitConstant& >( valueConstant )
+                  .value();
+
+        switch( offsetConstant.type().kind() )
+        {
+            case libcasm_ir::Type::Kind::INTEGER:
+            {
+                const auto& offset
+                    = static_cast< const libcasm_ir::IntegerConstant& >(
+                        offsetConstant )
+                          .value();
+
+                const auto shiftedValue
+                    = libstdhl::Type::createNatural( value >> offset );
+                res = libcasm_ir::BitConstant(
+                    valueConstant.type().ptr_type(), shiftedValue );
+                break;
+            }
+            case libcasm_ir::Type::Kind::BIT:
+            {
+                const auto& offset
+                    = static_cast< const libcasm_ir::BitConstant& >(
+                        offsetConstant )
+                          .value();
+
+                const auto shiftedValue
+                    = libstdhl::Type::createNatural( value >> offset );
+                res = libcasm_ir::BitConstant(
+                    valueConstant.type().ptr_type(), shiftedValue );
+                break;
+            }
+            default:
+            {
+                throw libcasm_ir::InternalException(
+                    "unimplemented '" + builtin.description() + "'" );
+            }
+        }
+    }
 }
 
 void Builtin::execute( const libcasm_ir::AshrBuiltin& builtin,
