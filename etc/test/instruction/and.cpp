@@ -54,22 +54,20 @@ static const auto id = Value::ID::AND_INSTRUCTION;
 
 static const auto type = libstdhl::Memory::get< RelationType >(
     libstdhl::Memory::get< BooleanType >(),
-    Types(
-        { libstdhl::Memory::get< BooleanType >(), libstdhl::Memory::get< BooleanType >() } ) );
+    Types( { libstdhl::Memory::get< BooleanType >(), libstdhl::Memory::get< BooleanType >() } ) );
 
-#define CALC_( LHS, RHS )                                                      \
-    const auto lhs = BooleanConstant( LHS );                                   \
-    const auto rhs = BooleanConstant( RHS );                                   \
-    Constant res;                                                              \
+#define CALC_( LHS, RHS )                    \
+    const auto lhs = BooleanConstant( LHS ); \
+    const auto rhs = BooleanConstant( RHS ); \
+    Constant res;                            \
     libcasm_rt::Value::execute( id, *type, res, lhs, rhs );
 
-#define TEST_( NAME, RES, LHS, RHS )                                           \
-    TEST( libcasm_rt__instruction_and_boolean_boolean, NAME )                  \
-    {                                                                          \
-        CALC_( LHS, RHS );                                                     \
-        EXPECT_TRUE( res == BooleanConstant( RES ) );                          \
-        EXPECT_STREQ( res.description().c_str(),                               \
-            BooleanConstant( RES ).description().c_str() );                    \
+#define TEST_( NAME, RES, LHS, RHS )                                                             \
+    TEST( libcasm_rt__instruction_and_boolean_boolean, NAME )                                    \
+    {                                                                                            \
+        CALC_( LHS, RHS );                                                                       \
+        EXPECT_TRUE( res == BooleanConstant( RES ) );                                            \
+        EXPECT_STREQ( res.description().c_str(), BooleanConstant( RES ).description().c_str() ); \
     }
 
 // BENCHMARK( // TODO: PPA: FIXME: move this to the benchmarks!!!

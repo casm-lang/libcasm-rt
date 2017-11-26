@@ -57,95 +57,132 @@ namespace libcasm_rt
 {
     namespace Instruction
     {
-        void execute( const libcasm_ir::InvInstruction& instr,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs );
+        void execute(
+            const libcasm_ir::InvInstruction& instr,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant& lhs );
 
-        void execute( const libcasm_ir::AddInstruction& instr,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
+        void execute(
+            const libcasm_ir::AddInstruction& instr,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant& lhs,
             const libcasm_ir::Constant& rhs );
 
-        void execute( const libcasm_ir::SubInstruction& instr,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
+        void execute(
+            const libcasm_ir::SubInstruction& instr,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant& lhs,
             const libcasm_ir::Constant& rhs );
 
-        void execute( const libcasm_ir::MulInstruction& instr,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
+        void execute(
+            const libcasm_ir::MulInstruction& instr,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant& lhs,
             const libcasm_ir::Constant& rhs );
 
-        void execute( const libcasm_ir::ModInstruction& instr,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
+        void execute(
+            const libcasm_ir::ModInstruction& instr,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant& lhs,
             const libcasm_ir::Constant& rhs );
 
-        void execute( const libcasm_ir::DivInstruction& instr,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
+        void execute(
+            const libcasm_ir::DivInstruction& instr,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant& lhs,
             const libcasm_ir::Constant& rhs );
 
-        void execute( const libcasm_ir::PowInstruction& instr,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
+        void execute(
+            const libcasm_ir::PowInstruction& instr,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant& lhs,
             const libcasm_ir::Constant& rhs );
 
-        void execute( const libcasm_ir::AndInstruction& instr,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
+        void execute(
+            const libcasm_ir::AndInstruction& instr,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant& lhs,
             const libcasm_ir::Constant& rhs );
 
-        void execute( const libcasm_ir::XorInstruction& instr,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
+        void execute(
+            const libcasm_ir::XorInstruction& instr,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant& lhs,
             const libcasm_ir::Constant& rhs );
 
-        void execute( const libcasm_ir::OrInstruction& instr,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
+        void execute(
+            const libcasm_ir::OrInstruction& instr,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant& lhs,
             const libcasm_ir::Constant& rhs );
 
-        void execute( const libcasm_ir::ImpInstruction& instr,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
+        void execute(
+            const libcasm_ir::ImpInstruction& instr,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant& lhs,
             const libcasm_ir::Constant& rhs );
 
-        void execute( const libcasm_ir::NotInstruction& instr,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs );
+        void execute(
+            const libcasm_ir::NotInstruction& instr,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant& lhs );
 
-        void execute( const libcasm_ir::EquInstruction& instr,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
+        void execute(
+            const libcasm_ir::EquInstruction& instr,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant& lhs,
             const libcasm_ir::Constant& rhs );
 
-        void execute( const libcasm_ir::NeqInstruction& instr,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
+        void execute(
+            const libcasm_ir::NeqInstruction& instr,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant& lhs,
             const libcasm_ir::Constant& rhs );
 
-        void execute( const libcasm_ir::LthInstruction& instr,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
+        void execute(
+            const libcasm_ir::LthInstruction& instr,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant& lhs,
             const libcasm_ir::Constant& rhs );
 
-        void execute( const libcasm_ir::LeqInstruction& instr,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
+        void execute(
+            const libcasm_ir::LeqInstruction& instr,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant& lhs,
             const libcasm_ir::Constant& rhs );
 
-        void execute( const libcasm_ir::GthInstruction& instr,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
+        void execute(
+            const libcasm_ir::GthInstruction& instr,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant& lhs,
             const libcasm_ir::Constant& rhs );
 
-        void execute( const libcasm_ir::GeqInstruction& instr,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant& lhs,
+        void execute(
+            const libcasm_ir::GeqInstruction& instr,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant& lhs,
             const libcasm_ir::Constant& rhs );
 
-        void execute( const libcasm_ir::CallInstruction& instr,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* reg,
+        void execute(
+            const libcasm_ir::CallInstruction& instr,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* reg,
             const std::size_t size );
 
         template < typename T, typename... Args >
-        inline void execute( const libcasm_ir::Type::Ptr& type,
-            libcasm_ir::Constant& res, Args&&... args )
+        inline void execute(
+            const libcasm_ir::Type::Ptr& type, libcasm_ir::Constant& res, Args&&... args )
         {
             const T instr( type );
             execute( instr, res, std::forward< Args >( args )... );
             assert( instr.type().result() == res.type() );
         }
 
-        libcasm_ir::Constant::Ptr execute(
-            const libcasm_ir::Instruction& instr );
+        libcasm_ir::Constant::Ptr execute( const libcasm_ir::Instruction& instr );
     }
 }
 
-#endif // _LIB_CASMRT_INSTRUCTION_H_
+#endif  // _LIB_CASMRT_INSTRUCTION_H_
 
 //
 //  Local variables:

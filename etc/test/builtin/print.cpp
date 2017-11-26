@@ -46,26 +46,24 @@ using namespace libcasm_ir;
 static const auto id = Value::ID::PRINT_BUILTIN;
 
 static const auto type = libstdhl::Memory::get< RelationType >(
-    libstdhl::Memory::get< VoidType >(),
-    Types( { libstdhl::Memory::get< StringType >() } ) );
+    libstdhl::Memory::get< VoidType >(), Types( { libstdhl::Memory::get< StringType >() } ) );
 
-#define TEST_( NAME, TO, FROM )                                                \
-    TEST( libcasm_rt__builtin_print, NAME )                                    \
-    {                                                                          \
-        const auto arg = StringConstant( FROM );                               \
-        testing::internal::CaptureStdout();                                    \
-        Constant res;                                                          \
-        libcasm_rt::Value::execute( id, *type, res, arg );                     \
-        const auto output = testing::internal::GetCapturedStdout();            \
-        EXPECT_TRUE( res == VoidConstant() );                                  \
-        EXPECT_STREQ( output.c_str(), TO );                                    \
-        /*printf( "%s\n", output.c_str() );*/                                  \
+#define TEST_( NAME, TO, FROM )                                     \
+    TEST( libcasm_rt__builtin_print, NAME )                         \
+    {                                                               \
+        const auto arg = StringConstant( FROM );                    \
+        testing::internal::CaptureStdout();                         \
+        Constant res;                                               \
+        libcasm_rt::Value::execute( id, *type, res, arg );          \
+        const auto output = testing::internal::GetCapturedStdout(); \
+        EXPECT_TRUE( res == VoidConstant() );                       \
+        EXPECT_STREQ( output.c_str(), TO );                         \
+        /*printf( "%s\n", output.c_str() );*/                       \
     }
 
 TEST_( undef, "undef", );
 TEST_( short, "foo", "foo" );
-TEST_( large, "This is a very very long string!",
-    "This is a very very long string!" );
+TEST_( large, "This is a very very long string!", "This is a very very long string!" );
 
 //
 //  Local variables:

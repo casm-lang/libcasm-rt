@@ -112,7 +112,7 @@ namespace libcasm_rt
     // };
 }
 
-#endif // _LIB_CASMRT_TYPE_H_
+#endif  // _LIB_CASMRT_TYPE_H_
 
 //
 //  Local variables:

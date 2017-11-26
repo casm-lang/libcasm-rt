@@ -49,9 +49,9 @@ using namespace libcasm_ir;
 // | y : Type | false | x == y   | sym' |
 // | sym      | sym'  | sym'     | sym' |
 
-static const auto targ = libstdhl::List< libcasm_ir::Type >{
-    { libstdhl::Memory::get< IntegerType >(), libstdhl::Memory::get< IntegerType >() }
-};
+static const auto targ =
+    libstdhl::List< libcasm_ir::Type >{ { libstdhl::Memory::get< IntegerType >(),
+                                          libstdhl::Memory::get< IntegerType >() } };
 static const auto tres = libstdhl::Memory::get< BooleanType >();
 static const auto type = libstdhl::Memory::get< RelationType >( tres, targ );
 
@@ -61,8 +61,7 @@ TEST( libcasm_rt__instruction_equ, EquInstruction_true )
     const auto b = IntegerConstant( 123 );
 
     Constant r;
-    libcasm_rt::Value::execute(
-        Value::EQU_INSTRUCTION, type->result(), r, a, b );
+    libcasm_rt::Value::execute( Value::EQU_INSTRUCTION, type->result(), r, a, b );
 
     EXPECT_TRUE( r.type().isBoolean() );
     EXPECT_TRUE( r == BooleanConstant( true ) );
@@ -74,8 +73,7 @@ TEST( libcasm_rt__instruction_equ, EquInstruction_false )
     const auto b = IntegerConstant( 10 );
 
     Constant r;
-    libcasm_rt::Value::execute(
-        Value::EQU_INSTRUCTION, type->result(), r, a, b );
+    libcasm_rt::Value::execute( Value::EQU_INSTRUCTION, type->result(), r, a, b );
 
     EXPECT_TRUE( r.type().isBoolean() );
     EXPECT_TRUE( r == BooleanConstant( false ) );
@@ -87,8 +85,7 @@ TEST( libcasm_rt__instruction_equ, EquInstruction_undef_true )
     const auto b = IntegerConstant();
 
     Constant r;
-    libcasm_rt::Value::execute(
-        Value::EQU_INSTRUCTION, type->result(), r, a, b );
+    libcasm_rt::Value::execute( Value::EQU_INSTRUCTION, type->result(), r, a, b );
 
     EXPECT_TRUE( r.type().isBoolean() );
     EXPECT_TRUE( r == BooleanConstant( true ) );
@@ -100,8 +97,7 @@ TEST( libcasm_rt__instruction_equ, EquInstruction_undef_false )
     const auto b = IntegerConstant( 321 );
 
     Constant r;
-    libcasm_rt::Value::execute(
-        Value::EQU_INSTRUCTION, type->result(), r, a, b );
+    libcasm_rt::Value::execute( Value::EQU_INSTRUCTION, type->result(), r, a, b );
 
     EXPECT_TRUE( r.type().isBoolean() );
     EXPECT_TRUE( r == BooleanConstant( false ) );

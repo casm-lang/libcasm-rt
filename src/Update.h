@@ -76,16 +76,14 @@ namespace libcasm_rt
     {
       public:
         static libcsel_ir::CallableUnit* create(
-            libcasm_ir::UpdateInstruction& value,
-            libcsel_ir::Module* module = 0 );
+            libcasm_ir::UpdateInstruction& value, libcsel_ir::Module* module = 0 );
     };
 
     class LookupImplementation : public CasmRT
     {
       public:
         static libcsel_ir::CallableUnit* create(
-            libcasm_ir::LookupInstruction& value,
-            libcsel_ir::Module* module = 0 );
+            libcasm_ir::LookupInstruction& value, libcsel_ir::Module* module = 0 );
     };
 
     class FunctionState : public CasmRT
@@ -113,7 +111,7 @@ namespace libcasm_rt
     };
 }
 
-#endif // _LIB_CASMRT_UPDATE_H_
+#endif  // _LIB_CASMRT_UPDATE_H_
 
 //
 //  Local variables:

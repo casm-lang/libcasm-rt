@@ -63,7 +63,7 @@ namespace libcasm_ir
     };
 }
 
-#endif // _LIB_CASMIR_CONSTANT_FOLDING_PASS_H_
+#endif  // _LIB_CASMIR_CONSTANT_FOLDING_PASS_H_
 
 //
 //  Local variables:

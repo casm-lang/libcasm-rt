@@ -57,160 +57,238 @@ namespace libcasm_rt
 {
     namespace Builtin
     {
-        void execute( const libcasm_ir::IsSymbolicBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::IsSymbolicBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::AbortBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::AbortBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::AssertBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::AssertBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::PrintBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::PrintBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::PrintLnBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::PrintLnBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::AsBooleanBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::AsBooleanBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::AsIntegerBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::AsIntegerBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::AsBitBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::AsBitBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::AsStringBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::AsStringBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::AsDecimalBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::AsDecimalBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::AsRationalBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::AsRationalBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::AsEnumerationBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::AsEnumerationBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::DecBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::DecBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::HexBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::HexBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::OctBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::OctBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::BinBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::BinBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::AdduBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::AdduBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::AddsBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::AddsBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::SubuBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::SubuBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::SubsBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::SubsBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::MuluBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::MuluBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::MulsBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::MulsBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::LesuBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::LesuBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::LessBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::LessBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::LequBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::LequBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::LeqsBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::LeqsBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::GreuBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::GreuBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::GresBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::GresBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::GequBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::GequBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::GeqsBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::GeqsBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::ZextBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::ZextBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::SextBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::SextBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::TruncBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::TruncBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::ShlBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::ShlBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::ShrBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::ShrBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::AshrBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::AshrBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::ClzBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::ClzBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::CloBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::CloBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
-        void execute( const libcasm_ir::ClsBuiltin& builtin,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        void execute(
+            const libcasm_ir::ClsBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size );
 
         // void execute( const libcasm_ir::PowBuiltin& builtin
@@ -220,8 +298,10 @@ namespace libcasm_rt
         // );
 
         template < typename T >
-        inline void execute( const libcasm_ir::Type::Ptr& type,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        inline void execute(
+            const libcasm_ir::Type::Ptr& type,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size )
         {
             const T builtin( type );
@@ -231,8 +311,10 @@ namespace libcasm_rt
         }
 
         template < typename T >
-        inline void execute( const libcasm_ir::Type& type,
-            libcasm_ir::Constant& res, const libcasm_ir::Constant* operands,
+        inline void execute(
+            const libcasm_ir::Type& type,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
             const std::size_t size )
         {
             const auto t = libstdhl::Memory::wrap( (libcasm_ir::Type&)type );
@@ -241,7 +323,7 @@ namespace libcasm_rt
     }
 }
 
-#endif // _LIB_CASMRT_BUILTIN_H_
+#endif  // _LIB_CASMRT_BUILTIN_H_
 
 //
 //  Local variables:

@@ -65,8 +65,7 @@ bool ConstantFoldingPass::run( libpass::PassResult& pr )
     specification->iterate( Traversal::PREORDER, []( Value& value ) {
         if( auto instr = cast< Instruction >( value ) )
         {
-            libstdhl::Log::info( "cf: %s = %s ...", instr->label().c_str(),
-                instr->name().c_str() );
+            libstdhl::Log::info( "cf: %s = %s ...", instr->label().c_str(), instr->name().c_str() );
 
             u32 operand_pos = 0;
 
@@ -81,7 +80,8 @@ bool ConstantFoldingPass::run( libpass::PassResult& pr )
                     return;
                 }
 
-                libstdhl::Log::info( "  +--> call instr: %s, %s",
+                libstdhl::Log::info(
+                    "  +--> call instr: %s, %s",
                     call->callee()->name().c_str(),
                     call->callee()->type().name().c_str() );
             }
@@ -108,8 +108,11 @@ bool ConstantFoldingPass::run( libpass::PassResult& pr )
             auto result = libcasm_rt::Instruction::execute( *instr );
             assert( result );
 
-            libstdhl::Log::info( "  +==> %s = %s %s", result->label().c_str(),
-                result->type().name().c_str(), result->name().c_str() );
+            libstdhl::Log::info(
+                "  +==> %s = %s %s",
+                result->label().c_str(),
+                result->type().name().c_str(),
+                result->name().c_str() );
 
             instr->replaceAllUsesWith( result );
         }

@@ -46,7 +46,7 @@
 
 #include <libcasm-rt/libcasm-rt>
 
-#endif // _LIB_CASMRT_TEST_MAIN_H_
+#endif  // _LIB_CASMRT_TEST_MAIN_H_
 
 //
 //  Local variables:

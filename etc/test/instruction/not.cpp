@@ -47,8 +47,8 @@ using namespace libcasm_ir;
 // |-----+-------+-------+-------+------|
 // | -   | undef | true  | false | sym' |
 
-static const auto targ
-    = libstdhl::List< libcasm_ir::Type >{ { libstdhl::Memory::get< IntegerType >() } };
+static const auto targ =
+    libstdhl::List< libcasm_ir::Type >{ { libstdhl::Memory::get< IntegerType >() } };
 static const auto tres = libstdhl::Memory::get< BooleanType >();
 static const auto type = libstdhl::Memory::get< RelationType >( tres, targ );
 

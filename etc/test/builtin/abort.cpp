@@ -47,14 +47,13 @@ using namespace libcasm_ir;
 
 static const auto id = Value::ID::ABORT_BUILTIN;
 
-static const auto type = libstdhl::Memory::get< RelationType >(
-    libstdhl::Memory::get< VoidType >() );
+static const auto type =
+    libstdhl::Memory::get< RelationType >( libstdhl::Memory::get< VoidType >() );
 
 TEST( libcasm_rt__builtin_abort, call )
 {
     Constant res;
-    EXPECT_THROW( libcasm_rt::Value::execute( id, *type, res );
-                  , AbortException );
+    EXPECT_THROW( libcasm_rt::Value::execute( id, *type, res );, AbortException );
 }
 
 //

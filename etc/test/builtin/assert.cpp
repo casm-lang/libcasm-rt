@@ -48,23 +48,20 @@ using namespace libcasm_ir;
 static const auto id = Value::ID::ASSERT_BUILTIN;
 
 static const auto type = libstdhl::Memory::get< RelationType >(
-    libstdhl::Memory::get< VoidType >(),
-    Types( { libstdhl::Memory::get< BooleanType >() } ) );
+    libstdhl::Memory::get< VoidType >(), Types( { libstdhl::Memory::get< BooleanType >() } ) );
 
 TEST( libcasm_rt__builtin_assert, undef )
 {
     const auto arg = BooleanConstant();
     Constant res;
-    EXPECT_THROW( libcasm_rt::Value::execute( id, *type, res, arg );
-                  , UndefinedConstantException );
+    EXPECT_THROW( libcasm_rt::Value::execute( id, *type, res, arg );, UndefinedConstantException );
 }
 
 TEST( libcasm_rt__builtin_assert, false )
 {
     const auto arg = BooleanConstant( false );
     Constant res;
-    EXPECT_THROW( libcasm_rt::Value::execute( id, *type, res, arg );
-                  , AssertionException );
+    EXPECT_THROW( libcasm_rt::Value::execute( id, *type, res, arg );, AssertionException );
 }
 
 TEST( libcasm_rt__builtin_assert, true )
@@ -77,8 +74,7 @@ TEST( libcasm_rt__builtin_assert, true )
 
 static const auto type2 = libstdhl::Memory::get< RelationType >(
     libstdhl::Memory::get< VoidType >(),
-    Types( { libstdhl::Memory::get< BooleanType >(),
-        libstdhl::Memory::get< StringType >() } ) );
+    Types( { libstdhl::Memory::get< BooleanType >(), libstdhl::Memory::get< StringType >() } ) );
 
 TEST( libcasm_rt__builtin_assert, undef_with_msg_undef )
 {
@@ -94,8 +90,7 @@ TEST( libcasm_rt__builtin_assert, false_with_msg_undef )
     const auto arg = BooleanConstant( false );
     const auto msg = StringConstant();
     Constant res;
-    EXPECT_THROW( libcasm_rt::Value::execute( id, *type2, res, arg, msg );
-                  , AssertionException );
+    EXPECT_THROW( libcasm_rt::Value::execute( id, *type2, res, arg, msg );, AssertionException );
 }
 
 TEST( libcasm_rt__builtin_assert, true_with_msg_undef )
@@ -121,8 +116,7 @@ TEST( libcasm_rt__builtin_assert, false_with_msg_txt )
     const auto arg = BooleanConstant( false );
     const auto msg = StringConstant( "foo bar baz qux" );
     Constant res;
-    EXPECT_THROW( libcasm_rt::Value::execute( id, *type2, res, arg, msg );
-                  , AssertionException );
+    EXPECT_THROW( libcasm_rt::Value::execute( id, *type2, res, arg, msg );, AssertionException );
 }
 
 TEST( libcasm_rt__builtin_assert, true_with_msg_txt )
