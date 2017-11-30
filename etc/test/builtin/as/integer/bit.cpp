@@ -45,16 +45,16 @@ using namespace libcasm_ir;
 
 static const auto id = Value::ID::AS_INTEGER_BUILTIN;
 
-#define TEST_( NAME, SIZE, TO, FROM )                                          \
-    TEST( libcasm_rt__builtin_as_integer_bit, SIZE##NAME )                     \
-    {                                                                          \
-        const auto arg = BitConstant FROM;                                     \
-        const auto type = libstdhl::Memory::get< RelationType >(               \
-            libstdhl::Memory::get< IntegerType >(),                            \
-            Types( { libstdhl::Memory::get< BitType >( SIZE ) } ) );           \
-        Constant res;                                                          \
-        libcasm_rt::Value::execute( id, *type, res, arg );                     \
-        EXPECT_TRUE( res == IntegerConstant( TO ) );                           \
+#define TEST_( NAME, SIZE, TO, FROM )                                   \
+    TEST( libcasm_rt__builtin_as_integer_binary, SIZE##NAME )           \
+    {                                                                   \
+        const auto arg = BinaryConstant FROM;                           \
+        const auto type = libstdhl::Memory::get< RelationType >(        \
+            libstdhl::Memory::get< IntegerType >(),                     \
+            Types( { libstdhl::Memory::get< BinaryType >( SIZE ) } ) ); \
+        Constant res;                                                   \
+        libcasm_rt::Value::execute( id, *type, res, arg );              \
+        EXPECT_TRUE( res == IntegerConstant( TO ) );                    \
     }
 
 TEST_( undef_at_undef, 1, , ( 1 ) );

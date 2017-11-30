@@ -172,9 +172,9 @@ void Builtin::execute(
             res = libcasm_ir::BooleanConstant( c > 0 );
             break;
         }
-        case libcasm_ir::Type::Kind::BIT:
+        case libcasm_ir::Type::Kind::BINARY:
         {
-            const auto c = static_cast< const libcasm_ir::BitConstant& >( arg ).value();
+            const auto c = static_cast< const libcasm_ir::BinaryConstant& >( arg ).value();
 
             res = libcasm_ir::BooleanConstant( c > 0 );
             break;
@@ -213,9 +213,9 @@ void Builtin::execute(
             res = arg;
             break;
         }
-        case libcasm_ir::Type::Kind::BIT:
+        case libcasm_ir::Type::Kind::BINARY:
         {
-            const auto& c = static_cast< const libcasm_ir::BitConstant& >( arg ).value();
+            const auto& c = static_cast< const libcasm_ir::BinaryConstant& >( arg ).value();
             res = libcasm_ir::IntegerConstant( c );
             break;
         }
@@ -233,7 +233,7 @@ void Builtin::execute(
 }
 
 void Builtin::execute(
-    const libcasm_ir::AsBitBuiltin& builtin,
+    const libcasm_ir::AsBinaryBuiltin& builtin,
     libcasm_ir::Constant& res,
     const libcasm_ir::Constant* operands,
     const std::size_t size )
@@ -251,18 +251,18 @@ void Builtin::execute(
         case libcasm_ir::Type::Kind::BOOLEAN:
         {
             const auto& c = static_cast< const libcasm_ir::BooleanConstant& >( arg ).value();
-            res = libcasm_ir::BitConstant(
+            res = libcasm_ir::BinaryConstant(
                 arg.type().ptr_type(), libstdhl::Type::createNatural( c == true ? 1 : 0 ) );
             break;
         }
         case libcasm_ir::Type::Kind::INTEGER:
         {
             const auto& c = static_cast< const libcasm_ir::IntegerConstant& >( arg ).value();
-            res = libcasm_ir::BitConstant(
+            res = libcasm_ir::BinaryConstant(
                 arg.type().ptr_type(), libstdhl::Type::createNatural( c ) );
             break;
         }
-        case libcasm_ir::Type::Kind::BIT:
+        case libcasm_ir::Type::Kind::BINARY:
         {
             res = arg;
             break;
@@ -270,7 +270,7 @@ void Builtin::execute(
         case libcasm_ir::Type::Kind::DECIMAL:
         {
             const auto& c = static_cast< const libcasm_ir::DecimalConstant& >( arg ).value();
-            res = libcasm_ir::BitConstant(
+            res = libcasm_ir::BinaryConstant(
                 arg.type().ptr_type(), libstdhl::Type::createNatural( c.toInteger() ) );
             break;
         }
@@ -329,9 +329,9 @@ void Builtin::execute(
                 res = libcasm_ir::DecimalConstant( c );
                 break;
             }
-            case libcasm_ir::Type::Kind::BIT:
+            case libcasm_ir::Type::Kind::BINARY:
             {
-                const auto& c = static_cast< const libcasm_ir::BitConstant& >( arg ).value();
+                const auto& c = static_cast< const libcasm_ir::BinaryConstant& >( arg ).value();
                 res = libcasm_ir::DecimalConstant( c );
                 break;
             }
@@ -391,9 +391,9 @@ void Builtin::execute(
                     c.to< libstdhl::Type::Radix::DECIMAL, libstdhl::Type::Literal::NONE >() );
                 break;
             }
-            case libcasm_ir::Type::Kind::BIT:
+            case libcasm_ir::Type::Kind::BINARY:
             {
-                const auto& c = static_cast< const libcasm_ir::BitConstant& >( arg ).value();
+                const auto& c = static_cast< const libcasm_ir::BinaryConstant& >( arg ).value();
                 res = libcasm_ir::StringConstant(
                     c.to< libstdhl::Type::Radix::DECIMAL, libstdhl::Type::Literal::NONE >() );
                 break;
@@ -458,9 +458,9 @@ void Builtin::execute(
                     c.to< libstdhl::Type::Radix::HEXADECIMAL, libstdhl::Type::Literal::NONE >() );
                 break;
             }
-            case libcasm_ir::Type::Kind::BIT:
+            case libcasm_ir::Type::Kind::BINARY:
             {
-                const auto& c = static_cast< const libcasm_ir::BitConstant& >( arg ).value();
+                const auto& c = static_cast< const libcasm_ir::BinaryConstant& >( arg ).value();
                 res = libcasm_ir::StringConstant(
                     c.to< libstdhl::Type::Radix::HEXADECIMAL, libstdhl::Type::Literal::NONE >() );
                 break;
@@ -525,9 +525,9 @@ void Builtin::execute(
                     c.to< libstdhl::Type::Radix::OCTAL, libstdhl::Type::Literal::NONE >() );
                 break;
             }
-            case libcasm_ir::Type::Kind::BIT:
+            case libcasm_ir::Type::Kind::BINARY:
             {
-                const auto& c = static_cast< const libcasm_ir::BitConstant& >( arg ).value();
+                const auto& c = static_cast< const libcasm_ir::BinaryConstant& >( arg ).value();
                 res = libcasm_ir::StringConstant(
                     c.to< libstdhl::Type::Radix::OCTAL, libstdhl::Type::Literal::NONE >() );
                 break;
@@ -592,9 +592,9 @@ void Builtin::execute(
                     c.to< libstdhl::Type::Radix::BINARY, libstdhl::Type::Literal::NONE >() );
                 break;
             }
-            case libcasm_ir::Type::Kind::BIT:
+            case libcasm_ir::Type::Kind::BINARY:
             {
-                const auto& c = static_cast< const libcasm_ir::BitConstant& >( arg ).value();
+                const auto& c = static_cast< const libcasm_ir::BinaryConstant& >( arg ).value();
                 res = libcasm_ir::StringConstant(
                     c.to< libstdhl::Type::Radix::BINARY, libstdhl::Type::Literal::NONE >() );
                 break;
@@ -826,8 +826,9 @@ void Builtin::execute(
     }
     else
     {
-        assert( builtin.type().result().isBit() );
-        const auto& value = static_cast< const libcasm_ir::BitConstant& >( valueConstant ).value();
+        assert( builtin.type().result().isBinary() );
+        const auto& value =
+            static_cast< const libcasm_ir::BinaryConstant& >( valueConstant ).value();
 
         switch( offsetConstant.type().kind() )
         {
@@ -837,16 +838,16 @@ void Builtin::execute(
                     static_cast< const libcasm_ir::IntegerConstant& >( offsetConstant ).value();
 
                 const auto shiftedValue = libstdhl::Type::createNatural( value << offset );
-                res = libcasm_ir::BitConstant( valueConstant.type().ptr_type(), shiftedValue );
+                res = libcasm_ir::BinaryConstant( valueConstant.type().ptr_type(), shiftedValue );
                 break;
             }
-            case libcasm_ir::Type::Kind::BIT:
+            case libcasm_ir::Type::Kind::BINARY:
             {
                 const auto& offset =
-                    static_cast< const libcasm_ir::BitConstant& >( offsetConstant ).value();
+                    static_cast< const libcasm_ir::BinaryConstant& >( offsetConstant ).value();
 
                 const auto shiftedValue = libstdhl::Type::createNatural( value << offset );
-                res = libcasm_ir::BitConstant( valueConstant.type().ptr_type(), shiftedValue );
+                res = libcasm_ir::BinaryConstant( valueConstant.type().ptr_type(), shiftedValue );
                 break;
             }
             default:
@@ -874,8 +875,9 @@ void Builtin::execute(
     }
     else
     {
-        assert( builtin.type().result().isBit() );
-        const auto& value = static_cast< const libcasm_ir::BitConstant& >( valueConstant ).value();
+        assert( builtin.type().result().isBinary() );
+        const auto& value =
+            static_cast< const libcasm_ir::BinaryConstant& >( valueConstant ).value();
 
         switch( offsetConstant.type().kind() )
         {
@@ -885,16 +887,16 @@ void Builtin::execute(
                     static_cast< const libcasm_ir::IntegerConstant& >( offsetConstant ).value();
 
                 const auto shiftedValue = libstdhl::Type::createNatural( value >> offset );
-                res = libcasm_ir::BitConstant( valueConstant.type().ptr_type(), shiftedValue );
+                res = libcasm_ir::BinaryConstant( valueConstant.type().ptr_type(), shiftedValue );
                 break;
             }
-            case libcasm_ir::Type::Kind::BIT:
+            case libcasm_ir::Type::Kind::BINARY:
             {
                 const auto& offset =
-                    static_cast< const libcasm_ir::BitConstant& >( offsetConstant ).value();
+                    static_cast< const libcasm_ir::BinaryConstant& >( offsetConstant ).value();
 
                 const auto shiftedValue = libstdhl::Type::createNatural( value >> offset );
-                res = libcasm_ir::BitConstant( valueConstant.type().ptr_type(), shiftedValue );
+                res = libcasm_ir::BinaryConstant( valueConstant.type().ptr_type(), shiftedValue );
                 break;
             }
             default:

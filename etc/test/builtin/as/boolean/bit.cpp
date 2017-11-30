@@ -45,17 +45,17 @@ using namespace libcasm_ir;
 
 static const auto id = Value::ID::AS_BOOLEAN_BUILTIN;
 
-#define TEST_( NAME, SIZE, FROM, TO )                                          \
-    TEST( libcasm_rt__builtin_as_boolean_bit, SIZE##NAME )                     \
-    {                                                                          \
-        const auto arg = BitConstant FROM;                                     \
-        const auto type = libstdhl::Memory::get< RelationType >(               \
-            libstdhl::Memory::get< BooleanType >(),                            \
-            Types( { libstdhl::Memory::get< BitType >( SIZE ) } ) );           \
-                                                                               \
-        Constant res;                                                          \
-        libcasm_rt::Value::execute( id, *type, res, arg );                     \
-        EXPECT_TRUE( res == BooleanConstant( TO ) );                           \
+#define TEST_( NAME, SIZE, FROM, TO )                                   \
+    TEST( libcasm_rt__builtin_as_boolean_binary, SIZE##NAME )           \
+    {                                                                   \
+        const auto arg = BinaryConstant FROM;                           \
+        const auto type = libstdhl::Memory::get< RelationType >(        \
+            libstdhl::Memory::get< BooleanType >(),                     \
+            Types( { libstdhl::Memory::get< BinaryType >( SIZE ) } ) ); \
+                                                                        \
+        Constant res;                                                   \
+        libcasm_rt::Value::execute( id, *type, res, arg );              \
+        EXPECT_TRUE( res == BooleanConstant( TO ) );                    \
     }
 
 TEST_( undef_at_undef, 1, ( 1 ), );

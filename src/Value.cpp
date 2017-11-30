@@ -146,9 +146,9 @@ void Value::execute(
             libcasm_rt::Builtin::execute< libcasm_ir::AsIntegerBuiltin >( type, res, &lhs, 1 );
             break;
         }
-        case libcasm_ir::Value::ID::AS_BIT_BUILTIN:
+        case libcasm_ir::Value::ID::AS_BINARY_BUILTIN:
         {
-            libcasm_rt::Builtin::execute< libcasm_ir::AsBitBuiltin >( type, res, &lhs, 1 );
+            libcasm_rt::Builtin::execute< libcasm_ir::AsBinaryBuiltin >( type, res, &lhs, 1 );
             break;
         }
         case libcasm_ir::Value::ID::AS_STRING_BUILTIN:
@@ -198,7 +198,7 @@ void Value::execute(
         }
 
             //
-            // Bit Builtins
+            // Binary Builtins
             //
 
         case libcasm_ir::Value::ID::CLZ_BUILTIN:
@@ -443,7 +443,7 @@ void Value::execute(
         }
 
             //
-            // Bit Builtins
+            // Binary Builtins
             //
 
         case libcasm_ir::Value::ID::ZEXT_BUILTIN:
@@ -556,9 +556,9 @@ void Value::execute(
             libcasm_rt::Builtin::execute< libcasm_ir::AsIntegerBuiltin >( type, res, reg, size );
             break;
         }
-        case libcasm_ir::Value::ID::AS_BIT_BUILTIN:
+        case libcasm_ir::Value::ID::AS_BINARY_BUILTIN:
         {
-            libcasm_rt::Builtin::execute< libcasm_ir::AsBitBuiltin >( type, res, reg, size );
+            libcasm_rt::Builtin::execute< libcasm_ir::AsBinaryBuiltin >( type, res, reg, size );
             break;
         }
         case libcasm_ir::Value::ID::AS_STRING_BUILTIN:
@@ -688,7 +688,7 @@ void Value::execute(
         }
 
             //
-            // Bit Builtins
+            // Binary Builtins
             //
 
         case libcasm_ir::Value::ID::ZEXT_BUILTIN:
