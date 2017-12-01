@@ -48,6 +48,7 @@
 #include <libcasm-rt/Type>
 #include <libcasm-rt/Update>
 #include <libcasm-rt/Value>
+#include <libcasm-rt/Version>
 #include <libcasm-rt/transform/ConstantFoldingPass>
 
 namespace libcasm_rt
