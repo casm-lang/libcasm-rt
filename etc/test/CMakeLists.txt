@@ -53,16 +53,16 @@ add_library( ${PROJECT}-test OBJECT
   builtin/as/string/enumeration.cpp
   builtin/as/string/integer.cpp
   builtin/as/string/boolean.cpp
-  builtin/as/string/bit.cpp
+  builtin/as/string/binary.cpp
   builtin/as/string/string.cpp
   builtin/as/string/decimal.cpp
   builtin/as/string/rational.cpp
   builtin/as/integer/integer.cpp
   builtin/as/integer/boolean.cpp
-  builtin/as/integer/bit.cpp
+  builtin/as/integer/binary.cpp
   builtin/as/boolean/integer.cpp
   builtin/as/boolean/boolean.cpp
-  builtin/as/boolean/bit.cpp
+  builtin/as/boolean/binary.cpp
   builtin/abort.cpp
   builtin/println.cpp
   builtin/print.cpp

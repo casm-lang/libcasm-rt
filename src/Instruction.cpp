@@ -501,14 +501,14 @@ void Instruction::execute(
             }
             break;
         }
-        case libcasm_ir::Type::Kind::BIT:
+        case libcasm_ir::Type::Kind::BINARY:
         {
-            const auto& lval = static_cast< const libcasm_ir::BitConstant& >( lhs ).value();
-            const auto& rval = static_cast< const libcasm_ir::BitConstant& >( rhs ).value();
+            const auto& lval = static_cast< const libcasm_ir::BinaryConstant& >( lhs ).value();
+            const auto& rval = static_cast< const libcasm_ir::BinaryConstant& >( rhs ).value();
 
             if( lhs.defined() and rhs.defined() )
             {
-                res = libcasm_ir::BitConstant( lval.value() or rval.value() );
+                res = libcasm_ir::BinaryConstant( lval.value() or rval.value() );
             }
             else
             {
@@ -577,11 +577,11 @@ void Instruction::execute(
             res = libcasm_ir::BooleanConstant( val == 0 );
             break;
         }
-        case libcasm_ir::Type::Kind::BIT:
+        case libcasm_ir::Type::Kind::BINARY:
         {
-            const auto& val = static_cast< const libcasm_ir::BitConstant& >( lhs ).value();
+            const auto& val = static_cast< const libcasm_ir::BinaryConstant& >( lhs ).value();
 
-            res = libcasm_ir::BitConstant( lhs.type().ptr_type(), ~val );
+            res = libcasm_ir::BinaryConstant( lhs.type().ptr_type(), ~val );
             break;
         }
         default:

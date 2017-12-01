@@ -43,35 +43,39 @@
 
 using namespace libcasm_ir;
 
-static const auto id = Value::ID::AS_STRING_BUILTIN;
+static const auto id = Value::ID::AS_BOOLEAN_BUILTIN;
 
-#define TEST_( NAME, SIZE, TO, FROM )                                          \
-    TEST( libcasm_rt__builtin_as_string_bit##SIZE, NAME )                      \
-    {                                                                          \
-        const auto arg = BitConstant FROM;                                     \
-        const auto type = libstdhl::Memory::get< RelationType >(               \
-            libstdhl::Memory::get< StringType >(),                             \
-            Types( { libstdhl::Memory::get< BitType >( SIZE ) } ) );           \
-        Constant res;                                                          \
-        libcasm_rt::Value::execute( id, *type, res, arg );                     \
-        EXPECT_STREQ( res.description().c_str(),                               \
-            StringConstant( TO ).description().c_str() );                      \
+#define TEST_( NAME, SIZE, FROM, TO )                                   \
+    TEST( libcasm_rt__builtin_as_boolean_binary, SIZE##NAME )           \
+    {                                                                   \
+        const auto arg = BinaryConstant FROM;                           \
+        const auto type = libstdhl::Memory::get< RelationType >(        \
+            libstdhl::Memory::get< BooleanType >(),                     \
+            Types( { libstdhl::Memory::get< BinaryType >( SIZE ) } ) ); \
+                                                                        \
+        Constant res;                                                   \
+        libcasm_rt::Value::execute( id, *type, res, arg );              \
+        EXPECT_TRUE( res == BooleanConstant( TO ) );                    \
     }
 
-TEST_( undef_at_undef, 1, , ( 1 ) );
-TEST_( zero__at_zero, 1, "0", ( 1, 0 ) );
-TEST_( one___at_one, 1, "1", ( 1, 1 ) );
+TEST_( undef_at_undef, 1, ( 1 ), );
+TEST_( false_at_zero, 1, ( 1, 0 ), false );
+TEST_( true__at_one, 1, ( 1, 1 ), true );
 
-TEST_( undef_at_undef, 8, , ( 1 ) );
-TEST_( zero__at_zero, 8, "0", ( 8, 0 ) );
-TEST_( one___at_one, 8, "1", ( 8, 1 ) );
-TEST_( large_at_large, 8, "254", ( 8, 0xfe ) );
+TEST_( undef_at_undef, 8, ( 8 ), );
+TEST_( false_at_zero, 8, ( 8, 0 ), false );
+TEST_( true__at_one, 8, ( 8, 1 ), true );
+TEST_( true__at_large, 8, ( 8, 0xee ), true );
 
-TEST_( undef_at_undef, 50, , ( 1 ) );
-TEST_( zero__at_zero, 50, "0", ( 50, 0 ) );
-TEST_( one___at_one, 50, "1", ( 50, 1 ) );
-TEST_( large_at_large, 50, "65261", ( 50, 0xfeed ) );
-TEST_( huge__at_huge, 50, "123456789", ( 50, 123456789 ) );
+TEST_( undef_at_undef, 23, ( 23 ), );
+TEST_( false_at_zero, 23, ( 23, 0 ), false );
+TEST_( true__at_one, 23, ( 23, 1 ), true );
+TEST_( true__at_large, 23, ( 23, 0xfeed ), true );
+
+TEST_( undef_at_undef, 48, ( 48 ), );
+TEST_( false_at_zero, 48, ( 48, 0 ), false );
+TEST_( true__at_one, 48, ( 48, 1 ), true );
+TEST_( true__at_large, 48, ( 48, 0xfeedbeef ), true );
 
 //
 //  Local variables:

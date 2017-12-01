@@ -100,7 +100,7 @@ namespace libcasm_rt
             const std::size_t size );
 
         void execute(
-            const libcasm_ir::AsBitBuiltin& builtin,
+            const libcasm_ir::AsBinaryBuiltin& builtin,
             libcasm_ir::Constant& res,
             const libcasm_ir::Constant* operands,
             const std::size_t size );
