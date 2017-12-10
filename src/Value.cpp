@@ -341,13 +341,6 @@ void Value::execute(
             // General Builtins
             //
 
-        case libcasm_ir::Value::ID::ASSERT_BUILTIN:
-        {
-            const libcasm_ir::Constant reg[] = { lhs, rhs };
-            libcasm_rt::Builtin::execute< libcasm_ir::AssertBuiltin >( type, res, reg, 2 );
-            break;
-        }
-
             //
             // Arithmetic Builtins
             //
