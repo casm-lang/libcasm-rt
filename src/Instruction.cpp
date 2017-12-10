@@ -508,7 +508,7 @@ void Instruction::execute(
     const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
-    switch( lhs.type().kind() )
+    switch( instr.type().kind() )
     {
         case libcasm_ir::Type::Kind::BOOLEAN:
         {
@@ -537,13 +537,17 @@ void Instruction::execute(
             const auto& lval = static_cast< const libcasm_ir::BinaryConstant& >( lhs ).value();
             const auto& rval = static_cast< const libcasm_ir::BinaryConstant& >( rhs ).value();
 
+            assert( instr.type().isBinary() );
+            const auto resultType =
+                std::static_pointer_cast< libcasm_ir::BinaryType >( instr.type().ptr_type() );
+
             if( lhs.defined() and rhs.defined() )
             {
-                res = libcasm_ir::BinaryConstant( lval.value() or rval.value() );
+                res = libcasm_ir::BinaryConstant( resultType, lval.value() | rval.value() );
             }
             else
             {
-                res = libcasm_ir::Constant::undef( lhs.type().ptr_type() );
+                res = libcasm_ir::BinaryConstant( resultType );
             }
             break;
         }
