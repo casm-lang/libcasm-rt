@@ -431,23 +431,54 @@ void Instruction::execute(
     const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
-    const auto& lval = static_cast< const libcasm_ir::BooleanConstant& >( lhs ).value();
-    const auto& rval = static_cast< const libcasm_ir::BooleanConstant& >( rhs ).value();
+    switch( instr.type().kind() )
+    {
+        case libcasm_ir::Type::Kind::BOOLEAN:
+        {
+            const auto& lval = static_cast< const libcasm_ir::BooleanConstant& >( lhs ).value();
+            const auto& rval = static_cast< const libcasm_ir::BooleanConstant& >( rhs ).value();
 
-    if( lhs.defined() and rhs.defined() )
-    {
-        res = libcasm_ir::BooleanConstant( lval.value() and rval.value() );
-    }
-    else
-    {
-        if( ( lhs.defined() and ( not lval.value() ) ) or
-            ( rhs.defined() and ( not rval.value() ) ) )
-        {
-            res = libcasm_ir::BooleanConstant( false );
+            if( lhs.defined() and rhs.defined() )
+            {
+                res = libcasm_ir::BooleanConstant( lval.value() and rval.value() );
+            }
+            else
+            {
+                if( ( lhs.defined() and ( not lval.value() ) ) or
+                    ( rhs.defined() and ( not rval.value() ) ) )
+                {
+                    res = libcasm_ir::BooleanConstant( false );
+                }
+                else
+                {
+                    res = libcasm_ir::BooleanConstant();
+                }
+            }
+            break;
         }
-        else
+        case libcasm_ir::Type::Kind::BINARY:
         {
-            res = libcasm_ir::BooleanConstant();
+            const auto& lval = static_cast< const libcasm_ir::BinaryConstant& >( lhs ).value();
+            const auto& rval = static_cast< const libcasm_ir::BinaryConstant& >( rhs ).value();
+
+            assert( instr.type().isBinary() );
+            const auto resultType =
+                std::static_pointer_cast< libcasm_ir::BinaryType >( instr.type().ptr_type() );
+
+            if( lhs.defined() and rhs.defined() )
+            {
+                res = libcasm_ir::BinaryConstant( resultType, lval.value() & rval.value() );
+            }
+            else
+            {
+                res = libcasm_ir::BinaryConstant( resultType );
+            }
+            break;
+        }
+        default:
+        {
+            throw libcasm_ir::InternalException( "unimplemented '" + instr.description() + "'" );
+            break;
         }
     }
 }
