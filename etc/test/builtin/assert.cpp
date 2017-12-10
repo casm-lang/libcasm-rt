@@ -72,62 +72,6 @@ TEST( libcasm_rt__builtin_assert, true )
     EXPECT_TRUE( res == VoidConstant() );
 }
 
-static const auto type2 = libstdhl::Memory::get< RelationType >(
-    libstdhl::Memory::get< VoidType >(),
-    Types( { libstdhl::Memory::get< BooleanType >(), libstdhl::Memory::get< StringType >() } ) );
-
-TEST( libcasm_rt__builtin_assert, undef_with_msg_undef )
-{
-    const auto arg = BooleanConstant();
-    const auto msg = StringConstant();
-    Constant res;
-    EXPECT_THROW( libcasm_rt::Value::execute( id, *type2, res, arg, msg );
-                  , UndefinedConstantException );
-}
-
-TEST( libcasm_rt__builtin_assert, false_with_msg_undef )
-{
-    const auto arg = BooleanConstant( false );
-    const auto msg = StringConstant();
-    Constant res;
-    EXPECT_THROW( libcasm_rt::Value::execute( id, *type2, res, arg, msg );, AssertionException );
-}
-
-TEST( libcasm_rt__builtin_assert, true_with_msg_undef )
-{
-    const auto arg = BooleanConstant( true );
-    const auto msg = StringConstant();
-    Constant res;
-    libcasm_rt::Value::execute( id, *type2, res, arg, msg );
-    EXPECT_TRUE( res == VoidConstant() );
-}
-
-TEST( libcasm_rt__builtin_assert, undef_with_msg_txt )
-{
-    const auto arg = BooleanConstant();
-    const auto msg = StringConstant( "foo bar baz qux" );
-    Constant res;
-    EXPECT_THROW( libcasm_rt::Value::execute( id, *type2, res, arg, msg );
-                  , UndefinedConstantException );
-}
-
-TEST( libcasm_rt__builtin_assert, false_with_msg_txt )
-{
-    const auto arg = BooleanConstant( false );
-    const auto msg = StringConstant( "foo bar baz qux" );
-    Constant res;
-    EXPECT_THROW( libcasm_rt::Value::execute( id, *type2, res, arg, msg );, AssertionException );
-}
-
-TEST( libcasm_rt__builtin_assert, true_with_msg_txt )
-{
-    const auto arg = BooleanConstant( true );
-    const auto msg = StringConstant( "foo bar baz qux" );
-    Constant res;
-    libcasm_rt::Value::execute( id, *type2, res, arg, msg );
-    EXPECT_TRUE( res == VoidConstant() );
-}
-
 //
 //  Local variables:
 //  mode: c++
