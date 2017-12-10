@@ -117,6 +117,12 @@ void Value::execute(
             break;
         }
 
+        case libcasm_ir::Value::ID::ASSURE_BUILTIN:
+        {
+            libcasm_rt::Builtin::execute< libcasm_ir::AssureBuiltin >( type, res, &lhs, 1 );
+            break;
+        }
+
             //
             // Output Builtins
             //
@@ -517,6 +523,11 @@ void Value::execute(
         case libcasm_ir::Value::ID::ASSERT_BUILTIN:
         {
             libcasm_rt::Builtin::execute< libcasm_ir::AssertBuiltin >( type, res, reg, size );
+            break;
+        }
+        case libcasm_ir::Value::ID::ASSURE_BUILTIN:
+        {
+            libcasm_rt::Builtin::execute< libcasm_ir::AssureBuiltin >( type, res, reg, size );
             break;
         }
 

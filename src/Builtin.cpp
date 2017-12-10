@@ -117,6 +117,31 @@ void Builtin::execute(
 }
 
 void Builtin::execute(
+    const libcasm_ir::AssureBuiltin& builtin,
+    libcasm_ir::Constant& res,
+    const libcasm_ir::Constant* operands,
+    const std::size_t size )
+{
+    const auto& cond = operands[ 0 ];
+    assert( cond.type().isBoolean() );
+    const auto& c = static_cast< const libcasm_ir::BooleanConstant& >( cond ).value();
+
+    if( not c.defined() )
+    {
+        throw libcasm_ir::UndefinedConstantException( "assurance on undefined value" );
+    }
+    else
+    {
+        if( not c.value() )
+        {
+            throw libcasm_ir::AssuranceException( "assurance failed" );
+        }
+    }
+
+    res = libcasm_ir::VoidConstant();
+}
+
+void Builtin::execute(
     const libcasm_ir::PrintBuiltin& builtin,
     libcasm_ir::Constant& res,
     const libcasm_ir::Constant* operands,
@@ -867,7 +892,7 @@ void Builtin::execute(
         mask <<= offset;
         mask -= 1;
 
-        res = libcasm_ir::BinaryConstant( resultType, mask );
+        res = libcasm_ir::BinaryConstant( offsetConstant.type().ptr_type(), mask );
         Instruction::execute< libcasm_ir::AndInstruction >( resultType, res, res, valueConstant );
     }
 }
