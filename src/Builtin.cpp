@@ -853,14 +853,25 @@ void Builtin::execute(
     }
     else
     {
-        auto mask = libstdhl::Type::createNatural( 1 );
-        mask <<= resultType->bitsize();
-        mask -= 1;
+        const auto& value = static_cast< const libcasm_ir::BinaryConstant& >( valueConstant );
+        assert( value.type().isBinary() );
+        const auto& valueType = static_cast< const libcasm_ir::BinaryType& >( value.type() );
 
-        auto tmp = libcasm_ir::BinaryConstant( resultType, mask );
+        const auto sign = value.value() >> ( valueType.bitsize() - 1 );
+
         Builtin::execute< libcasm_ir::ZextBuiltin >(
             builtin.type().ptr_type(), res, operands, size );
-        Instruction::execute< libcasm_ir::OrInstruction >( resultType, res, res, tmp );
+
+        if( sign != 0 )
+        {
+            auto mask = libstdhl::Type::createNatural( 1 );
+            mask <<= ( resultType->bitsize() - valueType.bitsize() );
+            mask -= 1;
+            mask <<= valueType.bitsize();
+
+            auto tmp = libcasm_ir::BinaryConstant( resultType, mask );
+            Instruction::execute< libcasm_ir::OrInstruction >( resultType, res, res, tmp );
+        }
     }
 }
 
