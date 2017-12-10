@@ -40,14 +40,16 @@
 //
 
 #include "Builtin.h"
-#include "Type.h"
 
-#include <libstdhl/Log>
+#include "Instruction.h"
+#include "Type.h"
 
 #include <libcasm-ir/Builtin>
 #include <libcasm-ir/Exception>
 #include <libcasm-ir/Type>
 #include <libcasm-ir/Value>
+
+#include <libstdhl/Log>
 
 // #include "../csel-ir/src/CallableUnit.h"
 // #include "../csel-ir/src/Instruction.h"
@@ -789,7 +791,23 @@ void Builtin::execute(
     const libcasm_ir::Constant* operands,
     const std::size_t size )
 {
-    throw libcasm_ir::InternalException( "unimplemented '" + builtin.description() + "'" );
+    const auto& valueConstant = operands[ 0 ];
+
+    assert( builtin.type().result().isBinary() );
+    const auto resultType =
+        std::static_pointer_cast< libcasm_ir::BinaryType >( builtin.type().result().ptr_type() );
+
+    if( not valueConstant.defined() )
+    {
+        res = libcasm_ir::BinaryConstant( resultType );
+    }
+    else
+    {
+        const auto& value =
+            static_cast< const libcasm_ir::BinaryConstant& >( valueConstant ).value();
+        const auto zextValue = libstdhl::Type::createNatural( value );
+        res = libcasm_ir::BinaryConstant( resultType, zextValue );
+    }
 }
 
 void Builtin::execute(
@@ -798,7 +816,27 @@ void Builtin::execute(
     const libcasm_ir::Constant* operands,
     const std::size_t size )
 {
-    throw libcasm_ir::InternalException( "unimplemented '" + builtin.description() + "'" );
+    const auto& valueConstant = operands[ 0 ];
+
+    assert( builtin.type().result().isBinary() );
+    const auto resultType =
+        std::static_pointer_cast< libcasm_ir::BinaryType >( builtin.type().result().ptr_type() );
+
+    if( not valueConstant.defined() )
+    {
+        res = libcasm_ir::BinaryConstant( resultType );
+    }
+    else
+    {
+        auto mask = libstdhl::Type::createNatural( 1 );
+        mask <<= resultType->bitsize();
+        mask -= 1;
+
+        auto tmp = libcasm_ir::BinaryConstant( resultType, mask );
+        Builtin::execute< libcasm_ir::ZextBuiltin >(
+            builtin.type().ptr_type(), res, operands, size );
+        Instruction::execute< libcasm_ir::OrInstruction >( resultType, res, res, tmp );
+    }
 }
 
 void Builtin::execute(
@@ -807,7 +845,31 @@ void Builtin::execute(
     const libcasm_ir::Constant* operands,
     const std::size_t size )
 {
-    throw libcasm_ir::InternalException( "unimplemented '" + builtin.description() + "'" );
+    const auto& valueConstant = operands[ 0 ];
+    const auto& offsetConstant = operands[ 1 ];
+    assert( offsetConstant.defined() );
+    assert( offsetConstant.type().kind() == libcasm_ir::Type::Kind::INTEGER );
+
+    assert( builtin.type().result().isBinary() );
+    const auto resultType =
+        std::static_pointer_cast< libcasm_ir::BinaryType >( builtin.type().result().ptr_type() );
+
+    if( not valueConstant.defined() )
+    {
+        res = libcasm_ir::BinaryConstant( resultType );
+    }
+    else
+    {
+        const auto& offset =
+            static_cast< const libcasm_ir::IntegerConstant& >( offsetConstant ).value();
+
+        auto mask = libstdhl::Type::createNatural( 1 );
+        mask <<= offset;
+        mask -= 1;
+
+        res = libcasm_ir::BinaryConstant( resultType, mask );
+        Instruction::execute< libcasm_ir::AndInstruction >( resultType, res, res, valueConstant );
+    }
 }
 
 void Builtin::execute(
