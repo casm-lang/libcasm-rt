@@ -903,8 +903,14 @@ void Builtin::execute(
         mask <<= offset;
         mask -= 1;
 
-        res = libcasm_ir::BinaryConstant( offsetConstant.type().ptr_type(), mask );
-        Instruction::execute< libcasm_ir::AndInstruction >( resultType, res, res, valueConstant );
+        auto tmp = libcasm_ir::BinaryConstant( valueConstant.type().ptr_type(), mask );
+        Instruction::execute< libcasm_ir::AndInstruction >(
+            valueConstant.type().ptr_type(), tmp, tmp, valueConstant );
+        assert( tmp.defined() );
+        assert( tmp.type().kind() == libcasm_ir::Type::Kind::BINARY );
+
+        const auto& value = static_cast< const libcasm_ir::BinaryConstant& >( tmp ).value();
+        res = libcasm_ir::BinaryConstant( resultType, value );
     }
 }
 
