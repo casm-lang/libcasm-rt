@@ -492,13 +492,47 @@ void Instruction::execute(
     const auto& lval = static_cast< const libcasm_ir::BooleanConstant& >( lhs ).value();
     const auto& rval = static_cast< const libcasm_ir::BooleanConstant& >( rhs ).value();
 
-    if( lhs.defined() and rhs.defined() )
+    switch( instr.type().kind() )
     {
-        res = libcasm_ir::BooleanConstant( lval.value() xor rval.value() );
-    }
-    else
-    {
-        res = libcasm_ir::BooleanConstant();
+        case libcasm_ir::Type::Kind::BOOLEAN:
+        {
+            const auto& lval = static_cast< const libcasm_ir::BooleanConstant& >( lhs ).value();
+            const auto& rval = static_cast< const libcasm_ir::BooleanConstant& >( rhs ).value();
+
+            if( lhs.defined() and rhs.defined() )
+            {
+                res = libcasm_ir::BooleanConstant( lval.value() xor rval.value() );
+            }
+            else
+            {
+                res = libcasm_ir::BooleanConstant();
+            }
+            break;
+        }
+        case libcasm_ir::Type::Kind::BINARY:
+        {
+            const auto& lval = static_cast< const libcasm_ir::BinaryConstant& >( lhs ).value();
+            const auto& rval = static_cast< const libcasm_ir::BinaryConstant& >( rhs ).value();
+
+            assert( instr.type().isBinary() );
+            const auto resultType =
+                std::static_pointer_cast< libcasm_ir::BinaryType >( instr.type().ptr_type() );
+
+            if( lhs.defined() and rhs.defined() )
+            {
+                res = libcasm_ir::BinaryConstant( resultType, lval.value() ^ rval.value() );
+            }
+            else
+            {
+                res = libcasm_ir::BinaryConstant( resultType );
+            }
+            break;
+        }
+        default:
+        {
+            throw libcasm_ir::InternalException( "unimplemented '" + instr.description() + "'" );
+            break;
+        }
     }
 }
 
