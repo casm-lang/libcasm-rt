@@ -267,9 +267,13 @@ void Builtin::execute(
 {
     const auto& arg = operands[ 0 ];
 
+    assert( builtin.type().result().isBinary() );
+    const auto resultType =
+        std::static_pointer_cast< libcasm_ir::BinaryType >( builtin.type().result().ptr_type() );
+
     if( not arg.defined() )
     {
-        res = arg;
+        res = libcasm_ir::BinaryConstant( resultType );
         return;
     }
 
@@ -279,26 +283,48 @@ void Builtin::execute(
         {
             const auto& c = static_cast< const libcasm_ir::BooleanConstant& >( arg ).value();
             res = libcasm_ir::BinaryConstant(
-                arg.type().ptr_type(), libstdhl::Type::createNatural( c == true ? 1 : 0 ) );
+                resultType, libstdhl::Type::createNatural( c == true ? 1 : 0 ) );
             break;
         }
         case libcasm_ir::Type::Kind::INTEGER:
         {
             const auto& c = static_cast< const libcasm_ir::IntegerConstant& >( arg ).value();
-            res = libcasm_ir::BinaryConstant(
-                arg.type().ptr_type(), libstdhl::Type::createNatural( c ) );
+            res = libcasm_ir::BinaryConstant( resultType, libstdhl::Type::createNatural( c ) );
             break;
         }
         case libcasm_ir::Type::Kind::BINARY:
         {
-            res = arg;
+            const auto& c = static_cast< const libcasm_ir::BinaryConstant& >( arg );
+            assert( c.type().isBinary() );
+            const auto& valueType = static_cast< const libcasm_ir::BinaryType& >( c.type() );
+
+            if( resultType->bitsize() < valueType.bitsize() )
+            {
+                // perform a truncation of the binary value!
+                const auto offset = libcasm_ir::IntegerConstant( c.value() );
+                const libcasm_ir::Constant values[ 2 ] = { arg, offset };
+                const auto truncType = libstdhl::Memory::get< libcasm_ir::RelationType >(
+                    resultType,
+                    libcasm_ir::Types( { c.type().ptr_type(), offset.type().ptr_type() } ) );
+                Builtin::execute< libcasm_ir::TruncBuiltin >( truncType, res, values, 2 );
+            }
+            else if( resultType->bitsize() > valueType.bitsize() )
+            {
+                // perform a zero extension
+                res = libcasm_ir::BinaryConstant(
+                    resultType, libstdhl::Type::createNatural( c.value() ) );
+            }
+            else
+            {
+                res = arg;
+            }
             break;
         }
         case libcasm_ir::Type::Kind::DECIMAL:
         {
             const auto& c = static_cast< const libcasm_ir::DecimalConstant& >( arg ).value();
             res = libcasm_ir::BinaryConstant(
-                arg.type().ptr_type(), libstdhl::Type::createNatural( c.toInteger() ) );
+                resultType, libstdhl::Type::createNatural( c.toInteger() ) );
             break;
         }
         default:
