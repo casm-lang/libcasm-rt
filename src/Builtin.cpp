@@ -289,7 +289,33 @@ void Builtin::execute(
         case libcasm_ir::Type::Kind::INTEGER:
         {
             const auto& c = static_cast< const libcasm_ir::IntegerConstant& >( arg ).value();
-            res = libcasm_ir::BinaryConstant( resultType, libstdhl::Type::createNatural( c ) );
+
+            try
+            {
+                if( c >= 0 )
+                {
+                    const auto nat = libstdhl::Type::createNatural( c );
+                    res = libcasm_ir::BinaryConstant( resultType, nat );
+                }
+                else
+                {
+                    const auto nat = libstdhl::Type::createNatural( -c );
+                    auto mask = libstdhl::Type::createNatural( 1 );
+                    mask <<= resultType->bitsize();
+                    mask -= 1;
+                    mask = mask ^ nat;
+                    mask += 1;
+                    res = libcasm_ir::BinaryConstant( resultType, mask );
+                }
+            }
+            catch( const std::domain_error& e )
+            {
+                res = libcasm_ir::BinaryConstant( resultType );
+            }
+            catch( const std::invalid_argument& e )
+            {
+                res = libcasm_ir::BinaryConstant( resultType );
+            }
             break;
         }
         case libcasm_ir::Type::Kind::BINARY:
@@ -323,8 +349,34 @@ void Builtin::execute(
         case libcasm_ir::Type::Kind::DECIMAL:
         {
             const auto& c = static_cast< const libcasm_ir::DecimalConstant& >( arg ).value();
-            res = libcasm_ir::BinaryConstant(
-                resultType, libstdhl::Type::createNatural( c.toInteger() ) );
+
+            try
+            {
+                const auto i = c.toInteger();
+                if( i >= 0 )
+                {
+                    const auto nat = libstdhl::Type::createNatural( i );
+                    res = libcasm_ir::BinaryConstant( resultType, nat );
+                }
+                else
+                {
+                    const auto nat = libstdhl::Type::createNatural( -i );
+                    auto mask = libstdhl::Type::createNatural( 1 );
+                    mask <<= resultType->bitsize();
+                    mask -= 1;
+                    mask = mask ^ nat;
+                    mask += 1;
+                    res = libcasm_ir::BinaryConstant( resultType, mask );
+                }
+            }
+            catch( const std::domain_error& e )
+            {
+                res = libcasm_ir::BinaryConstant( resultType );
+            }
+            catch( const std::invalid_argument& e )
+            {
+                res = libcasm_ir::BinaryConstant( resultType );
+            }
             break;
         }
         default:
