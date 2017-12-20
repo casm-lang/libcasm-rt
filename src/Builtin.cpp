@@ -195,15 +195,13 @@ void Builtin::execute(
         case libcasm_ir::Type::Kind::INTEGER:
         {
             const auto c = static_cast< const libcasm_ir::IntegerConstant& >( arg ).value();
-
-            res = libcasm_ir::BooleanConstant( c > 0 );
+            res = libcasm_ir::BooleanConstant( c != 0 );
             break;
         }
         case libcasm_ir::Type::Kind::BINARY:
         {
             const auto c = static_cast< const libcasm_ir::BinaryConstant& >( arg ).value();
-
-            res = libcasm_ir::BooleanConstant( c > 0 );
+            res = libcasm_ir::BooleanConstant( c != 0 );
             break;
         }
         default:
@@ -459,7 +457,51 @@ void Builtin::execute(
     const libcasm_ir::Constant* operands,
     const std::size_t size )
 {
-    throw libcasm_ir::InternalException( "unimplemented '" + builtin.description() + "'" );
+    const auto& arg = operands[ 0 ];
+
+    assert( builtin.type().result().isRational() );
+    const auto resultType = std::static_pointer_cast< libcasm_ir::EnumerationType >(
+        builtin.type().result().ptr_type() );
+
+    if( arg.defined() )
+    {
+        switch( arg.type().kind() )
+        {
+            case libcasm_ir::Type::Kind::BOOLEAN:
+            {
+                const auto& c = static_cast< const libcasm_ir::BooleanConstant& >( arg ).value();
+                res = libcasm_ir::RationalConstant( libstdhl::Type::createRational(
+                    libstdhl::Type::createInteger( ( libstdhl::u64 )( c == true ? 1 : 0 ) ) ) );
+                break;
+            }
+            case libcasm_ir::Type::Kind::INTEGER:
+            {
+                const auto& c = static_cast< const libcasm_ir::IntegerConstant& >( arg ).value();
+                res = libcasm_ir::RationalConstant( libstdhl::Type::createRational( c ) );
+                break;
+            }
+            case libcasm_ir::Type::Kind::BINARY:
+            {
+                const auto& c = static_cast< const libcasm_ir::BinaryConstant& >( arg ).value();
+                res = libcasm_ir::RationalConstant( libstdhl::Type::createRational( c ) );
+                break;
+            }
+            case libcasm_ir::Type::Kind::RATIONAL:
+            {
+                res = arg;
+                break;
+            }
+            default:
+            {
+                throw libcasm_ir::InternalException(
+                    "unimplemented '" + builtin.description() + "'" );
+            }
+        }
+    }
+    else
+    {
+        res = libcasm_ir::RationalConstant();
+    }
 }
 
 void Builtin::execute(
@@ -468,7 +510,39 @@ void Builtin::execute(
     const libcasm_ir::Constant* operands,
     const std::size_t size )
 {
-    throw libcasm_ir::InternalException( "unimplemented '" + builtin.description() + "'" );
+    const auto& arg = operands[ 0 ];
+
+    assert( builtin.type().result().isEnumeration() );
+    const auto resultType = std::static_pointer_cast< libcasm_ir::EnumerationType >(
+        builtin.type().result().ptr_type() );
+
+    if( arg.defined() )
+    {
+        switch( arg.type().kind() )
+        {
+            case libcasm_ir::Type::Kind::ENUMERATION:
+            {
+                if( arg.type() == *resultType )
+                {
+                    res = arg;
+                }
+                else
+                {
+                    res = libcasm_ir::EnumerationConstant( resultType );
+                }
+                break;
+            }
+            default:
+            {
+                throw libcasm_ir::InternalException(
+                    "unimplemented '" + builtin.description() + "'" );
+            }
+        }
+    }
+    else
+    {
+        res = libcasm_ir::EnumerationConstant( resultType );
+    }
 }
 
 void Builtin::execute(
