@@ -60,9 +60,9 @@ static const auto type = libstdhl::Memory::get< RelationType >(
 
 TEST_( undef_at_undef, , );
 TEST_( false_at_zero, 0, false );
-TEST_( false_at_neg1, -1, false );
+TEST_( true__at_neg1, -1, true );
 TEST_( true__at_pos1, 1, true );
-TEST_( false_at_neg123456789, -123456789, false );
+TEST_( true__at_neg123456789, -123456789, true );
 TEST_( true__at_pos123456789, 123456789, true );
 
 //
