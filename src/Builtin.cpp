@@ -185,7 +185,7 @@ void Builtin::execute(
         return;
     }
 
-    switch( arg.type().kind() )
+    switch( arg.typeId().kind() )
     {
         case libcasm_ir::Type::Kind::BOOLEAN:
         {
@@ -225,7 +225,7 @@ void Builtin::execute(
         return;
     }
 
-    switch( arg.type().kind() )
+    switch( arg.typeId().kind() )
     {
         case libcasm_ir::Type::Kind::BOOLEAN:
         {
@@ -275,7 +275,7 @@ void Builtin::execute(
         return;
     }
 
-    switch( arg.type().kind() )
+    switch( arg.typeId().kind() )
     {
         case libcasm_ir::Type::Kind::BOOLEAN:
         {
@@ -412,7 +412,7 @@ void Builtin::execute(
 
     if( arg.defined() )
     {
-        switch( arg.type().kind() )
+        switch( arg.typeId().kind() )
         {
             case libcasm_ir::Type::Kind::DECIMAL:
             {
@@ -465,7 +465,7 @@ void Builtin::execute(
 
     if( arg.defined() )
     {
-        switch( arg.type().kind() )
+        switch( arg.typeId().kind() )
         {
             case libcasm_ir::Type::Kind::BOOLEAN:
             {
@@ -518,7 +518,7 @@ void Builtin::execute(
 
     if( arg.defined() )
     {
-        switch( arg.type().kind() )
+        switch( arg.typeId().kind() )
         {
             case libcasm_ir::Type::Kind::ENUMERATION:
             {
@@ -555,7 +555,7 @@ void Builtin::execute(
 
     if( arg.defined() )
     {
-        switch( arg.type().kind() )
+        switch( arg.typeId().kind() )
         {
             case libcasm_ir::Type::Kind::BOOLEAN:
             {
@@ -622,7 +622,7 @@ void Builtin::execute(
 
     if( arg.defined() )
     {
-        switch( arg.type().kind() )
+        switch( arg.typeId().kind() )
         {
             case libcasm_ir::Type::Kind::BOOLEAN:
             {
@@ -689,7 +689,7 @@ void Builtin::execute(
 
     if( arg.defined() )
     {
-        switch( arg.type().kind() )
+        switch( arg.typeId().kind() )
         {
             case libcasm_ir::Type::Kind::BOOLEAN:
             {
@@ -756,7 +756,7 @@ void Builtin::execute(
 
     if( arg.defined() )
     {
-        switch( arg.type().kind() )
+        switch( arg.typeId().kind() )
         {
             case libcasm_ir::Type::Kind::BOOLEAN:
             {
@@ -828,7 +828,7 @@ void Builtin::execute(
         return;
     }
 
-    switch( lhs.type().kind() )
+    switch( lhs.typeId().kind() )
     {
         case libcasm_ir::Type::Kind::INTEGER:
         {
@@ -1036,7 +1036,7 @@ void Builtin::execute(
     const auto& valueConstant = operands[ 0 ];
     const auto& offsetConstant = operands[ 1 ];
     assert( offsetConstant.defined() );
-    assert( offsetConstant.type().kind() == libcasm_ir::Type::Kind::INTEGER );
+    assert( offsetConstant.typeId().kind() == libcasm_ir::Type::Kind::INTEGER );
 
     assert( builtin.type().result().isBinary() );
     const auto resultType =
@@ -1059,7 +1059,7 @@ void Builtin::execute(
         Instruction::execute< libcasm_ir::AndInstruction >(
             valueConstant.type().ptr_type(), tmp, tmp, valueConstant );
         assert( tmp.defined() );
-        assert( tmp.type().kind() == libcasm_ir::Type::Kind::BINARY );
+        assert( tmp.typeId().kind() == libcasm_ir::Type::Kind::BINARY );
 
         const auto& value = static_cast< const libcasm_ir::BinaryConstant& >( tmp ).value();
         res = libcasm_ir::BinaryConstant( resultType, value );
@@ -1086,7 +1086,7 @@ void Builtin::execute(
         const auto& value =
             static_cast< const libcasm_ir::BinaryConstant& >( valueConstant ).value();
 
-        switch( offsetConstant.type().kind() )
+        switch( offsetConstant.typeId().kind() )
         {
             case libcasm_ir::Type::Kind::INTEGER:
             {
@@ -1135,7 +1135,7 @@ void Builtin::execute(
         const auto& value =
             static_cast< const libcasm_ir::BinaryConstant& >( valueConstant ).value();
 
-        switch( offsetConstant.type().kind() )
+        switch( offsetConstant.typeId().kind() )
         {
             case libcasm_ir::Type::Kind::INTEGER:
             {
