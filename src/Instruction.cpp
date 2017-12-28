@@ -79,7 +79,7 @@ void Instruction::execute(
         return;
     }
 
-    switch( lhs.type().kind() )
+    switch( lhs.typeId().kind() )
     {
         case libcasm_ir::Type::Kind::INTEGER:
         {
@@ -129,7 +129,7 @@ void Instruction::execute(
         return;
     }
 
-    switch( instr.type().kind() )
+    switch( instr.typeId().kind() )
     {
         case libcasm_ir::Type::Kind::INTEGER:
         {
@@ -173,7 +173,7 @@ void Instruction::execute(
         return;
     }
 
-    switch( instr.type().kind() )
+    switch( instr.typeId().kind() )
     {
         case libcasm_ir::Type::Kind::INTEGER:
         {
@@ -209,7 +209,7 @@ void Instruction::execute(
         return;
     }
 
-    switch( instr.type().kind() )
+    switch( instr.typeId().kind() )
     {
         case libcasm_ir::Type::Kind::INTEGER:
         {
@@ -245,7 +245,7 @@ void Instruction::execute(
         return;
     }
 
-    switch( instr.type().kind() )
+    switch( instr.typeId().kind() )
     {
         case libcasm_ir::Type::Kind::INTEGER:
         {
@@ -288,7 +288,7 @@ void Instruction::execute(
         return;
     }
 
-    switch( instr.type().kind() )
+    switch( instr.typeId().kind() )
     {
         case libcasm_ir::Type::Kind::INTEGER:
         {
@@ -327,7 +327,7 @@ void Instruction::execute(
 
     if( not rhs.defined() )
     {
-        switch( instr.type().kind() )
+        switch( instr.typeId().kind() )
         {
             case libcasm_ir::Type::Kind::INTEGER:
             {
@@ -367,7 +367,7 @@ void Instruction::execute(
     }
     else
     {
-        switch( instr.type().kind() )
+        switch( instr.typeId().kind() )
         {
             case libcasm_ir::Type::Kind::INTEGER:
             {
@@ -461,7 +461,7 @@ void Instruction::execute(
     const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
-    switch( instr.type().kind() )
+    switch( instr.typeId().kind() )
     {
         case libcasm_ir::Type::Kind::BOOLEAN:
         {
@@ -522,7 +522,7 @@ void Instruction::execute(
     const auto& lval = static_cast< const libcasm_ir::BooleanConstant& >( lhs ).value();
     const auto& rval = static_cast< const libcasm_ir::BooleanConstant& >( rhs ).value();
 
-    switch( instr.type().kind() )
+    switch( instr.typeId().kind() )
     {
         case libcasm_ir::Type::Kind::BOOLEAN:
         {
@@ -572,7 +572,7 @@ void Instruction::execute(
     const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
-    switch( instr.type().kind() )
+    switch( instr.typeId().kind() )
     {
         case libcasm_ir::Type::Kind::BOOLEAN:
         {
@@ -660,7 +660,7 @@ void Instruction::execute(
         return;
     }
 
-    switch( lhs.type().kind() )
+    switch( lhs.typeId().kind() )
     {
         case libcasm_ir::Type::Kind::BOOLEAN:
         {
@@ -745,7 +745,7 @@ void Instruction::execute(
         return;
     }
 
-    switch( lhs.type().kind() )
+    switch( lhs.typeId().kind() )
     {
         case libcasm_ir::Type::Kind::INTEGER:
         {
@@ -773,7 +773,7 @@ void Instruction::execute(
 
     if( lhs.defined() and rhs.defined() )
     {
-        switch( lhs.type().kind() )
+        switch( lhs.typeId().kind() )
         {
             case libcasm_ir::Type::Kind::INTEGER:
             {
@@ -815,7 +815,7 @@ void Instruction::execute(
         return;
     }
 
-    switch( lhs.type().kind() )
+    switch( lhs.typeId().kind() )
     {
         case libcasm_ir::Type::Kind::INTEGER:
         {
@@ -843,7 +843,7 @@ void Instruction::execute(
 
     if( lhs.defined() and rhs.defined() )
     {
-        switch( lhs.type().kind() )
+        switch( lhs.typeId().kind() )
         {
             case libcasm_ir::Type::Kind::INTEGER:
             {
