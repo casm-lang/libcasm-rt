@@ -75,7 +75,7 @@ void Instruction::execute(
 {
     if( not lhs.defined() )
     {
-        res = libcasm_ir::Constant::undef( lhs.type().ptr_type() );
+        res = lhs;
         return;
     }
 
@@ -117,9 +117,15 @@ void Instruction::execute(
     const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
-    if( not lhs.defined() or not rhs.defined() )
+    if( not lhs.defined() )
     {
-        res = libcasm_ir::Constant::undef( instr.type().ptr_type() );
+        res = lhs;
+        return;
+    }
+
+    if( not rhs.defined() )
+    {
+        res = rhs;
         return;
     }
 
@@ -155,9 +161,15 @@ void Instruction::execute(
     const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
-    if( not lhs.defined() or not rhs.defined() )
+    if( not lhs.defined() )
     {
-        res = libcasm_ir::Constant::undef( instr.type().ptr_type() );
+        res = lhs;
+        return;
+    }
+
+    if( not rhs.defined() )
+    {
+        res = rhs;
         return;
     }
 
@@ -185,9 +197,15 @@ void Instruction::execute(
     const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
-    if( not lhs.defined() or not rhs.defined() )
+    if( not lhs.defined() )
     {
-        res = libcasm_ir::Constant::undef( instr.type().ptr_type() );
+        res = lhs;
+        return;
+    }
+
+    if( not rhs.defined() )
+    {
+        res = rhs;
         return;
     }
 
@@ -215,9 +233,15 @@ void Instruction::execute(
     const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
-    if( not lhs.defined() or not rhs.defined() )
+    if( not lhs.defined() )
     {
-        res = libcasm_ir::Constant::undef( instr.type().ptr_type() );
+        res = lhs;
+        return;
+    }
+
+    if( not rhs.defined() )
+    {
+        res = rhs;
         return;
     }
 
@@ -252,9 +276,15 @@ void Instruction::execute(
     const libcasm_ir::Constant& lhs,
     const libcasm_ir::Constant& rhs )
 {
-    if( not lhs.defined() or not rhs.defined() )
+    if( not lhs.defined() )
     {
-        res = libcasm_ir::Constant::undef( instr.type().ptr_type() );
+        res = lhs;
+        return;
+    }
+
+    if( not rhs.defined() )
+    {
+        res = rhs;
         return;
     }
 
@@ -291,7 +321,7 @@ void Instruction::execute(
 {
     if( not lhs.defined() )
     {
-        res = libcasm_ir::Constant::undef( instr.type().ptr_type() );
+        res = lhs;
         return;
     }
 
