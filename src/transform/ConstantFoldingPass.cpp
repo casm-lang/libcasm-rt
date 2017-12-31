@@ -43,12 +43,17 @@
 
 #include "../Instruction.h"
 
-#include <libstdhl/Log>
-
 #include <libcasm-ir/Instruction>
 #include <libcasm-ir/Specification>
 #include <libcasm-ir/Visitor>
 #include <libcasm-ir/analyze/ConsistencyCheckPass>
+
+#include <libstdhl/Log>
+
+#include <libpass/PassLogger>
+#include <libpass/PassRegistry>
+#include <libpass/PassResult>
+#include <libpass/PassUsage>
 
 using namespace libcasm_ir;
 
@@ -59,8 +64,8 @@ static libpass::PassRegistration< ConstantFoldingPass > PASS(
 
 bool ConstantFoldingPass::run( libpass::PassResult& pr )
 {
-    const auto data = pr.result< ConsistencyCheckPass >();
-    const auto specification = data->specification();
+    const auto& data = pr.input< ConsistencyCheckPass >();
+    const auto& specification = data->specification();
 
     specification->iterate( Traversal::PREORDER, []( Value& value ) {
         if( auto instr = cast< Instruction >( value ) )
