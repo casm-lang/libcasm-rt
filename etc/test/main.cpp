@@ -43,6 +43,11 @@
 
 TEST( libcasm_rt__main, empty )
 {
+    std::cout << libcasm_rt::REVTAG << "\n";
+    std::cout << libcasm_rt::COMMIT << "\n";
+    std::cout << libcasm_rt::BRANCH << "\n";
+    std::cout << libcasm_rt::LICENSE << "\n";
+    std::cout << libcasm_rt::NOTICE << "\n";
 }
 
 //
