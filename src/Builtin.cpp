@@ -149,9 +149,9 @@ void Builtin::execute(
 {
     const auto& txt = operands[ 0 ];
     assert( txt.type().isString() );
-    const auto str = static_cast< const libcasm_ir::StringConstant& >( txt );
+    const auto stringConstant = static_cast< const libcasm_ir::StringConstant& >( txt );
 
-    std::cout << str.name();
+    std::cout << stringConstant.toString();
 
     res = libcasm_ir::VoidConstant();
 }
@@ -164,9 +164,9 @@ void Builtin::execute(
 {
     const auto& txt = operands[ 0 ];
     assert( txt.type().isString() );
-    const auto str = static_cast< const libcasm_ir::StringConstant& >( txt );
+    const auto stringConstant = static_cast< const libcasm_ir::StringConstant& >( txt );
 
-    std::cout << str.name() << "\n";
+    std::cout << stringConstant.toString() << "\n";
 
     res = libcasm_ir::VoidConstant();
 }
