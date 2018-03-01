@@ -1052,7 +1052,7 @@ void Builtin::execute(
             static_cast< const libcasm_ir::IntegerConstant& >( offsetConstant ).value();
 
         auto mask = libstdhl::Type::createNatural( 1 );
-        mask <<= offset;
+        mask <<= libstdhl::Type::createNatural( offset );
         mask -= 1;
 
         auto tmp = libcasm_ir::BinaryConstant( valueConstant.type().ptr_type(), mask );
