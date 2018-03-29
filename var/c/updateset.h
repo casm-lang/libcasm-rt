@@ -39,8 +39,8 @@
 //  statement from your version.
 //
 
-#ifndef _LIB_CASM_RT_UPDATESET_H_
-#define _LIB_CASM_RT_UPDATESET_H_
+#ifndef _LIBCASM_RT_UPDATESET_H_
+#define _LIBCASM_RT_UPDATESET_H_
 
 #include "casm-rt.h"
 
@@ -75,7 +75,7 @@ u8 libcasm_rt_updateset_iterator_next(
 }
 #endif
 
-#endif /* _LIB_CASM_RT_UPDATESET_H_ */
+#endif /* _LIBCASM_RT_UPDATESET_H_ */
 
 //
 //  Local variables:

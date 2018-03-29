@@ -41,7 +41,7 @@
 
 #include <hayai/hayai.hpp>
 
-BENCHMARK( libcasm_ir, main, 0, 0 )
+BENCHMARK( libcasm_rt, main, 0, 0 )
 {
 }
 

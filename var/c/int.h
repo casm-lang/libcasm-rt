@@ -39,8 +39,8 @@
 //  statement from your version.
 //
 
-#ifndef _LIB_CASM_RT_INT_H_
-#define _LIB_CASM_RT_INT_H_
+#ifndef _LIBCASM_RT_INT_H_
+#define _LIBCASM_RT_INT_H_
 
 #include "casm-rt.h"
 
@@ -87,7 +87,7 @@ void libcasmrt_geq_Bool_Int_Int(
 }
 #endif
 
-#endif /* _LIB_CASM_RT_INT_H_ */
+#endif /* _LIBCASM_RT_INT_H_ */
 
 //
 //  Local variables:

@@ -45,8 +45,8 @@
    TODO
 */
 
-#ifndef _LIB_CASMRT_INSTRUCTION_H_
-#define _LIB_CASMRT_INSTRUCTION_H_
+#ifndef _LIBCASM_RT_INSTRUCTION_H_
+#define _LIBCASM_RT_INSTRUCTION_H_
 
 #include <libcasm-rt/CasmRT>
 #include <libcasm-rt/Value>
@@ -182,7 +182,7 @@ namespace libcasm_rt
     }
 }
 
-#endif  // _LIB_CASMRT_INSTRUCTION_H_
+#endif  // _LIBCASM_RT_INSTRUCTION_H_
 
 //
 //  Local variables:

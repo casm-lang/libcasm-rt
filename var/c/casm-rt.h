@@ -39,8 +39,8 @@
 //  statement from your version.
 //
 
-#ifndef _LIB_CASM_RT_H_
-#define _LIB_CASM_RT_H_
+#ifndef _LIBCASM_RT_H_
+#define _LIBCASM_RT_H_
 
 #include "stdhl/c/type.h"
 #include "stdll/c/stdll.h"
@@ -59,7 +59,7 @@ extern "C" {
 }
 #endif
 
-#endif /* _LIB_CASM_RT_H_ */
+#endif /* _LIBCASM_RT_H_ */
 
 //
 //  Local variables:

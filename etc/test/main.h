@@ -39,14 +39,14 @@
 //  statement from your version.
 //
 
-#ifndef _LIB_CASMRT_TEST_MAIN_H_
-#define _LIB_CASMRT_TEST_MAIN_H_
+#ifndef _LIBCASM_RT_TEST_MAIN_H_
+#define _LIBCASM_RT_TEST_MAIN_H_
 
 #include <libstdhl/Test>
 
 #include <libcasm-rt/libcasm-rt>
 
-#endif  // _LIB_CASMRT_TEST_MAIN_H_
+#endif  // _LIBCASM_RT_TEST_MAIN_H_
 
 //
 //  Local variables:

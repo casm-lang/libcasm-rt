@@ -45,8 +45,8 @@
    TODO
 */
 
-#ifndef _LIB_CASMRT_UPDATE_H_
-#define _LIB_CASMRT_UPDATE_H_
+#ifndef _LIBCASM_RT_UPDATE_H_
+#define _LIBCASM_RT_UPDATE_H_
 
 #include "CasmRT.h"
 
@@ -111,7 +111,7 @@ namespace libcasm_rt
     };
 }
 
-#endif  // _LIB_CASMRT_UPDATE_H_
+#endif  // _LIBCASM_RT_UPDATE_H_
 
 //
 //  Local variables:

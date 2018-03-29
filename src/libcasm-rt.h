@@ -39,8 +39,8 @@
 //  statement from your version.
 //
 
-#ifndef _LIB_CASMRT_H_
-#define _LIB_CASMRT_H_
+#ifndef _LIBCASM_RT_H_
+#define _LIBCASM_RT_H_
 
 #include <libcasm-rt/Builtin>
 #include <libcasm-rt/Constant>
@@ -55,7 +55,7 @@ namespace libcasm_rt
 {
 }
 
-#endif  //_LIB_CASMRT_H_
+#endif  //_LIBCASM_RT_H_
 
 //
 //  Local variables:

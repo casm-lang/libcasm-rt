@@ -39,8 +39,8 @@
 //  statement from your version.
 //
 
-#ifndef _LIB_CASM_RT_UPDATE_H_
-#define _LIB_CASM_RT_UPDATE_H_
+#ifndef _LIBCASM_RT_UPDATE_H_
+#define _LIBCASM_RT_UPDATE_H_
 
 #include "casm-rt.h"
 
@@ -61,7 +61,7 @@ libcasm_rt_update* libcasm_rt_update_new(
 }
 #endif
 
-#endif /* _LIB_CASM_RT_UPDATE_H_ */
+#endif /* _LIBCASM_RT_UPDATE_H_ */
 
 //
 //  Local variables:
