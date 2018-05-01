@@ -240,8 +240,19 @@ void Builtin::execute(
         }
         case libcasm_ir::Type::Kind::BINARY:
         {
+            const auto& t = static_cast< const libcasm_ir::BinaryType& >( arg.type() );
             const auto& c = static_cast< const libcasm_ir::BinaryConstant& >( arg ).value();
-            res = libcasm_ir::IntegerConstant( c );
+
+            if( c.isSet( t.bitsize() ) )
+            {
+                Instruction::execute< libcasm_ir::InvInstruction >( t.ptr_type(), res, arg );
+                const auto& r = static_cast< const libcasm_ir::BinaryConstant& >( res ).value();
+                res = libcasm_ir::IntegerConstant( r, true );
+            }
+            else
+            {
+                res = libcasm_ir::IntegerConstant( c );
+            }
             break;
         }
         case libcasm_ir::Type::Kind::DECIMAL:
