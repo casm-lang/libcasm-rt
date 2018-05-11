@@ -59,18 +59,17 @@ static const auto id = Value::ID::AS_INTEGER_BUILTIN;
 
 TEST_( undef_at_undef, 1, , ( 1 ) );
 TEST_( zero__at_zero, 1, 0, ( 1, 0 ) );
-TEST_( one___at_one, 1, 1, ( 1, 1 ) );
+TEST_( one___at_one, 1, -1, ( 1, 1 ) );
 
 TEST_( undef_at_undef, 8, , ( 1 ) );
 TEST_( zero__at_zero, 8, 0, ( 8, 0 ) );
 TEST_( one___at_one, 8, 1, ( 8, 1 ) );
-TEST_( large_at_large, 8, 0xfe, ( 8, 0xfe ) );
+TEST_( large_at_large, 8, 0x7f, ( 8, 0x7f ) );
 
 TEST_( undef_at_undef, 50, , ( 1 ) );
 TEST_( zero__at_zero, 50, 0, ( 50, 0 ) );
 TEST_( one___at_one, 50, 1, ( 50, 1 ) );
-TEST_( large_at_large, 50, 0xfeed, ( 50, 0xfeed ) );
-TEST_( huge__at_huge, 50, 123456789, ( 50, 123456789 ) );
+TEST_( large_at_large, 50, 0xbeef, ( 50, 0xbeef ) );
 
 //
 //  Local variables:
