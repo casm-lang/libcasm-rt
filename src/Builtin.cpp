@@ -301,21 +301,51 @@ void Builtin::execute(
 
             try
             {
+                auto mask = libstdhl::Type::createNatural( 1 );
+                mask <<= resultType->bitsize();
+                mask -= 1;
+
+                libstdhl::Type::Natural nat;
                 if( c >= 0 )
                 {
-                    const auto nat = libstdhl::Type::createNatural( c );
-                    res = libcasm_ir::BinaryConstant( resultType, nat );
+                    nat = libstdhl::Type::createNatural( c );
+
+                    const auto check = nat & mask;
+                    if( nat != check )
+                    {
+                        res = libcasm_ir::BinaryConstant( resultType );
+                        break;
+                    }
+
+                    if( nat.isSet( resultType->bitsize() ) )
+                    {
+                        res = libcasm_ir::BinaryConstant( resultType );
+                        break;
+                    }
                 }
                 else
                 {
-                    const auto nat = libstdhl::Type::createNatural( -c );
-                    auto mask = libstdhl::Type::createNatural( 1 );
-                    mask <<= resultType->bitsize();
-                    mask -= 1;
-                    mask = mask ^ nat;
-                    mask += 1;
-                    res = libcasm_ir::BinaryConstant( resultType, mask );
+                    nat = libstdhl::Type::createNatural( -c );
+
+                    const auto check = nat & mask;
+                    if( nat != check )
+                    {
+                        res = libcasm_ir::BinaryConstant( resultType );
+                        break;
+                    }
+
+                    nat = ~nat;
+                    nat += 1;
+                    if( not nat.isSet( resultType->bitsize() ) )
+                    {
+                        res = libcasm_ir::BinaryConstant( resultType );
+                        break;
+                    }
+
+                    nat = nat & mask;
                 }
+
+                res = libcasm_ir::BinaryConstant( resultType, nat );
             }
             catch( const std::domain_error& e )
             {
