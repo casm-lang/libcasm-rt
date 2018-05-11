@@ -46,6 +46,8 @@
 #include "Type.h"
 #include "Value.h"
 
+#include "Utility.h"
+
 #include <libstdhl/Log>
 #include <libstdhl/type/Integer>
 #include <libstdhl/type/Natural>
@@ -86,6 +88,16 @@ void Instruction::execute(
             const auto& val = static_cast< const libcasm_ir::IntegerConstant& >( lhs ).value();
 
             res = libcasm_ir::IntegerConstant( -val );
+            break;
+        }
+        case libcasm_ir::Type::Kind::BINARY:
+        {
+            const auto& t = static_cast< const libcasm_ir::BinaryType& >( lhs.type() );
+            auto val = static_cast< const libcasm_ir::BinaryConstant& >( lhs ).value();
+            val = ~val;
+            val++;
+            val = val & Utility::createMask( t.bitsize() );
+            res = libcasm_ir::BinaryConstant( lhs.type().ptr_type(), val );
             break;
         }
         case libcasm_ir::Type::Kind::DECIMAL:
@@ -137,6 +149,21 @@ void Instruction::execute(
             auto& rval = static_cast< const libcasm_ir::IntegerConstant& >( rhs ).value();
 
             res = libcasm_ir::IntegerConstant( lval + rval );
+            break;
+        }
+        case libcasm_ir::Type::Kind::BINARY:
+        {
+            assert( lhs.type().isBinary() and lhs.type() == rhs.type() );
+            const auto& lhsBinaryType = static_cast< const libcasm_ir::BinaryType& >( lhs.type() );
+            auto m = libstdhl::Type::createNatural( 1 ) << lhsBinaryType.bitsize();
+            m--;
+
+            const auto& lval = static_cast< const libcasm_ir::BinaryConstant& >( lhs ).value();
+            const auto& rval = static_cast< const libcasm_ir::BinaryConstant& >( rhs ).value();
+            const auto v = libstdhl::Type::createNatural( lval + rval );
+            const auto r = v & m;
+
+            res = libcasm_ir::BinaryConstant( lhs.type().ptr_type(), r );
             break;
         }
         case libcasm_ir::Type::Kind::STRING:

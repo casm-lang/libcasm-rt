@@ -44,6 +44,8 @@
 #include "Instruction.h"
 #include "Type.h"
 
+#include "Utility.h"
+
 #include <libcasm-ir/Builtin>
 #include <libcasm-ir/Exception>
 #include <libcasm-ir/Type>
@@ -240,8 +242,19 @@ void Builtin::execute(
         }
         case libcasm_ir::Type::Kind::BINARY:
         {
+            const auto& t = static_cast< const libcasm_ir::BinaryType& >( arg.type() );
             const auto& c = static_cast< const libcasm_ir::BinaryConstant& >( arg ).value();
-            res = libcasm_ir::IntegerConstant( c );
+
+            if( c.isSet( t.bitsize() ) )
+            {
+                Instruction::execute< libcasm_ir::InvInstruction >( t.ptr_type(), res, arg );
+                const auto& r = static_cast< const libcasm_ir::BinaryConstant& >( res ).value();
+                res = libcasm_ir::IntegerConstant( r, true );
+            }
+            else
+            {
+                res = libcasm_ir::IntegerConstant( c );
+            }
             break;
         }
         case libcasm_ir::Type::Kind::DECIMAL:
@@ -290,21 +303,49 @@ void Builtin::execute(
 
             try
             {
+                const auto mask = Utility::createMask( resultType->bitsize() );
+
+                libstdhl::Type::Natural nat;
                 if( c >= 0 )
                 {
-                    const auto nat = libstdhl::Type::createNatural( c );
-                    res = libcasm_ir::BinaryConstant( resultType, nat );
+                    nat = libstdhl::Type::createNatural( c );
+
+                    const auto check = nat & mask;
+                    if( nat != check )
+                    {
+                        res = libcasm_ir::BinaryConstant( resultType );
+                        break;
+                    }
+
+                    if( nat.isSet( resultType->bitsize() ) )
+                    {
+                        res = libcasm_ir::BinaryConstant( resultType );
+                        break;
+                    }
                 }
                 else
                 {
-                    const auto nat = libstdhl::Type::createNatural( -c );
-                    auto mask = libstdhl::Type::createNatural( 1 );
-                    mask <<= resultType->bitsize();
-                    mask -= 1;
-                    mask = mask ^ nat;
-                    mask += 1;
-                    res = libcasm_ir::BinaryConstant( resultType, mask );
+                    nat = libstdhl::Type::createNatural( -c );
+
+                    const auto check = nat & mask;
+                    if( nat != check )
+                    {
+                        res = libcasm_ir::BinaryConstant( resultType );
+                        break;
+                    }
+
+                    nat = ~nat;
+                    nat += 1;
+                    if( not nat.isSet( resultType->bitsize() ) )
+                    {
+                        res = libcasm_ir::BinaryConstant( resultType );
+                        break;
+                    }
+
+                    nat = nat & mask;
                 }
+
+                res = libcasm_ir::BinaryConstant( resultType, nat );
             }
             catch( const std::domain_error& e )
             {
@@ -358,13 +399,11 @@ void Builtin::execute(
                 }
                 else
                 {
-                    const auto nat = libstdhl::Type::createNatural( -i );
-                    auto mask = libstdhl::Type::createNatural( 1 );
-                    mask <<= resultType->bitsize();
-                    mask -= 1;
-                    mask = mask ^ nat;
-                    mask += 1;
-                    res = libcasm_ir::BinaryConstant( resultType, mask );
+                    const auto mask = Utility::createMask( resultType->bitsize() );
+                    auto nat = libstdhl::Type::createNatural( -i );
+                    nat = nat ^ mask;
+                    nat += 1;
+                    res = libcasm_ir::BinaryConstant( resultType, nat );
                 }
             }
             catch( const std::domain_error& e )
@@ -1016,9 +1055,7 @@ void Builtin::execute(
 
         if( sign != 0 )
         {
-            auto mask = libstdhl::Type::createNatural( 1 );
-            mask <<= ( resultType->bitsize() - valueType.bitsize() );
-            mask -= 1;
+            auto mask = Utility::createMask( resultType->bitsize() - valueType.bitsize() );
             mask <<= valueType.bitsize();
 
             auto tmp = libcasm_ir::BinaryConstant( resultType, mask );
@@ -1052,7 +1089,7 @@ void Builtin::execute(
             static_cast< const libcasm_ir::IntegerConstant& >( offsetConstant ).value();
 
         auto mask = libstdhl::Type::createNatural( 1 );
-        mask <<= offset;
+        mask <<= libstdhl::Type::createNatural( offset );
         mask -= 1;
 
         auto tmp = libcasm_ir::BinaryConstant( valueConstant.type().ptr_type(), mask );
