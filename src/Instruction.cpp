@@ -46,6 +46,8 @@
 #include "Type.h"
 #include "Value.h"
 
+#include "Utility.h"
+
 #include <libstdhl/Log>
 #include <libstdhl/type/Integer>
 #include <libstdhl/type/Natural>
@@ -92,16 +94,9 @@ void Instruction::execute(
         {
             const auto& t = static_cast< const libcasm_ir::BinaryType& >( lhs.type() );
             auto val = static_cast< const libcasm_ir::BinaryConstant& >( lhs ).value();
-
             val = ~val;
             val++;
-
-            auto mask = libstdhl::Type::createNatural( 1 );
-            mask <<= t.bitsize();
-            mask -= 1;
-
-            val = val & mask;
-
+            val = val & Utility::createMask( t.bitsize() );
             res = libcasm_ir::BinaryConstant( lhs.type().ptr_type(), val );
             break;
         }
