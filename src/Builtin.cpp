@@ -44,6 +44,8 @@
 #include "Instruction.h"
 #include "Type.h"
 
+#include "Utility.h"
+
 #include <libcasm-ir/Builtin>
 #include <libcasm-ir/Exception>
 #include <libcasm-ir/Type>
@@ -301,9 +303,7 @@ void Builtin::execute(
 
             try
             {
-                auto mask = libstdhl::Type::createNatural( 1 );
-                mask <<= resultType->bitsize();
-                mask -= 1;
+                const auto mask = Utility::createMask( resultType->bitsize() );
 
                 libstdhl::Type::Natural nat;
                 if( c >= 0 )
@@ -399,13 +399,11 @@ void Builtin::execute(
                 }
                 else
                 {
-                    const auto nat = libstdhl::Type::createNatural( -i );
-                    auto mask = libstdhl::Type::createNatural( 1 );
-                    mask <<= resultType->bitsize();
-                    mask -= 1;
-                    mask = mask ^ nat;
-                    mask += 1;
-                    res = libcasm_ir::BinaryConstant( resultType, mask );
+                    const auto mask = Utility::createMask( resultType->bitsize() );
+                    auto nat = libstdhl::Type::createNatural( -i );
+                    nat = nat ^ mask;
+                    nat += 1;
+                    res = libcasm_ir::BinaryConstant( resultType, nat );
                 }
             }
             catch( const std::domain_error& e )
@@ -1057,9 +1055,7 @@ void Builtin::execute(
 
         if( sign != 0 )
         {
-            auto mask = libstdhl::Type::createNatural( 1 );
-            mask <<= ( resultType->bitsize() - valueType.bitsize() );
-            mask -= 1;
+            auto mask = Utility::createMask( resultType->bitsize() - valueType.bitsize() );
             mask <<= valueType.bitsize();
 
             auto tmp = libcasm_ir::BinaryConstant( resultType, mask );
