@@ -334,7 +334,7 @@ void Builtin::execute(
                         break;
                     }
 
-                    nat = ~nat;
+                    nat = nat ^ mask;
                     nat += 1;
                     if( not nat.isSet( resultType->bitsize() ) )
                     {
