@@ -88,6 +88,12 @@ namespace libcasm_rt
             const std::size_t size );
 
         void execute(
+            const libcasm_ir::AtBuiltin& builtin,
+            libcasm_ir::Constant& res,
+            const libcasm_ir::Constant* operands,
+            const std::size_t size );
+
+        void execute(
             const libcasm_ir::PrintBuiltin& builtin,
             libcasm_ir::Constant& res,
             const libcasm_ir::Constant* operands,

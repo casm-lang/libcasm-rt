@@ -188,6 +188,53 @@ void Builtin::execute(
 }
 
 void Builtin::execute(
+    const libcasm_ir::AtBuiltin& builtin,
+    libcasm_ir::Constant& res,
+    const libcasm_ir::Constant* operands,
+    const std::size_t size )
+{
+    const auto& object = operands[ 0 ];
+    const auto& index = operands[ 1 ];
+
+    assert( object.type().isList() or object.type().isTuple() or object.type().isRecord() );
+    assert( index.type().isInteger() );
+
+    if( not object.defined() or not index.defined() )
+    {
+        res = libcasm_ir::Constant::undef( object.type().ptr_result() );
+        return;
+    }
+
+    if( object.type().isList() )
+    {
+        const auto& list = static_cast< const libcasm_ir::ListConstant& >( object ).value();
+        const auto& pos = static_cast< const libcasm_ir::IntegerConstant& >( index ).value();
+
+        if( pos > 0 and pos <= list->elements().size() )
+        {
+            const auto element = list->at( pos.value() - 1 );
+            assert( libcasm_ir::isa< libcasm_ir::Constant >( element ) );
+            res = static_cast< const libcasm_ir::Constant& >( *element );
+            return;
+        }
+    }
+    else
+    {
+        // tuple and record case: records are represented as tuples
+        const auto& tuple = static_cast< const libcasm_ir::TupleConstant& >( object ).value();
+        const auto& pos = static_cast< const libcasm_ir::IntegerConstant& >( index ).value();
+
+        if( pos > 0 and pos <= tuple->elements().size() )
+        {
+            res = tuple->element( pos.value() - 1 );
+            return;
+        }
+    }
+
+    res = libcasm_ir::Constant::undef( object.type().ptr_result() );
+}
+
+void Builtin::execute(
     const libcasm_ir::PrintBuiltin& builtin,
     libcasm_ir::Constant& res,
     const libcasm_ir::Constant* operands,
