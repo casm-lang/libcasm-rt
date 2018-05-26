@@ -59,6 +59,18 @@ TEST( libcasm_rt__builtin_size, enumeration )
 
     libcasm_rt::Value::execute( id, sizeBuiltinType, res, arg );
     EXPECT_TRUE( res == IntegerConstant( 3 ) );
+
+    libcasm_rt::Value::execute( id, sizeBuiltinType, res, arg );
+    EXPECT_FALSE( res == IntegerConstant( 0 ) );
+
+    libcasm_rt::Value::execute( id, sizeBuiltinType, res, arg );
+    EXPECT_FALSE( res == IntegerConstant( 123 ) );
+
+    libcasm_rt::Value::execute( id, sizeBuiltinType, res, arg );
+    EXPECT_FALSE( res == IntegerConstant( -123 ) );
+
+    libcasm_rt::Value::execute( id, sizeBuiltinType, res, arg );
+    EXPECT_FALSE( res == IntegerConstant() );
 }
 
 //
