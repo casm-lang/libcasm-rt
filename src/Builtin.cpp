@@ -150,7 +150,7 @@ void Builtin::execute(
     const std::size_t size )
 {
     const auto& object = operands[ 0 ];
-    assert( object.type().isList() or object.type().isEnumeration() );
+    assert( object.type().isEnumeration() or object.type().isList() or object.type().isRange() );
 
     if( not object.defined() )
     {
@@ -158,16 +158,32 @@ void Builtin::execute(
         return;
     }
 
-    if( object.type().isList() )
+    if( object.type().isEnumeration() )
+    {
+        const auto enumeration = static_cast< const libcasm_ir::EnumerationType& >( object.type() );
+        res = libcasm_ir::IntegerConstant( enumeration.kind().elements().size() );
+    }
+    else if( object.type().isList() )
     {
         const auto list = static_cast< const libcasm_ir::ListConstant& >( object ).value();
         res = libcasm_ir::IntegerConstant( list->elements().size() );
     }
     else
     {
-        assert( object.type().isEnumeration() );
-        const auto enumeration = static_cast< const libcasm_ir::EnumerationType& >( object.type() );
-        res = libcasm_ir::IntegerConstant( enumeration.kind().elements().size() );
+        assert( object.type().isRange() );
+        const auto& range = static_cast< const libcasm_ir::RangeConstant& >( object ).value();
+
+        const auto& a = static_cast< libcasm_ir::IntegerConstant& >( *range->from() ).value();
+        const auto& b = static_cast< libcasm_ir::IntegerConstant& >( *range->to() ).value();
+
+        if( a >= b )
+        {
+            res = libcasm_ir::IntegerConstant( a - b );
+        }
+        else
+        {
+            res = libcasm_ir::IntegerConstant( b - a );
+        }
     }
 }
 
