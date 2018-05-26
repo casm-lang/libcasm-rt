@@ -66,6 +66,7 @@ add_library( ${PROJECT}-test OBJECT
   builtin/abort.cpp
   builtin/println.cpp
   builtin/print.cpp
+  builtin/size/list.cpp
   constant/integer.cpp
   instruction/gth/integer.cpp
   instruction/leq/integer.cpp

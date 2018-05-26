@@ -144,6 +144,25 @@ void Builtin::execute(
 }
 
 void Builtin::execute(
+    const libcasm_ir::SizeBuiltin& builtin,
+    libcasm_ir::Constant& res,
+    const libcasm_ir::Constant* operands,
+    const std::size_t size )
+{
+    const auto& object = operands[ 0 ];
+    assert( object.type().isList() );
+
+    if( not object.defined() )
+    {
+        res = libcasm_ir::IntegerConstant();
+        return;
+    }
+
+    const auto list = static_cast< const libcasm_ir::ListConstant& >( object ).value();
+    res = libcasm_ir::IntegerConstant( list->elements().size() );
+}
+
+void Builtin::execute(
     const libcasm_ir::PrintBuiltin& builtin,
     libcasm_ir::Constant& res,
     const libcasm_ir::Constant* operands,
