@@ -45,7 +45,7 @@ using namespace libcasm_ir;
 
 static const auto id = Value::ID::SIZE_BUILTIN;
 
-TEST( libcasm_rt__builtin_size, list )
+TEST( libcasm_rt__builtin_size, list_integer )
 {
     const auto integerType = libstdhl::Memory::get< IntegerType >();
     const auto listType = libstdhl::Memory::make< ListType >( integerType );
@@ -60,6 +60,15 @@ TEST( libcasm_rt__builtin_size, list )
     libcasm_rt::Value::execute( id, sizeBuiltinType, res, arg );
     EXPECT_TRUE( res == IntegerConstant( 0 ) );
 
+    libcasm_rt::Value::execute( id, sizeBuiltinType, res, arg );
+    EXPECT_FALSE( res == IntegerConstant( -1234 ) );
+
+    libcasm_rt::Value::execute( id, sizeBuiltinType, res, arg );
+    EXPECT_FALSE( res == IntegerConstant( 1234 ) );
+
+    libcasm_rt::Value::execute( id, sizeBuiltinType, res, arg );
+    EXPECT_FALSE( res == IntegerConstant() );
+
     for( const auto value : values )
     {
         list->append( libstdhl::Memory::make< IntegerConstant >( value ) );
@@ -67,6 +76,15 @@ TEST( libcasm_rt__builtin_size, list )
 
     libcasm_rt::Value::execute( id, sizeBuiltinType, res, arg );
     EXPECT_TRUE( res == IntegerConstant( values.size() ) );
+
+    libcasm_rt::Value::execute( id, sizeBuiltinType, res, arg );
+    EXPECT_FALSE( res == IntegerConstant( -1234 ) );
+
+    libcasm_rt::Value::execute( id, sizeBuiltinType, res, arg );
+    EXPECT_FALSE( res == IntegerConstant( 1234 ) );
+
+    libcasm_rt::Value::execute( id, sizeBuiltinType, res, arg );
+    EXPECT_FALSE( res == IntegerConstant() );
 }
 
 //
