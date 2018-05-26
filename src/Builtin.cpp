@@ -150,7 +150,7 @@ void Builtin::execute(
     const std::size_t size )
 {
     const auto& object = operands[ 0 ];
-    assert( object.type().isList() );
+    assert( object.type().isList() or object.type().isEnumeration() );
 
     if( not object.defined() )
     {
@@ -158,8 +158,17 @@ void Builtin::execute(
         return;
     }
 
-    const auto list = static_cast< const libcasm_ir::ListConstant& >( object ).value();
-    res = libcasm_ir::IntegerConstant( list->elements().size() );
+    if( object.type().isList() )
+    {
+        const auto list = static_cast< const libcasm_ir::ListConstant& >( object ).value();
+        res = libcasm_ir::IntegerConstant( list->elements().size() );
+    }
+    else
+    {
+        assert( object.type().isEnumeration() );
+        const auto enumeration = static_cast< const libcasm_ir::EnumerationType& >( object.type() );
+        res = libcasm_ir::IntegerConstant( enumeration.kind().elements().size() );
+    }
 }
 
 void Builtin::execute(
