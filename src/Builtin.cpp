@@ -196,7 +196,7 @@ void Builtin::execute(
     const auto& object = operands[ 0 ];
     const auto& index = operands[ 1 ];
 
-    assert( object.type().isList() or object.type().isTuple() or object.type().isRecord() );
+    assert( object.type().isList() );
     assert( index.type().isInteger() );
 
     if( not object.defined() or not index.defined() )
@@ -205,30 +205,15 @@ void Builtin::execute(
         return;
     }
 
-    if( object.type().isList() )
-    {
-        const auto& list = static_cast< const libcasm_ir::ListConstant& >( object ).value();
-        const auto& pos = static_cast< const libcasm_ir::IntegerConstant& >( index ).value();
+    const auto& list = static_cast< const libcasm_ir::ListConstant& >( object ).value();
+    const auto& pos = static_cast< const libcasm_ir::IntegerConstant& >( index ).value();
 
-        if( pos > 0 and pos <= list->elements().size() )
-        {
-            const auto element = list->at( pos.value() - 1 );
-            assert( libcasm_ir::isa< libcasm_ir::Constant >( element ) );
-            res = static_cast< const libcasm_ir::Constant& >( *element );
-            return;
-        }
-    }
-    else
+    if( pos > 0 and pos <= list->elements().size() )
     {
-        // tuple and record case: records are represented as tuples
-        const auto& tuple = static_cast< const libcasm_ir::TupleConstant& >( object ).value();
-        const auto& pos = static_cast< const libcasm_ir::IntegerConstant& >( index ).value();
-
-        if( pos > 0 and pos <= tuple->elements().size() )
-        {
-            res = tuple->element( pos.value() - 1 );
-            return;
-        }
+        const auto element = list->at( pos.value() - 1 );
+        assert( libcasm_ir::isa< libcasm_ir::Constant >( element ) );
+        res = static_cast< const libcasm_ir::Constant& >( *element );
+        return;
     }
 
     res = libcasm_ir::Constant::undef( object.type().ptr_result() );
