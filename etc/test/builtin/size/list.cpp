@@ -49,7 +49,7 @@ TEST( libcasm_rt__builtin_size, list )
 {
     const auto integerType = libstdhl::Memory::get< IntegerType >();
     const auto listType = libstdhl::Memory::make< ListType >( integerType );
-    const auto atBuiltinType = RelationType( integerType, Types( { listType } ) );
+    const auto sizeBuiltinType = RelationType( integerType, Types( { listType } ) );
 
     const std::vector< i32 > values = { -4, 13, 0, 20, 8 };
     auto list = libstdhl::Memory::make< libcasm_ir::List >( listType );
@@ -57,7 +57,7 @@ TEST( libcasm_rt__builtin_size, list )
     Constant arg = ListConstant( listType, list );
     Constant res;
 
-    libcasm_rt::Value::execute( id, atBuiltinType, res, arg );
+    libcasm_rt::Value::execute( id, sizeBuiltinType, res, arg );
     EXPECT_TRUE( res == IntegerConstant( 0 ) );
 
     for( const auto value : values )
@@ -65,7 +65,7 @@ TEST( libcasm_rt__builtin_size, list )
         list->append( libstdhl::Memory::make< IntegerConstant >( value ) );
     }
 
-    libcasm_rt::Value::execute( id, atBuiltinType, res, arg );
+    libcasm_rt::Value::execute( id, sizeBuiltinType, res, arg );
     EXPECT_TRUE( res == IntegerConstant( values.size() ) );
 }
 
