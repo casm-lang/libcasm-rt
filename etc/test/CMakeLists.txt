@@ -63,6 +63,7 @@ add_library( ${PROJECT}-test OBJECT
   builtin/as/boolean/integer.cpp
   builtin/as/boolean/boolean.cpp
   builtin/as/boolean/binary.cpp
+  builtin/at/list.cpp
   builtin/abort.cpp
   builtin/println.cpp
   builtin/print.cpp

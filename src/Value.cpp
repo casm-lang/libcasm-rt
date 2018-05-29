@@ -541,6 +541,11 @@ void Value::execute(
             libcasm_rt::Builtin::execute< libcasm_ir::SizeBuiltin >( type, res, reg, size );
             break;
         }
+        case libcasm_ir::Value::ID::AT_BUILTIN:
+        {
+            libcasm_rt::Builtin::execute< libcasm_ir::AtBuiltin >( type, res, reg, size );
+            break;
+        }
 
             //
             // Output Builtins

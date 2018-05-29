@@ -178,13 +178,45 @@ void Builtin::execute(
 
         if( a >= b )
         {
-            res = libcasm_ir::IntegerConstant( a - b );
+            res = libcasm_ir::IntegerConstant( a - b + 1 );
         }
         else
         {
-            res = libcasm_ir::IntegerConstant( b - a );
+            res = libcasm_ir::IntegerConstant( b - a + 1 );
         }
     }
+}
+
+void Builtin::execute(
+    const libcasm_ir::AtBuiltin& builtin,
+    libcasm_ir::Constant& res,
+    const libcasm_ir::Constant* operands,
+    const std::size_t size )
+{
+    const auto& object = operands[ 0 ];
+    const auto& index = operands[ 1 ];
+
+    assert( object.type().isList() );
+    assert( index.type().isInteger() );
+
+    if( not object.defined() or not index.defined() )
+    {
+        res = libcasm_ir::Constant::undef( object.type().ptr_result() );
+        return;
+    }
+
+    const auto& list = static_cast< const libcasm_ir::ListConstant& >( object ).value();
+    const auto& pos = static_cast< const libcasm_ir::IntegerConstant& >( index ).value();
+
+    if( pos > 0 and pos <= list->elements().size() )
+    {
+        const auto element = list->at( pos.value() - 1 );
+        assert( libcasm_ir::isa< libcasm_ir::Constant >( element ) );
+        res = static_cast< const libcasm_ir::Constant& >( *element );
+        return;
+    }
+
+    res = libcasm_ir::Constant::undef( object.type().ptr_result() );
 }
 
 void Builtin::execute(

@@ -43,50 +43,30 @@
 
 using namespace libcasm_ir;
 
-static const auto id = Value::ID::SIZE_BUILTIN;
+static const auto id = Value::ID::AT_BUILTIN;
 
-TEST( libcasm_rt__builtin_size, range_integer )
+TEST( libcasm_rt__builtin_at, list )
 {
     const auto integerType = libstdhl::Memory::get< IntegerType >();
-    const auto rangeType = libstdhl::Memory::make< RangeType >( integerType );
-    const auto sizeBuiltinType = RelationType( integerType, Types( { rangeType } ) );
+    const auto listType = libstdhl::Memory::make< ListType >( integerType );
+    const auto atBuiltinType = RelationType( integerType, Types( { listType, integerType } ) );
 
-    const Constant arg = RangeConstant( rangeType, IntegerConstant( -4 ), IntegerConstant( 13 ) );
-    Constant res;
+    const std::vector< i32 > values = { -4, 13, 0, 20, 8 };
 
-    libcasm_rt::Value::execute( id, sizeBuiltinType, res, arg );
-    EXPECT_TRUE( res == IntegerConstant( ( 13 ) - ( -4 ) + 1 ) );
+    auto list = libstdhl::Memory::make< libcasm_ir::List >( listType );
+    for( const auto value : values )
+    {
+        list->append( libstdhl::Memory::make< IntegerConstant >( value ) );
+    }
 
-    libcasm_rt::Value::execute( id, sizeBuiltinType, res, arg );
-    EXPECT_FALSE( res == IntegerConstant( 0 ) );
-
-    libcasm_rt::Value::execute( id, sizeBuiltinType, res, arg );
-    EXPECT_FALSE( res == IntegerConstant( 1234 ) );
-
-    libcasm_rt::Value::execute( id, sizeBuiltinType, res, arg );
-    EXPECT_FALSE( res == IntegerConstant() );
-}
-
-TEST( libcasm_rt__builtin_size, range_undef )
-{
-    const auto integerType = libstdhl::Memory::get< IntegerType >();
-    const auto rangeType = libstdhl::Memory::make< RangeType >( integerType );
-    const auto sizeBuiltinType = RelationType( integerType, Types( { rangeType } ) );
-
-    const Constant arg = RangeConstant( rangeType );
-    Constant res;
-
-    libcasm_rt::Value::execute( id, sizeBuiltinType, res, arg );
-    EXPECT_TRUE( res == IntegerConstant() );
-
-    libcasm_rt::Value::execute( id, sizeBuiltinType, res, arg );
-    EXPECT_FALSE( res == IntegerConstant( -1234 ) );
-
-    libcasm_rt::Value::execute( id, sizeBuiltinType, res, arg );
-    EXPECT_FALSE( res == IntegerConstant( 0 ) );
-
-    libcasm_rt::Value::execute( id, sizeBuiltinType, res, arg );
-    EXPECT_FALSE( res == IntegerConstant( 1234 ) );
+    for( std::size_t pos = 0; pos < values.size(); pos++ )
+    {
+        const std::vector< Constant > arg = { ListConstant( listType, list ),
+                                              IntegerConstant( pos + 1 ) };
+        Constant res;
+        libcasm_rt::Value::execute( id, atBuiltinType, res, arg.data(), arg.size() );
+        EXPECT_TRUE( res == IntegerConstant( values[ pos ] ) );
+    }
 }
 
 //
