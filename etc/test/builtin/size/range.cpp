@@ -55,7 +55,7 @@ TEST( libcasm_rt__builtin_size, range_integer )
     Constant res;
 
     libcasm_rt::Value::execute( id, sizeBuiltinType, res, arg );
-    EXPECT_TRUE( res == IntegerConstant( ( 13 ) - ( -4 ) ) );
+    EXPECT_TRUE( res == IntegerConstant( ( 13 ) - ( -4 ) + 1 ) );
 
     libcasm_rt::Value::execute( id, sizeBuiltinType, res, arg );
     EXPECT_FALSE( res == IntegerConstant( 0 ) );

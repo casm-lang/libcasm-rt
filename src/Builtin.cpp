@@ -178,11 +178,11 @@ void Builtin::execute(
 
         if( a >= b )
         {
-            res = libcasm_ir::IntegerConstant( a - b );
+            res = libcasm_ir::IntegerConstant( a - b + 1 );
         }
         else
         {
-            res = libcasm_ir::IntegerConstant( b - a );
+            res = libcasm_ir::IntegerConstant( b - a + 1 );
         }
     }
 }
