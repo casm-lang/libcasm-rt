@@ -39,23 +39,22 @@
 //  statement from your version.
 //
 
-#include "main.h"
+#include "../../../main.h"
 
 using namespace libcasm_ir;
 
 static const auto id = Value::ID::AS_INTEGER_BUILTIN;
 
 static const auto type = libstdhl::Memory::get< RelationType >(
-    libstdhl::Memory::get< IntegerType >(),
-    Types( { libstdhl::Memory::get< BooleanType >() } ) );
+    libstdhl::Memory::get< IntegerType >(), Types( { libstdhl::Memory::get< BooleanType >() } ) );
 
-#define TEST_( NAME, TO, FROM )                                                \
-    TEST( libcasm_rt__builtin_as_integer_boolean, NAME )                       \
-    {                                                                          \
-        const auto arg = BooleanConstant( FROM );                              \
-        Constant res;                                                          \
-        libcasm_rt::Value::execute( id, *type, res, arg );                     \
-        EXPECT_TRUE( res == IntegerConstant( TO ) );                           \
+#define TEST_( NAME, TO, FROM )                            \
+    TEST( libcasm_rt__builtin_as_integer_boolean, NAME )   \
+    {                                                      \
+        const auto arg = BooleanConstant( FROM );          \
+        Constant res;                                      \
+        libcasm_rt::Value::execute( id, *type, res, arg ); \
+        EXPECT_TRUE( res == IntegerConstant( TO ) );       \
     }
 
 TEST_( undef_at_undef, , );

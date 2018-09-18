@@ -39,7 +39,7 @@
 //  statement from your version.
 //
 
-#include "main.h"
+#include "../../../main.h"
 
 using namespace libcasm_ir;
 
