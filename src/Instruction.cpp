@@ -49,8 +49,8 @@
 #include "Utility.h"
 
 #include <libstdhl/Log>
-#include <libstdhl/type/Integer>
-#include <libstdhl/type/Natural>
+#include <libstdhl/data/type/Integer>
+#include <libstdhl/data/type/Natural>
 
 #include <libcasm-ir/Constant>
 #include <libcasm-ir/Exception>
