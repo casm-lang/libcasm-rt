@@ -57,6 +57,10 @@ package_git_submodule( libpass    master REQUIRED obj   ../pass    lib/pass    )
 package_git_submodule( libcasm-ir master REQUIRED obj   ../casm-ir lib/casm-ir )
 package_git_submodule( libgtest   master REQUIRED build ../gtest   lib/gtest   )
 package_git_submodule( libhayai   master REQUIRED build ../hayai   lib/hayai   )
+package_git_deps(
+  libstdhl>libpass
+  libpass>libcasm-ir
+  )
 
 find_package( Threads REQUIRED )
 
@@ -68,15 +72,6 @@ include( CPack )
 add_subdirectory( src )
 add_subdirectory( etc
   EXCLUDE_FROM_ALL
-  )
-
-add_custom_target( ${PROJECT}-deps
-  DEPENDS
-    libgtest
-    libhayai
-    libstdhl
-    libpass
-    libcasm-ir
   )
 
 
