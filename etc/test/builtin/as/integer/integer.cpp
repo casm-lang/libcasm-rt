@@ -39,23 +39,22 @@
 //  statement from your version.
 //
 
-#include "main.h"
+#include "../../../main.h"
 
 using namespace libcasm_ir;
 
 static const auto id = Value::ID::AS_INTEGER_BUILTIN;
 
 static const auto type = libstdhl::Memory::get< RelationType >(
-    libstdhl::Memory::get< IntegerType >(),
-    Types( { libstdhl::Memory::get< IntegerType >() } ) );
+    libstdhl::Memory::get< IntegerType >(), Types( { libstdhl::Memory::get< IntegerType >() } ) );
 
-#define TEST_( NAME, VALUE )                                                   \
-    TEST( libcasm_rt__builtin_as_integer_integer, NAME )                       \
-    {                                                                          \
-        const auto arg = IntegerConstant( VALUE );                             \
-        Constant res;                                                          \
-        libcasm_rt::Value::execute( id, *type, res, arg );                     \
-        EXPECT_TRUE( res == IntegerConstant( VALUE ) );                        \
+#define TEST_( NAME, VALUE )                               \
+    TEST( libcasm_rt__builtin_as_integer_integer, NAME )   \
+    {                                                      \
+        const auto arg = IntegerConstant( VALUE );         \
+        Constant res;                                      \
+        libcasm_rt::Value::execute( id, *type, res, arg ); \
+        EXPECT_TRUE( res == IntegerConstant( VALUE ) );    \
     }
 
 TEST_( undef_at_undef, );
