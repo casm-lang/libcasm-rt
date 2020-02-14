@@ -45,12 +45,12 @@
 
 * libcasm-rt: CASM Run-Time Library
 
-[[https://gitter.im/casm-lang/libcasm-rt][https://badges.gitter.im/casm-lang/libcasm-rt.png]]
-[[https://ci.casm-lang.org/teams/main/pipelines/development/jobs/libcasm-rt-master][ @@html:<img src="https://ci.casm-lang.org/api/v1/teams/main/pipelines/development/jobs/libcasm-rt-master/badge">@@ ]]
-[[https://cirrus-ci.com/github/casm-lang/libcasm-rt][https://api.cirrus-ci.com/github/casm-lang/libcasm-rt.svg]]
+[[https://gitter.im/casm-lang/libcasm-rt][https://img.shields.io/badge/gitter-chat-darkcyan.svg?logo=gitter]]
+[[https://github.com/casm-lang/libcasm-rt/actions?query=workflow%3Abuild][https://github.com/casm-lang/libcasm-rt/workflows/build/badge.svg]]
+[[https://github.com/casm-lang/libcasm-rt/actions?query=workflow%3Anightly][https://github.com/casm-lang/libcasm-rt/workflows/nightly/badge.svg]]
 [[https://codecov.io/gh/casm-lang/libcasm-rt][https://codecov.io/gh/casm-lang/libcasm-rt/badge.svg]]
-[[https://github.com/casm-lang/libcasm-rt/tags][https://img.shields.io/github/tag/casm-lang/libcasm-rt.svg]]
-[[https://github.com/casm-lang/libcasm-rt/blob/master/LICENSE.txt][https://img.shields.io/badge/license-GPLv3%2BLE-blue.svg]]
+[[https://github.com/casm-lang/libcasm-rt/tags][https://img.shields.io/github/tag/casm-lang/libcasm-rt.svg?logo=github&sort=semver]]
+[[https://github.com/casm-lang/libcasm-rt/blob/master/LICENSE.txt][https://img.shields.io/badge/license-GPLv3%2BLE-blue.svg?logo=gnu]]
 
 
 TBD
